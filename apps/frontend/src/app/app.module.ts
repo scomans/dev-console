@@ -29,6 +29,7 @@ registerLocaleData(en);
   declarations: [
     AppComponent,
     LogComponent,
+    LogMinimapComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +42,7 @@ registerLocaleData(en);
     NzButtonModule,
     FontAwesomeModule,
     FlexLayoutModule,
+    ObserversModule,
 
     RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: true }),
   ],
@@ -50,6 +52,10 @@ registerLocaleData(en);
     {
       provide: NZ_I18N,
       useValue: en_US,
+    },
+    {
+      provide: WINDOW,
+      useValue: window,
     },
   ],
   bootstrap: [AppComponent],

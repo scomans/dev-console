@@ -1,0 +1,15 @@
+<div class="log-minimap">
+  <canvas #map
+          (mousedown)="onDragStart($event)"
+          (mouseup)="onDragEnd($event)"
+          (mousemove)="drag ? onDrag($event) : null"
+  ></canvas>
+</div>
+<div #content
+     class="log-content"
+     (scroll)="requestDraw()"
+     (cdkObserveContent)="requestDraw()"
+     (window:resize)="requestDraw()"
+>
+  <ng-content></ng-content>
+</div>
