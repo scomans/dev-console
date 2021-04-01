@@ -2,11 +2,18 @@ import { APP_INITIALIZER } from '@angular/core';
 import { MenuFoldOutline, MenuUnfoldOutline } from '@ant-design/icons-angular/icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
+  faQuestionCircle as farQuestionCircle,
   faWindowClose as farWindowClose,
   faWindowMaximize as farWindowMaximize,
   faWindowMinimize as farWindowMinimize,
   faWindowRestore as farWindowRestore,
 } from '@fortawesome/free-regular-svg-icons';
+import {
+  faAlignLeft as fasAlignLeft,
+  faEdit as fasEdit,
+  faPlusCircle as fasPlusCircle,
+  faTrash as fasTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
 
 
@@ -15,9 +22,15 @@ const farIcons = [
   farWindowMaximize,
   farWindowClose,
   farWindowRestore,
+  farQuestionCircle,
 ];
 
-const fasIcons = [];
+const fasIcons = [
+  fasAlignLeft,
+  fasPlusCircle,
+  fasTrash,
+  fasEdit,
+];
 
 const fadIcons = [];
 

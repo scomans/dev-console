@@ -1,0 +1,50 @@
+<form nz-form [formGroup]="validateForm" (ngSubmit)="done()">
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a name">
+      <input nz-input formControlName="name" id="name"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executable" nzRequired>Executable</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a command">
+      <input nz-input id="executable" formControlName="executable"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executeIn">Working directory</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
+      <input nz-input id="executeIn" formControlName="executeIn"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="arguments">Arguments</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
+      <textarea nz-input
+                id="arguments"
+                formControlName="arguments"
+                placeholder="One argument per line"
+                [nzAutosize]="{ minRows: 3 }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <ng-container formGroupName="regex">
+    <nz-form-item>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="prefix">Regex: Prefix</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
+        <input nz-input id="prefix" formControlName="prefix"/>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="suffix">Regex: Suffix</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
+        <input nz-input id="suffix" formControlName="suffix"/>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="12" [nzOffset]="8">
+      <label nz-checkbox formControlName="active">Active?</label>
+    </nz-form-control>
+  </nz-form-item>
+</form>

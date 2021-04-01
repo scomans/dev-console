@@ -55,7 +55,6 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.viewport = this.contentEl.nativeElement;
     this.init();
-    console.log(this.canvas, this.ctx);
 
     this.subs.sink = this.drawThrottle
       .pipe(
@@ -133,8 +132,6 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.root_rect = this.rectOfContent(this.viewport);
     this.view_rect = this.rectOfViewport(this.viewport);
     this.scale = this.calcScale()(this.root_rect.w, this.root_rect.h);
-
-    console.log(this.scale);
 
     this.resizeCanvas(this.root_rect.w * this.scale, this.root_rect.h * this.scale);
 
