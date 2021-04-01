@@ -26,8 +26,10 @@ import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
+import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
+import { AnsiPipe } from './components/pipes/ansi.pipe';
 import { iconProvider } from './providers/icon.provider';
 import { storageProvider } from './stores/store.provider';
 
@@ -40,6 +42,8 @@ registerLocaleData(en);
     LogComponent,
     LogMinimapComponent,
     ChannelEditModalComponent,
+    LogEntryComponent,
+    AnsiPipe,
   ],
   imports: [
     BrowserModule,

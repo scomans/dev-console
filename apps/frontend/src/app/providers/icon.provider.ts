@@ -11,6 +11,7 @@ import {
 import {
   faAlignLeft as fasAlignLeft,
   faEdit as fasEdit,
+  faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
   faTrash as fasTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -30,6 +31,7 @@ const fasIcons = [
   fasPlusCircle,
   fasTrash,
   fasEdit,
+  fasPlay,
 ];
 
 const fadIcons = [];

@@ -2,8 +2,10 @@ import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { uuidV4 } from '@dev-console/helpers';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { ExecuteService } from '../../services/execute.service';
+import { LogEntry, LogStoreService } from '../../services/log-store.service';
 import { Channel } from '../../stores/channel/channel.model';
 import { ChannelQuery } from '../../stores/channel/channel.query';
 import { ChannelService } from '../../stores/channel/channel.service';
@@ -21,6 +23,7 @@ export class LogComponent implements OnInit {
 
   channels$: Observable<Channel[]>;
   channel$: Observable<Channel>;
+  log$: Observable<LogEntry[]>;
   sidebarCollapsed$ = this.uiQuery.select('sidebarCollapsed').pipe(delay(0));
 
   constructor(
@@ -29,12 +32,19 @@ export class LogComponent implements OnInit {
     private readonly channelService: ChannelService,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
+    private readonly logStoreService: LogStoreService,
+    private readonly executeService: ExecuteService,
   ) {
   }
 
   ngOnInit() {
     this.channels$ = this.channelQuery.selectAll();
     this.channel$ = this.channelQuery.selectActive();
+    this.log$ = this.channelQuery
+      .selectActiveId()
+      .pipe(
+        switchMap(id => this.logStoreService.getStore(id)),
+      );
   }
 
   openChannel(id: string) {
@@ -99,5 +109,9 @@ export class LogComponent implements OnInit {
         });
       }
     });
+  }
+
+  run(channel: Channel) {
+    void this.executeService.run(channel);
   }
 }

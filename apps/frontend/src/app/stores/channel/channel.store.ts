@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActiveState, EntityState, EntityStore, StoreConfig } from '@datorama/akita';
 import { Channel } from './channel.model';
 
-export interface ChannelState extends EntityState<Channel>, ActiveState {
+export interface ChannelState extends EntityState<Channel, string>, ActiveState<string> {
 }
 
 @Injectable({ providedIn: 'root' })

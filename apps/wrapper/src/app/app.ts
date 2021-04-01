@@ -3,6 +3,7 @@ import { join } from 'path';
 import { format } from 'url';
 import { environment } from '../environments/environment';
 import { rendererAppName, rendererAppPort } from './constants';
+import ExecuteEvents from './events/execute.events';
 import { store } from './events/storage.events';
 import { WindowStateKeeper } from './helpers/window-state.helper';
 
@@ -23,6 +24,7 @@ export default class App {
 
   private static async onWindowAllClosed() {
     if (process.platform !== 'darwin') {
+      await ExecuteEvents.quit();
       app.quit();
     }
   }
@@ -49,6 +51,7 @@ export default class App {
     // Some APIs can only be used after this event occurs.
     App.initMainWindow();
     await App.loadMainWindow();
+    ExecuteEvents.setMainWindow(App.mainWindow);
 
     if (App.isDevelopmentMode()) {
       App.mainWindow.webContents.openDevTools({ mode: 'detach' });

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ID } from '@datorama/akita';
 import { Channel } from './channel.model';
 import { ChannelStore } from './channel.store';
 
@@ -19,7 +18,7 @@ export class ChannelService {
     this.channelStore.update(id, channel);
   }
 
-  remove(id: ID) {
+  remove(id: string) {
     this.channelStore.remove(id);
   }
 

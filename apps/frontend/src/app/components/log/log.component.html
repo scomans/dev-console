@@ -28,37 +28,37 @@
 
 
 <ng-container *ngIf="channel$ | async as channel">
-  <div class="actions" fxLayout="row">
-    <button nz-button (click)="editChannel(channel)">
-      <fa-icon icon="edit"></fa-icon>
-      Edit
-    </button>
-    <button nz-button
-            nz-popconfirm
-            nzPopconfirmTitle="Are you sure delete this channel?"
-            nzPopconfirmPlacement="bottom"
-            [nzIcon]="iconTpl"
-            (nzOnConfirm)="deleteChannel(channel)"
-    >
-      <ng-template #iconTpl>
-        <fa-icon [icon]="['far','question-circle']"
-                 style="color: red; position: absolute; top: 4px;"></fa-icon>
-      </ng-template>
-      <fa-icon icon="trash"></fa-icon>
-      Delete
-    </button>
+  <div class="actions" fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <button nz-button (click)="run(channel)">
+        <fa-icon icon="play"></fa-icon>
+        Run
+      </button>
+    </div>
+    <div>
+      <button nz-button (click)="editChannel(channel)">
+        <fa-icon icon="edit"></fa-icon>
+        Edit
+      </button>
+      <button nz-button
+              nz-popconfirm
+              nzPopconfirmTitle="Are you sure delete this channel?"
+              nzPopconfirmPlacement="bottom"
+              [nzIcon]="iconTpl"
+              (nzOnConfirm)="deleteChannel(channel)"
+      >
+        <ng-template #iconTpl>
+          <fa-icon [icon]="['far','question-circle']"
+                   style="color: red; position: absolute; top: 4px;"></fa-icon>
+        </ng-template>
+        <fa-icon icon="trash"></fa-icon>
+        Delete
+      </button>
+    </div>
   </div>
 
   <cl-log-minimap>
-
+    <cl-log-entry *ngFor="let entry of log$ | async" [entry]="entry"></cl-log-entry>
   </cl-log-minimap>
-
-  <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-    <ng-container *nzModalContent>
-      <p>Content one</p>
-      <p>Content two</p>
-      <p>Content three</p>
-    </ng-container>
-  </nz-modal>
 
 </ng-container>

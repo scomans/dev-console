@@ -31,7 +31,7 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     viewport: null,
     styles: {
       'header,footer,section,article': this.black(8),
-      'h1,a,p,span': this.black(30),
+      'h1,a,p,pre': this.black(30),
       'h2,h3,h4': this.black(8),
     },
     back: this.black(2),
