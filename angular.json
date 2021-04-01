@@ -30,6 +30,33 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    },
+    "@schematics/angular:component": {
+      "style": "scss",
+      "skipTests": true,
+      "prefix": "cl"
+    },
+    "@schematics/angular:class": {
+      "skipTests": true
+    },
+    "@schematics/angular:directive": {
+      "skipTests": true,
+      "prefix": ""
+    },
+    "@schematics/angular:guard": {
+      "skipTests": true
+    },
+    "@schematics/angular:interceptor": {
+      "skipTests": true
+    },
+    "@schematics/angular:module": {
+      "skipTests": true
+    },
+    "@schematics/angular:pipe": {
+      "skipTests": true
+    },
+    "@schematics/angular:service": {
+      "skipTests": true
     }
   },
   "projects": {
@@ -53,9 +80,14 @@
               "apps/frontend/src/assets"
             ],
             "styles": [
-              "apps/frontend/src/theme.less",
-              "apps/frontend/src/styles.scss"
+              "apps/frontend/src/styles/styles.less",
+              "apps/frontend/src/styles/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "apps/frontend/src/styles"
+              ]
+            },
             "scripts": []
           },
           "configurations": {

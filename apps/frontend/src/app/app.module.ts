@@ -1,3 +1,4 @@
+import { ObserversModule } from '@angular/cdk/observers';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
@@ -10,16 +11,19 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { routes } from './app.routing';
+import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
+import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
-import { IconsProviderModule } from './icons-provider.module';
 import { iconProvider } from './providers/icon.provider';
 
 registerLocaleData(en);
+
 
 @NgModule({
   declarations: [
@@ -31,7 +35,7 @@ registerLocaleData(en);
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    IconsProviderModule,
+    NzIconModule,
     NzLayoutModule,
     NzMenuModule,
     NzButtonModule,

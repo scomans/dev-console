@@ -7,6 +7,7 @@
 
 .app-layout {
   height: 100vh;
+  overflow: hidden;
 }
 
 .menu-sidebar {
@@ -34,7 +35,6 @@
   padding-left: 24px;
   overflow: hidden;
   line-height: 64px;
-  background: #001529;
   transition: all .3s;
 }
 
@@ -48,7 +48,6 @@
 .sidebar-logo h1 {
   display: inline-block;
   margin: 0 0 0 20px;
-  color: #ffffff;
   font-weight: 600;
   font-size: 14px;
   font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
@@ -64,10 +63,9 @@ nz-header {
 .app-header {
   position: relative;
   height: 64px;
-  padding: 0;
-  padding-left: 10px;
-  background: #ffffff;
+  padding: 0 0 0 10px;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  background-color: #1d242a;
 
   -webkit-app-region: drag;
   user-select: none;
@@ -78,11 +76,14 @@ nz-header {
 }
 
 nz-content {
-  margin: 24px;
+  margin-top: 15px;
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 15px;
 }
 
 .inner-content {
-  padding: 24px;
-  background: #ffffff;
+  padding: 10px;
   height: 100%;
+  overflow: hidden;
 }
