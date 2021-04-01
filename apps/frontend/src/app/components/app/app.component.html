@@ -1,0 +1,93 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar"
+            nzCollapsible
+            nzWidth="256px"
+            nzBreakpoint="md"
+            [(nzCollapsed)]="isCollapsed"
+            [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>DevConsole</h1>
+      </a>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/welcome">Welcome</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Monitor</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Workplace</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a>Basic Form</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header" fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+          <button nz-button
+                  nzType="text"
+                  nzSize="large"
+                  (click)="isCollapsed = !isCollapsed"
+          >
+            <i class="trigger"
+               nz-icon
+               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </button>
+        </div>
+        <span class="window-actions">
+          <button nz-button
+                  nzType="text"
+                  nzSize="large"
+                  (click)="minimize()"
+          >
+            <fa-icon [icon]="['far','window-minimize']"></fa-icon>
+          </button>
+          <button *ngIf="!(maximized$ | async)"
+                  nz-button
+                  nzType="text"
+                  nzSize="large"
+                  (click)="maximize()"
+          >
+            <fa-icon [icon]="['far','window-maximize']"></fa-icon>
+          </button>
+          <button *ngIf="(maximized$ | async)"
+                  nz-button
+                  nzType="text"
+                  nzSize="large"
+                  (click)="restore()"
+          >
+            <fa-icon [icon]="['far','window-restore']"></fa-icon>
+          </button>
+          <button nz-button
+                  nzType="text"
+                  nzSize="large"
+                  nzDanger
+                  (click)="close()"
+          >
+            <fa-icon [icon]="['far','window-close']"></fa-icon>
+          </button>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

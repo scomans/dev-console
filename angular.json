@@ -1,6 +1,7 @@
 {
   "version": 1,
   "cli": {
+    "packageManager": "yarn",
     "defaultCollection": "@nrwl/angular"
   },
   "defaultProject": "frontend",
@@ -36,7 +37,7 @@
       "projectType": "application",
       "root": "apps/frontend",
       "sourceRoot": "apps/frontend/src",
-      "prefix": "dev-console",
+      "prefix": "dc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -51,7 +52,10 @@
               "apps/frontend/src/favicon.ico",
               "apps/frontend/src/assets"
             ],
-            "styles": ["apps/frontend/src/styles.scss"],
+            "styles": [
+              "apps/frontend/src/theme.less",
+              "apps/frontend/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -120,28 +124,95 @@
         }
       }
     },
-    "frontend-e2e": {
-      "root": "apps/frontend-e2e",
-      "sourceRoot": "apps/frontend-e2e/src",
+    "wrapper": {
+      "root": "apps/wrapper",
+      "sourceRoot": "apps/wrapper/src",
       "projectType": "application",
+      "prefix": "wrapper",
       "architect": {
-        "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+        "build": {
+          "builder": "nx-electron:build",
           "options": {
-            "cypressConfig": "apps/frontend-e2e/cypress.json",
-            "tsConfig": "apps/frontend-e2e/tsconfig.e2e.json",
-            "devServerTarget": "frontend:serve"
+            "outputPath": "dist/apps/wrapper",
+            "main": "apps/wrapper/src/main.ts",
+            "tsConfig": "apps/wrapper/tsconfig.app.json",
+            "assets": ["apps/wrapper/src/assets"],
+            "webpackConfig": "apps/wrapper/webpack.config.js"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "frontend:serve:production"
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/wrapper/src/environments/environment.ts",
+                  "with": "apps/wrapper/src/environments/environment.prod.ts"
+                }
+              ]
             }
+          }
+        },
+        "serve": {
+          "builder": "nx-electron:execute",
+          "options": {
+            "buildTarget": "wrapper:build"
+          }
+        },
+        "package": {
+          "builder": "nx-electron:package",
+          "options": {
+            "name": "wrapper",
+            "frontendProject": "frontend",
+            "outputPath": "dist/packages",
+            "prepackageOnly": true
+          }
+        },
+        "make": {
+          "builder": "nx-electron:make",
+          "options": {
+            "name": "wrapper",
+            "frontendProject": "frontend",
+            "outputPath": "dist/executables"
           }
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/frontend-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": ["apps/wrapper/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/wrapper"],
+          "options": {
+            "jestConfig": "apps/wrapper/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "helpers": {
+      "projectType": "library",
+      "root": "libs/helpers",
+      "sourceRoot": "libs/helpers/src",
+      "prefix": "dev-console",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/helpers/src/**/*.ts",
+              "libs/helpers/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/helpers"],
+          "options": {
+            "jestConfig": "libs/helpers/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
