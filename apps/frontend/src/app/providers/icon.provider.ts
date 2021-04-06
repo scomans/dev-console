@@ -11,6 +11,7 @@ import {
 import {
   faAlignLeft as fasAlignLeft,
   faEdit as fasEdit,
+  faFolderOpen as fasFolderOpen,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
   faTerminal as fasTerminal,
@@ -34,6 +35,7 @@ const fasIcons = [
   fasEdit,
   fasPlay,
   fasTerminal,
+  fasFolderOpen,
 ];
 
 const nzIcons = [

@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BrowserWindow } from '@electron/remote';
-import { ipcRenderer, webFrame } from 'electron';
+import { Dialog, ipcRenderer, webFrame } from 'electron';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
   browserWindow: typeof BrowserWindow;
+  readonly dialog: Dialog;
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -44,6 +45,7 @@ export class ElectronService {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
       this.browserWindow = window.require('@electron/remote').BrowserWindow;
+      this.dialog = window.require('@electron/remote').dialog;
 
       this.minimized.next(this.isMinimized);
       this.maximized.next(this.isMaximized);

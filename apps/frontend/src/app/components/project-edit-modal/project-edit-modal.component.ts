@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ElectronService } from '../../services/electron.service';
 import { Project } from '../../stores/project/project.model';
 
 @Component({
@@ -18,6 +19,7 @@ export class ProjectEditModalComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
+    private readonly electronService: ElectronService,
   ) {
   }
 
@@ -39,6 +41,21 @@ export class ProjectEditModalComponent implements OnInit {
 
   handleCancel(): void {
     this.isVisible = false;
+  }
+
+  async selectFile() {
+    const file = await this.electronService.dialog.showOpenDialog({
+      properties: ['openFile', 'promptToCreate', 'dontAddToRecent'],
+      filters: [{
+        name: 'DevConsole project file',
+        extensions: ['json'],
+      }],
+    });
+    if (!file.canceled) {
+      this.validateForm.patchValue({
+        file: file.filePaths[0],
+      });
+    }
   }
 
   show() {

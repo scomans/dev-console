@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { ElectronService } from '../../services/electron.service';
 import { Channel } from '../../stores/channel/channel.model';
 
 @Component({
@@ -17,6 +18,7 @@ export class ChannelEditModalComponent implements OnInit {
   constructor(
     private readonly modal: NzModalRef,
     private readonly fb: FormBuilder,
+    private readonly electronService: ElectronService,
   ) {
   }
 
@@ -43,5 +45,27 @@ export class ChannelEditModalComponent implements OnInit {
     }
     console.log(channel);
     this.modal.close(channel);
+  }
+
+  async selectCwd() {
+    const file = await this.electronService.dialog.showOpenDialog({
+      properties: ['openDirectory', 'promptToCreate', 'dontAddToRecent'],
+    });
+    if (!file.canceled) {
+      this.validateForm.patchValue({
+        executeIn: file.filePaths[0],
+      });
+    }
+  }
+
+  async selectExecutable() {
+    const file = await this.electronService.dialog.showOpenDialog({
+      properties: ['openFile', 'promptToCreate', 'dontAddToRecent'],
+    });
+    if (!file.canceled) {
+      this.validateForm.patchValue({
+        executable: file.filePaths[0],
+      });
+    }
   }
 }

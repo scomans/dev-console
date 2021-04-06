@@ -8,13 +8,27 @@
   <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executable" nzRequired>Executable</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a command">
-      <input nz-input id="executable" formControlName="executable"/>
+      <nz-input-group [nzSuffix]="inputExecutableTpl">
+        <input nz-input id="executable" formControlName="executable"/>
+      </nz-input-group>
+      <ng-template #inputExecutableTpl>
+        <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectExecutable(); $event.preventDefault()">
+          <fa-icon icon="folder-open"></fa-icon>
+        </button>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executeIn">Working directory</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
-      <input nz-input id="executeIn" formControlName="executeIn"/>
+      <nz-input-group [nzSuffix]="inputCwdTpl">
+        <input nz-input id="executeIn" formControlName="executeIn"/>
+      </nz-input-group>
+      <ng-template #inputCwdTpl>
+        <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectCwd(); $event.preventDefault()">
+          <fa-icon icon="folder-open"></fa-icon>
+        </button>
+      </ng-template>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
