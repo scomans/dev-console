@@ -2,58 +2,61 @@
 
   <nz-header>
     <div class="app-header" fxLayout="row" fxLayoutAlign="space-between center">
-      <span>DevConsole</span>
+      <div class="title-bar">
+        <fa-icon icon="terminal"></fa-icon>
+        <h1>DevConsole</h1>
+      </div>
       <ng-container teleportOutlet="window-actions"></ng-container>
     </div>
   </nz-header>
   <nz-content>
-    <ng-container *ngFor="let project of projects$ | async">
-      <div class="inner-content">
-        <nz-card class="project-card"
-                 [nzCover]="coverTemplate"
-                 [nzActions]="[actionEdit, actionEllipsis]"
-                 (click)="openProject(project)"
-        >
-          <nz-card-meta [nzTitle]="project.name" [nzDescription]="descriptionTemplate"></nz-card-meta>
-        </nz-card>
-        <ng-template #coverTemplate>
-        </ng-template>
-        <ng-template #descriptionTemplate>
+    <div class="inner-content">
+      <div class="actions-bar" fxLayoutAlign="end">
+        <button nz-button nzType="primary" (click)="addProjectModal.show()">Add project</button>
+        <cl-project-edit-modal #addProjectModal (result)="addProject($event)"></cl-project-edit-modal>
+      </div>
+      <div fxLayout="row" fxLayoutGap="10px">
+        <ng-container *ngFor="let project of projects$ | async">
+          <cl-project-edit-modal #editProjectModal [project]="project" (result)="editProject($event)"></cl-project-edit-modal>
+          <nz-card class="project-card"
+                   [nzCover]="coverTemplate"
+                   [nzActions]="[actionEdit, actionRemove]"
+                   (click)="openProject(project)"
+          >
+            <nz-card-meta [nzTitle]="project.name" [nzDescription]="descriptionTemplate"></nz-card-meta>
+          </nz-card>
+          <ng-template #coverTemplate>
+          </ng-template>
+          <ng-template #descriptionTemplate>
           <span nz-tooltip [nzTooltipTitle]="project.file" nzTooltipPlacement="bottom">
             {{ project.file | smartTrim:33 }}
           </span>
-        </ng-template>
-        <ng-template #actionEdit>
-          <button nz-button nzType="text" (click)="editProject(project); $event.stopPropagation()" disabled>
-            <fa-icon icon="edit"></fa-icon>
-          </button>
-        </ng-template>
-        <ng-template #actionEllipsis>
-          <button nz-button nzType="text" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" (click)="$event.stopPropagation()" disabled>
-            <fa-icon icon="ellipsis-h"></fa-icon>
-          </button>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item>1st menu item</li>
-              <li nz-menu-item>2nd menu item</li>
-              <li nz-menu-divider></li>
-              <li nz-menu-item nzDisabled>disabled menu item</li>
-              <li nz-submenu nzTitle="sub menu">
-                <ul>
-                  <li nz-menu-item>3rd menu item</li>
-                  <li nz-menu-item>4th menu item</li>
-                </ul>
-              </li>
-              <li nz-submenu nzDisabled nzTitle="disabled sub menu">
-                <ul>
-                  <li nz-menu-item>3rd menu item</li>
-                  <li nz-menu-item>4th menu item</li>
-                </ul>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </ng-template>
+          </ng-template>
+          <ng-template #actionEdit>
+            <button nz-button nzType="text" (click)="editProjectModal.show(); $event.stopPropagation()">
+              <fa-icon icon="edit"></fa-icon>
+            </button>
+          </ng-template>
+          <ng-template #actionRemove>
+            <ng-template #iconTpl>
+              <fa-icon [icon]="['far','question-circle']"
+                       style="color: red; position: absolute; top: 4px;"
+              ></fa-icon>
+            </ng-template>
+            <button nz-button
+                    nzType="text"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure you want to delete this project? It will not remove the project file."
+                    nzPopconfirmPlacement="bottom"
+                    [nzIcon]="iconTpl"
+                    (click)="$event.stopPropagation()"
+                    (nzOnConfirm)="removeProject(project)"
+            >
+              <fa-icon icon="trash"></fa-icon>
+            </button>
+          </ng-template>
+        </ng-container>
       </div>
-    </ng-container>
+    </div>
   </nz-content>
 </nz-layout>

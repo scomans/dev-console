@@ -31,6 +31,7 @@ import { ChannelEditModalComponent } from './components/channel-edit-modal/chann
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
+import { ProjectEditModalComponent } from './components/project-edit-modal/project-edit-modal.component';
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
 import { ProjectComponent } from './components/project/project.component';
 import { AnsiPipe } from './pipes/ansi.pipe';
@@ -49,6 +50,7 @@ registerLocaleData(en);
     LogEntryComponent,
     AnsiPipe,
     ProjectComponent,
+    ProjectEditModalComponent,
     ProjectSelectionComponent,
     SmartTrimPipe,
   ],

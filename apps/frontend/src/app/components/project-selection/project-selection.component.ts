@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { uuidV4 } from '@dev-console/helpers';
 import { Observable } from 'rxjs';
 import { GlobalStoreService } from '../../stores/global-store.service';
 import { Project } from '../../stores/project/project.model';
@@ -25,6 +26,14 @@ export class ProjectSelectionComponent {
   }
 
   editProject(project: Project) {
+    this.globalStoreService.projects.service.update(project.id, project);
+  }
 
+  addProject(project: Project) {
+    this.globalStoreService.projects.service.add({ id: uuidV4(), ...project });
+  }
+
+  removeProject(project: Project) {
+    this.globalStoreService.projects.service.remove(project.id);
   }
 }

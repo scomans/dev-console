@@ -10,7 +10,7 @@ export function createInitialState(): UiState {
   };
 }
 
-@StoreConfig({ name: 'UI' })
+@StoreConfig({ name: 'UI', resettable: true })
 export class UiStore extends Store<UiState> {
 
   constructor() {

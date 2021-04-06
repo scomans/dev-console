@@ -4,11 +4,10 @@ import { Channel } from './channel.model';
 export interface ChannelState extends EntityState<Channel, string>, ActiveState<string> {
 }
 
-@StoreConfig({ name: 'Channel' })
+@StoreConfig({ name: 'Channel', resettable: true })
 export class ChannelStore extends EntityStore<ChannelState> {
 
   constructor() {
     super();
   }
-
 }

@@ -12,7 +12,6 @@ nz-header {
 .app-header {
   position: relative;
   height: 64px;
-  padding: 0 0 0 10px;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
   background-color: #1d242a;
 
@@ -21,6 +20,23 @@ nz-header {
 
   & > * {
     -webkit-app-region: none;
+  }
+
+  .title-bar {
+    padding-left: 24px;
+
+    fa-icon {
+      color: #1890ff;
+    }
+
+    h1 {
+      display: inline-block;
+      margin: 0 0 0 20px;
+      font-weight: 600;
+      font-size: 14px;
+      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      vertical-align: middle;
+    }
   }
 }
 
@@ -41,4 +57,8 @@ nz-content {
     border-color: #1890ff;
     cursor: pointer;
   }
+}
+
+.actions-bar {
+  margin-bottom: 10px;
 }

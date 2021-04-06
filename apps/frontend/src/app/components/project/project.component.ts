@@ -1,6 +1,6 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { debug, filterNil, uuidV4 } from '@dev-console/helpers';
+import { filterNil, uuidV4 } from '@dev-console/helpers';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -40,7 +40,7 @@ export class ProjectComponent {
       tap(project => this.projectStore.openProject(project)),
     );
     this.selectedChannelId$ = this.projectStore.channel.query.selectActiveId();
-    this.channels$ = this.projectStore.channel.query.selectAll().pipe(debug('CHANNELS'));
+    this.channels$ = this.projectStore.channel.query.selectAll();
   }
 
   toggleSidebar() {

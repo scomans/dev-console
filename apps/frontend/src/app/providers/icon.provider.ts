@@ -11,9 +11,9 @@ import {
 import {
   faAlignLeft as fasAlignLeft,
   faEdit as fasEdit,
-  faEllipsisH as fasEllipsisH,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
+  faTerminal as fasTerminal,
   faTrash as fasTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
@@ -33,7 +33,7 @@ const fasIcons = [
   fasTrash,
   fasEdit,
   fasPlay,
-  fasEllipsisH,
+  fasTerminal,
 ];
 
 const nzIcons = [
