@@ -17,9 +17,7 @@ fa-icon {
   margin-bottom: 10px;
 
   button {
-    &:not(:first-child) {
-      margin-left: 5px;
-    }
+    margin-left: 5px;
 
     &.start:not([disabled]) {
       color: #98c379;

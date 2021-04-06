@@ -41,7 +41,7 @@ export class LogComponent implements OnInit {
     this.status$ = this.projectStore.channel.query
       .selectActiveId()
       .pipe(
-        switchMap(id => this.executeService.status(id)),
+        switchMap(id => this.executeService.selectStatus(id)),
       );
   }
 

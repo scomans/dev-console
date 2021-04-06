@@ -12,8 +12,10 @@ import {
 import {
   faAlignLeft as fasAlignLeft,
   faCircle as fasCircle,
+  faDotCircle as fasDotCircle,
   faEdit as fasEdit,
   faFolderOpen as fasFolderOpen,
+  faLayerGroup as fasLayerGroup,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
   faRedo as fasRedo,
@@ -44,6 +46,8 @@ const fasIcons = [
   fasStop,
   fasRedo,
   fasCircle,
+  fasLayerGroup,
+  fasDotCircle,
 ];
 
 const nzIcons = [

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ElectronService } from '../../services/electron.service';
+import { ExecuteService } from '../../services/execute.service';
 import { Channel } from '../../stores/channel/channel.model';
 import { GlobalStoreService } from '../../stores/global-store.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
@@ -23,6 +24,7 @@ export class ProjectComponent {
   channels$: Observable<Channel[]>;
   selectedChannelId$: Observable<string>;
   project$: Observable<Project>;
+  allLogs$: Observable<boolean>;
   sidebarCollapsed$ = this.projectStore.ui.query.select('sidebarCollapsed');
 
   constructor(
@@ -32,6 +34,7 @@ export class ProjectComponent {
     private readonly route: ActivatedRoute,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
+    private readonly executeService: ExecuteService,
   ) {
     this.project$ = this.route.params.pipe(
       map(params => params.projectId),
@@ -40,6 +43,9 @@ export class ProjectComponent {
       tap(project => this.projectStore.openProject(project)),
     );
     this.selectedChannelId$ = this.projectStore.channel.query.selectActiveId();
+    this.allLogs$ = this.selectedChannelId$.pipe(
+      map(activeId => !activeId),
+    );
     this.channels$ = this.projectStore.channel.query.selectAll();
   }
 
@@ -77,5 +83,9 @@ export class ProjectComponent {
         });
       }
     });
+  }
+
+  channelStatus(channelId: string) {
+    return this.executeService.selectStatus(channelId);
   }
 }

@@ -46,16 +46,7 @@ export class ExecuteService {
     this.executeExit$ = mapElectronEvent<ExecuteExitEvent>(this.electronService, 'execute-exit');
   }
 
-  async run(channel: Channel) {
-    if (this.electronService.isElectron) {
-      const result = await this.electronService.emit<boolean>('execute-run', channel);
-      // TODO what to do when kill fails?
-      let runningExecute = this.getRunningExecute(channel.id);
-      runningExecute.next(true);
-    }
-  }
-
-  status(channelId: string) {
+  selectStatus(channelId: string) {
     return merge(
       this.getRunningExecute(channelId),
       this.executeExit$.pipe(
@@ -66,6 +57,13 @@ export class ExecuteService {
     );
   }
 
+  getStatus(channelId: string) {
+    if (this.runningExecutes.has(channelId)) {
+      return this.runningExecutes.get(channelId).getValue();
+    }
+    return false;
+  }
+
   private getRunningExecute(channelId: string) {
     if (!this.runningExecutes.has(channelId)) {
       this.runningExecutes.set(channelId, new BehaviorSubject<boolean>(false));
@@ -73,16 +71,27 @@ export class ExecuteService {
     return this.runningExecutes.get(channelId);
   }
 
-  async kill(channelId: string) {
-    if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('execute-kill', channelId);
-    }
-  }
-
   dataOfId(channelId) {
     return this.executeData$.pipe(
       map(data => data.data),
       filter(data => data.id === channelId),
     );
+  }
+
+  async run(channel: Channel) {
+    console.log('RUN', channel.name, channel.id);
+    if (this.electronService.isElectron) {
+      const result = await this.electronService.emit<boolean>('execute-run', channel);
+      // TODO what to do when kill fails?
+      let runningExecute = this.getRunningExecute(channel.id);
+      runningExecute.next(true);
+    }
+  }
+
+  async kill(channelId: string) {
+    console.log('RUN', channelId);
+    if (this.electronService.isElectron) {
+      return this.electronService.emit<boolean>('execute-kill', channelId);
+    }
   }
 }

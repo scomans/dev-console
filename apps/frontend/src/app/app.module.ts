@@ -26,6 +26,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
+import { LogAllComponent } from './components/all-log/log-all.component';
 import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
@@ -38,6 +39,7 @@ import { ProjectEditModalComponent } from './components/project-edit-modal/proje
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
 import { ProjectComponent } from './components/project/project.component';
 import { AnsiPipe } from './pipes/ansi.pipe';
+import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
 
@@ -48,6 +50,7 @@ registerLocaleData(en);
   declarations: [
     AppComponent,
     LogComponent,
+    LogAllComponent,
     LogMinimapComponent,
     ChannelEditModalComponent,
     LogEntryComponent,
@@ -57,6 +60,7 @@ registerLocaleData(en);
     ProjectSelectionComponent,
     SmartTrimPipe,
     ColorSliderComponent,
+    CallFunctionPipe,
   ],
   imports: [
     BrowserModule,

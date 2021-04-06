@@ -65,11 +65,7 @@ export class ProjectStoreService implements ProjectStore {
 
     this.currentProject = persistState({
       storage: {
-        getItem: async () => {
-          const a = await this.storageService.get('storage');
-          console.log(a);
-          return a;
-        },
+        getItem: () => this.storageService.get('storage'),
         clear: () => this.storageService.delete('storage'),
         setItem: (value) => this.storageService.set('storage', value),
       },

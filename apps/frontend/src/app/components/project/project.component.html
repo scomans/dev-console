@@ -18,20 +18,30 @@
           [nzInlineCollapsed]="sidebarCollapsed$ | async"
           class="log-menu"
       >
+        <li nz-menu-item [nzSelected]="!(selectedChannelId$ | async)">
+          <a title (click)="openChannel(null)">
+            <fa-icon icon="layer-group" class="anticon"></fa-icon>
+            <span *ngIf="!(sidebarCollapsed$ | async)">All Channels</span>
+          </a>
+        </li>
         <li nz-submenu nzOpen>
-      <span title>
-        <fa-icon icon="align-left" class="anticon"></fa-icon>
-        <span *ngIf="!(sidebarCollapsed$ | async)">Channels</span>
-      </span>
+          <span title>
+            <fa-icon icon="align-left" class="anticon"></fa-icon>
+            <span *ngIf="!(sidebarCollapsed$ | async)">Channels</span>
+          </span>
           <ul>
             <li *ngFor="let channel of (channels$ | async)"
                 nz-menu-item
                 [nzSelected]="channel.id === (selectedChannelId$ | async)"
             >
-              <a (click)="openChannel(channel.id)">
-                <fa-icon *ngIf="channel.active" icon="circle" [style.color]="channel.color"></fa-icon>
-                <fa-icon *ngIf="!channel.active" [icon]="['far','circle']" [style.color]="channel.color"></fa-icon>
-                {{ channel.name }}</a>
+              <ng-container *ngIf="channel.id | callFunction:channelStatus.bind(this) as status$">
+                <a (click)="openChannel(channel.id)">
+                  <fa-icon *ngIf="channel.active && (status$ | async)" icon="dot-circle" [style.color]="channel.color"></fa-icon>
+                  <fa-icon *ngIf="channel.active && !(status$ | async)" icon="circle" [style.color]="channel.color"></fa-icon>
+                  <fa-icon *ngIf="!channel.active" [icon]="['far','circle']" [style.color]="channel.color"></fa-icon>
+                  {{ channel.name }}
+                </a>
+              </ng-container>
             </li>
             <li nz-menu-item nzMatchRouter (click)="newChannel()">
               <fa-icon icon="plus-circle"></fa-icon>
@@ -61,8 +71,9 @@
       </div>
     </nz-header>
     <nz-content>
-      <div class="inner-content">
-        <dc-log></dc-log>
+      <div class="inner-content" *rxLet="allLogs$; let all">
+        <dc-log *ngIf="!all"></dc-log>
+        <dc-log-all *ngIf="all"></dc-log-all>
       </div>
     </nz-content>
   </nz-layout>

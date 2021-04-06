@@ -1,0 +1,26 @@
+<ng-container *rxLet="anythingExecuting$; let anythingExecuting">
+  <div class="actions-bar" fxLayout="row" fxLayoutAlign="start center">
+    <button *rxLet="anythingNotExecuting$; let anythingNotExecuting"
+            nz-button
+            class="start"
+            [disabled]="!anythingNotExecuting"
+            (click)="runAll()"
+    >
+      <fa-icon icon="play"></fa-icon>
+      Run All
+    </button>
+    <button nz-button class="restart" (click)="restartAll()" [disabled]="anythingExecuting">
+      <fa-icon icon="play"></fa-icon>
+      Restart All
+    </button>
+    <button nz-button nzDanger (click)="stopAll()" [disabled]="anythingExecuting">
+      <fa-icon icon="stop"></fa-icon>
+      Stop All
+    </button>
+  </div>
+
+  <cl-log-minimap>
+    <cl-log-entry *ngFor="let entry of log$ | async" [entry]="entry"></cl-log-entry>
+  </cl-log-minimap>
+
+</ng-container>
