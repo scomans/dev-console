@@ -25,6 +25,7 @@ export class ChannelEditModalComponent implements OnInit {
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       name: [this.channel?.name, [Validators.required]],
+      color: [this.channel?.color ?? '#ffffff', [Validators.required]],
       executeIn: [this.channel?.executeIn],
       executable: [this.channel?.executable, [Validators.required]],
       arguments: [this.channel?.arguments?.join('\n')],

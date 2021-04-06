@@ -24,12 +24,13 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
-import { LogAllComponent } from './components/all-log/log-all.component';
 import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
+import { ColorSliderComponent } from './components/color-slider/color-slider.component';
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
@@ -55,6 +56,7 @@ registerLocaleData(en);
     ProjectEditModalComponent,
     ProjectSelectionComponent,
     SmartTrimPipe,
+    ColorSliderComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +81,7 @@ registerLocaleData(en);
     ObserversModule,
     TeleportModule,
     LetModule,
+    ColorSliderModule,
 
     RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: true }),
   ],

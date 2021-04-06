@@ -1,6 +1,7 @@
 export interface Channel {
   id: string;
   name: string;
+  color: string;
   arguments?: string[];
   executeIn?: string;
   executable: string;

@@ -28,7 +28,10 @@
                 nz-menu-item
                 [nzSelected]="channel.id === (selectedChannelId$ | async)"
             >
-              <a (click)="openChannel(channel.id)">{{ channel.name }}</a>
+              <a (click)="openChannel(channel.id)">
+                <fa-icon *ngIf="channel.active" icon="circle" [style.color]="channel.color"></fa-icon>
+                <fa-icon *ngIf="!channel.active" [icon]="['far','circle']" [style.color]="channel.color"></fa-icon>
+                {{ channel.name }}</a>
             </li>
             <li nz-menu-item nzMatchRouter (click)="newChannel()">
               <fa-icon icon="plus-circle"></fa-icon>

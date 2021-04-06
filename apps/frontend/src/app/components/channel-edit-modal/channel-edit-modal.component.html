@@ -6,6 +6,15 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="color">Color</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter or select a color">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+        <cl-color-slider id="color" formControlName="color" fxFlex></cl-color-slider>
+        <fa-icon icon="circle" [style.color]="validateForm.get('color')?.value" transform="grow-15"></fa-icon>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executable" nzRequired>Executable</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a command">
       <nz-input-group [nzSuffix]="inputExecutableTpl">
