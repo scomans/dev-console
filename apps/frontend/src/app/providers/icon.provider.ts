@@ -14,6 +14,8 @@ import {
   faFolderOpen as fasFolderOpen,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
+  faRedo as fasRedo,
+  faStop as fasStop,
   faTerminal as fasTerminal,
   faTrash as fasTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -36,6 +38,8 @@ const fasIcons = [
   fasPlay,
   fasTerminal,
   fasFolderOpen,
+  fasStop,
+  fasRedo,
 ];
 
 const nzIcons = [

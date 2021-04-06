@@ -1,9 +1,17 @@
 <ng-container *ngIf="channel$ | async as channel">
   <div class="actions-bar" fxLayout="row" fxLayoutAlign="space-between center">
-    <div>
-      <button nz-button (click)="run(channel)">
+    <div *rxLet="status$; let status;">
+      <button nz-button class="start" (click)="run(channel)" [disabled]="status">
         <fa-icon icon="play"></fa-icon>
         Run
+      </button>
+      <button nz-button class="restart" (click)="restart(channel)" [disabled]="!status">
+        <fa-icon icon="redo"></fa-icon>
+        Restart
+      </button>
+      <button nz-button nzDanger (click)="stop(channel)" [disabled]="!status">
+        <fa-icon icon="stop"></fa-icon>
+        Stop
       </button>
     </div>
     <div>

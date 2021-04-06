@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { debug } from '@dev-console/helpers';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -19,6 +18,7 @@ export class LogComponent implements OnInit {
 
   subs = new SubSink();
 
+  status$: Observable<boolean>;
   channel$: Observable<Channel>;
   log$: Observable<LogEntry[]>;
 
@@ -32,11 +32,16 @@ export class LogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.channel$ = this.projectStore.channel.query.selectActive().pipe(debug('selectActive'));
+    this.channel$ = this.projectStore.channel.query.selectActive();
     this.log$ = this.projectStore.channel.query
       .selectActiveId()
       .pipe(
         switchMap(id => this.logStoreService.getStore(id)),
+      );
+    this.status$ = this.projectStore.channel.query
+      .selectActiveId()
+      .pipe(
+        switchMap(id => this.executeService.status(id)),
       );
   }
 
@@ -74,5 +79,14 @@ export class LogComponent implements OnInit {
 
   run(channel: Channel) {
     void this.executeService.run(channel);
+  }
+
+  async restart(channel: Channel) {
+    await this.executeService.kill(channel.id);
+    await this.executeService.run(channel);
+  }
+
+  stop(channel: Channel) {
+    void this.executeService.kill(channel.id);
   }
 }

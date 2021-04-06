@@ -15,4 +15,18 @@ fa-icon {
 
 .actions-bar {
   margin-bottom: 10px;
+
+  button {
+    margin-left: 5px;
+
+    &.start:not([disabled]) {
+      color: #98c379;
+      border-color: #98c379;
+    }
+
+    &.restart:not([disabled]) {
+      color: #1890ff;
+      border-color: #1890ff;
+    }
+  }
 }

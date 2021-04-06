@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 import { mapElectronEvent } from '../helpers/electron.helper';
 import { Channel } from '../stores/channel/channel.model';
 import { ElectronService } from './electron.service';
@@ -37,6 +37,8 @@ export class ExecuteService {
   readonly executeData$: Observable<ExecuteDataEvent>;
   readonly executeExit$: Observable<ExecuteExitEvent>;
 
+  runningExecutes = new Map<string, BehaviorSubject<boolean>>();
+
   constructor(
     private readonly electronService: ElectronService,
   ) {
@@ -46,13 +48,34 @@ export class ExecuteService {
 
   async run(channel: Channel) {
     if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('execute-run', channel);
+      const result = await this.electronService.emit<boolean>('execute-run', channel);
+      // TODO what to do when kill fails?
+      let runningExecute = this.getRunningExecute(channel.id);
+      runningExecute.next(true);
     }
+  }
+
+  status(channelId: string) {
+    return merge(
+      this.getRunningExecute(channelId),
+      this.executeExit$.pipe(
+        filter(exit => exit.data.id === channelId),
+        map(() => false),
+        tap(() => this.getRunningExecute(channelId).next(false)),
+      ),
+    );
+  }
+
+  private getRunningExecute(channelId: string) {
+    if (!this.runningExecutes.has(channelId)) {
+      this.runningExecutes.set(channelId, new BehaviorSubject<boolean>(false));
+    }
+    return this.runningExecutes.get(channelId);
   }
 
   async kill(channelId: string) {
     if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('execute-cancel', channelId);
+      return this.electronService.emit<boolean>('execute-kill', channelId);
     }
   }
 

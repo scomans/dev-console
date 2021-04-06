@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TeleportModule } from '@ngneat/overview';
+import { LetModule } from '@rx-angular/template';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -24,6 +25,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { routes } from './app.routing';
+import { LogAllComponent } from './components/all-log/log-all.component';
 import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
@@ -76,6 +78,7 @@ registerLocaleData(en);
     FlexLayoutModule,
     ObserversModule,
     TeleportModule,
+    LetModule,
 
     RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: true }),
   ],
