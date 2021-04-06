@@ -1,0 +1,59 @@
+<nz-layout class="app-layout">
+
+  <nz-header>
+    <div class="app-header" fxLayout="row" fxLayoutAlign="space-between center">
+      <span>DevConsole</span>
+      <ng-container teleportOutlet="window-actions"></ng-container>
+    </div>
+  </nz-header>
+  <nz-content>
+    <ng-container *ngFor="let project of projects$ | async">
+      <div class="inner-content">
+        <nz-card class="project-card"
+                 [nzCover]="coverTemplate"
+                 [nzActions]="[actionEdit, actionEllipsis]"
+                 (click)="openProject(project)"
+        >
+          <nz-card-meta [nzTitle]="project.name" [nzDescription]="descriptionTemplate"></nz-card-meta>
+        </nz-card>
+        <ng-template #coverTemplate>
+        </ng-template>
+        <ng-template #descriptionTemplate>
+          <span nz-tooltip [nzTooltipTitle]="project.file" nzTooltipPlacement="bottom">
+            {{ project.file | smartTrim:33 }}
+          </span>
+        </ng-template>
+        <ng-template #actionEdit>
+          <button nz-button nzType="text" (click)="editProject(project); $event.stopPropagation()" disabled>
+            <fa-icon icon="edit"></fa-icon>
+          </button>
+        </ng-template>
+        <ng-template #actionEllipsis>
+          <button nz-button nzType="text" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" (click)="$event.stopPropagation()" disabled>
+            <fa-icon icon="ellipsis-h"></fa-icon>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item>1st menu item</li>
+              <li nz-menu-item>2nd menu item</li>
+              <li nz-menu-divider></li>
+              <li nz-menu-item nzDisabled>disabled menu item</li>
+              <li nz-submenu nzTitle="sub menu">
+                <ul>
+                  <li nz-menu-item>3rd menu item</li>
+                  <li nz-menu-item>4th menu item</li>
+                </ul>
+              </li>
+              <li nz-submenu nzDisabled nzTitle="disabled sub menu">
+                <ul>
+                  <li nz-menu-item>3rd menu item</li>
+                  <li nz-menu-item>4th menu item</li>
+                </ul>
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </ng-template>
+      </div>
+    </ng-container>
+  </nz-content>
+</nz-layout>

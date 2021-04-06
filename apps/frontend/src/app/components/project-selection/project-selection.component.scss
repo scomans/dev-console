@@ -1,0 +1,44 @@
+.app-layout {
+  height: 100%;
+  overflow: hidden;
+}
+
+nz-header {
+  padding: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.app-header {
+  position: relative;
+  height: 64px;
+  padding: 0 0 0 10px;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  background-color: #1d242a;
+
+  -webkit-app-region: drag;
+  user-select: none;
+
+  & > * {
+    -webkit-app-region: none;
+  }
+}
+
+nz-content {
+  margin: 15px 20px;
+}
+
+.inner-content {
+  padding: 10px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.project-card {
+  width: 300px;
+
+  &:hover {
+    border-color: #1890ff;
+    cursor: pointer;
+  }
+}

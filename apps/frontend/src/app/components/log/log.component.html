@@ -1,32 +1,3 @@
-<ng-container *teleportTo="'channels'">
-  <ul nz-menu
-      nzTheme="dark"
-      nzMode="inline"
-      [nzInlineCollapsed]="sidebarCollapsed$ | async"
-      class="log-menu"
-  >
-    <li nz-submenu nzOpen>
-      <span title>
-        <fa-icon icon="align-left" class="anticon"></fa-icon>
-        <span *ngIf="!(sidebarCollapsed$ | async)">Channels</span>
-      </span>
-      <ul>
-        <li *ngFor="let channel of (channels$ | async)"
-            nz-menu-item
-            [nzSelected]="channel.id === (channel$ | async)?.id"
-        >
-          <a (click)="openChannel(channel.id)">{{ channel.name }}</a>
-        </li>
-        <li nz-menu-item nzMatchRouter (click)="newChannel()">
-          <fa-icon icon="plus-circle"></fa-icon>
-          Add new channel
-        </li>
-      </ul>
-    </li>
-  </ul>
-</ng-container>
-
-
 <ng-container *ngIf="channel$ | async as channel">
   <div class="actions" fxLayout="row" fxLayoutAlign="space-between center">
     <div>

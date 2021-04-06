@@ -11,6 +11,7 @@ import {
 import {
   faAlignLeft as fasAlignLeft,
   faEdit as fasEdit,
+  faEllipsisH as fasEllipsisH,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
   faTrash as fasTrash,
@@ -32,11 +33,8 @@ const fasIcons = [
   fasTrash,
   fasEdit,
   fasPlay,
+  fasEllipsisH,
 ];
-
-const fadIcons = [];
-
-const falIcons = [];
 
 const nzIcons = [
   MenuFoldOutline,

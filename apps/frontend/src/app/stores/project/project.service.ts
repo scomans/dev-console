@@ -1,18 +1,18 @@
-import { Channel } from './channel.model';
-import { ChannelStore } from './channel.store';
+import { Project } from './project.model';
+import { ProjectStore } from './project.store';
 
-export class ChannelService {
+export class ProjectService {
 
   constructor(
-    private readonly channelStore: ChannelStore,
+    private readonly channelStore: ProjectStore,
   ) {
   }
 
-  add(channel: Channel) {
+  add(channel: Project) {
     this.channelStore.add(channel);
   }
 
-  update(id, channel: Partial<Channel>) {
+  update(id, channel: Partial<Project>) {
     this.channelStore.update(id, channel);
   }
 

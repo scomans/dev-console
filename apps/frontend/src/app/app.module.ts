@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TeleportModule } from '@ngneat/overview';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -21,6 +22,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { routes } from './app.routing';
 import { WINDOW } from './components/app.const';
 
@@ -29,9 +31,11 @@ import { ChannelEditModalComponent } from './components/channel-edit-modal/chann
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
-import { AnsiPipe } from './components/pipes/ansi.pipe';
+import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
+import { ProjectComponent } from './components/project/project.component';
+import { AnsiPipe } from './pipes/ansi.pipe';
+import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
-import { storageProvider } from './stores/store.provider';
 
 registerLocaleData(en);
 
@@ -44,6 +48,9 @@ registerLocaleData(en);
     ChannelEditModalComponent,
     LogEntryComponent,
     AnsiPipe,
+    ProjectComponent,
+    ProjectSelectionComponent,
+    SmartTrimPipe,
   ],
   imports: [
     BrowserModule,
@@ -51,6 +58,7 @@ registerLocaleData(en);
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    NzCardModule,
     NzCheckboxModule,
     NzDropDownModule,
     NzIconModule,
@@ -61,6 +69,7 @@ registerLocaleData(en);
     NzModalModule,
     NzButtonModule,
     NzPopconfirmModule,
+    NzToolTipModule,
     FontAwesomeModule,
     FlexLayoutModule,
     ObserversModule,
@@ -70,7 +79,7 @@ registerLocaleData(en);
   ],
   providers: [
     iconProvider,
-    storageProvider,
+    // storageProvider,
 
     {
       provide: NZ_I18N,

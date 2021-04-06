@@ -7,6 +7,7 @@ import App from './app/app';
 import AppEvents from './app/events/app.events';
 import ElectronEvents from './app/events/electron.events';
 import ExecuteEvents from './app/events/execute.events';
+import ProjectStorageEvents from './app/events/project-storage.events';
 import StorageEvents from './app/events/storage.events';
 import UpdateEvents from './app/events/update.events';
 import { mkdirSyncIfNotExists } from './app/helpers/fs.helper';
@@ -41,6 +42,7 @@ class Main {
     AppEvents.bootstrapAppEvents();
     ElectronEvents.bootstrapElectronEvents();
     StorageEvents.bootstrapStorageEvents();
+    ProjectStorageEvents.bootstrapStorageEvents();
     ExecuteEvents.bootstrapExecuteEvents();
 
     UpdateEvents.checkForUpdates();

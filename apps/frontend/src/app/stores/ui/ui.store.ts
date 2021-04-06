@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
 
 export interface UiState {
@@ -7,11 +6,10 @@ export interface UiState {
 
 export function createInitialState(): UiState {
   return {
-    sidebarCollapsed: true,
+    sidebarCollapsed: false,
   };
 }
 
-@Injectable({ providedIn: 'root' })
 @StoreConfig({ name: 'UI' })
 export class UiStore extends Store<UiState> {
 

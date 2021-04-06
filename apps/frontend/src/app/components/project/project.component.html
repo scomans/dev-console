@@ -1,0 +1,66 @@
+<nz-layout class="app-layout" *ngIf="project$ | async as project">
+  <nz-sider class="menu-sidebar"
+            nzCollapsible
+            nzWidth="256px"
+            nzBreakpoint="md"
+            [nzCollapsed]="sidebarCollapsed$ | async"
+            [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a routerLink="/">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>{{ project.name }}</h1>
+      </a>
+    </div>
+    <div teleportOutlet="channels">
+      <ul nz-menu
+          nzTheme="dark"
+          nzMode="inline"
+          [nzInlineCollapsed]="sidebarCollapsed$ | async"
+          class="log-menu"
+      >
+        <li nz-submenu nzOpen>
+      <span title>
+        <fa-icon icon="align-left" class="anticon"></fa-icon>
+        <span *ngIf="!(sidebarCollapsed$ | async)">Channels</span>
+      </span>
+          <ul>
+            <li *ngFor="let channel of (channels$ | async)"
+                nz-menu-item
+                [nzSelected]="channel.id === (selectedChannelId$ | async)"
+            >
+              <a (click)="openChannel(channel.id)">{{ channel.name }}</a>
+            </li>
+            <li nz-menu-item nzMatchRouter (click)="newChannel()">
+              <fa-icon icon="plus-circle"></fa-icon>
+              Add new channel
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header" fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+          <button nz-button
+                  nzType="text"
+                  nzSize="large"
+                  (click)="toggleSidebar()"
+          >
+            <i class="trigger"
+               nz-icon
+               [nzType]="(sidebarCollapsed$ | async) ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </button>
+        </div>
+        <ng-container teleportOutlet="window-actions"></ng-container>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <dc-log></dc-log>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
