@@ -1,8 +1,15 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { WINDOW } from '../app.const';
+
+export interface Rect {
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'cl-log-minimap',
@@ -13,22 +20,18 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
 
   subs = new SubSink();
 
+  contentRect: Rect;
+  viewportRect: Rect;
+  drag_ry: number;
+  ctx: CanvasRenderingContext2D;
+  viewport: HTMLDivElement = undefined;
+  cursor = 'pointer';
+  height: number;
   drag = false;
-
-  root_rect;
-  view_rect;
-  scale;
-  drag_rx;
-  drag_ry;
-
-  document: Document;
-  ctx;
-
-  viewport = undefined;
+  drawThrottle = new BehaviorSubject<void>(undefined);
 
   black = (pc) => `rgba(255,255,255,${pc / 100})`;
   settings = {
-    viewport: null,
     styles: {
       'header,footer,section,article': this.black(8),
       'h1,a,p,pre': this.black(30),
@@ -37,10 +40,10 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     back: this.black(2),
     view: this.black(5),
     drag: this.black(10),
-    interval: null,
   };
 
-  drawThrottle = new BehaviorSubject<void>(undefined);
+  @Input() width: number = 100;
+  @Input() scale: number = 0.10;
 
   @ViewChild('map', { static: true }) canvas: ElementRef;
   @ViewChild('content', { static: true }) contentEl: ElementRef;
@@ -48,7 +51,6 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(WINDOW) private readonly window: Window,
   ) {
-    this.document = window.document;
   }
 
   ngOnInit(): void {
@@ -67,11 +69,11 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  toRect(x, y, w, h) {
+  toRect(x, y, w, h): Rect {
     return { x, y, w, h };
   };
 
-  rectRelTo(rect, pos = { x: 0, y: 0 }) {
+  rectRelTo(rect: Rect, pos = { x: 0, y: 0 }) {
     return this.toRect(rect.x - pos.x, rect.y - pos.y, rect.w, rect.h);
   };
 
@@ -85,103 +87,133 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     return this.toRect(x, y, el.offsetWidth, el.offsetHeight);
   };
 
-  rectOfViewport = (el) => {
+  rectOfViewport(el) {
     const { x, y } = this.elGetOffset(el);
     return this.toRect(x + el.clientLeft, y + el.clientTop, el.clientWidth, el.clientHeight);
   };
 
-  rectOfContent = (el) => {
+  rectOfContent(el) {
     const { x, y } = this.elGetOffset(el);
     return this.toRect(x + el.clientLeft - el.scrollLeft, y + el.clientTop - el.scrollTop, el.scrollWidth, el.scrollHeight);
   };
 
-  calcScale() {
-    const width = 100; // this.canvas.nativeElement.clientWidth;
-    const height = this.canvas.nativeElement.clientHeight;
-    return (w, h) => Math.min(width / w, height / h);
-  };
-
-  resizeCanvas(w, h) {
-    this.canvas.nativeElement.width = w;
-    this.canvas.nativeElement.height = h;
-    this.canvas.nativeElement.style.width = `${w}px`;
-    this.canvas.nativeElement.style.height = `${h}px`;
-  }
-
-  drawRect(rect, col) {
-    if (col) {
+  drawRect(rect: Rect, color: string) {
+    if (color) {
       this.ctx.beginPath();
       this.ctx.rect(rect.x, rect.y, rect.w, rect.h);
-      this.ctx.fillStyle = col;
+      this.ctx.fillStyle = color;
       this.ctx.fill();
     }
   }
 
-  applyStyles(styles) {
+  applyStyles(styles, offset) {
     Object.keys(styles).forEach(sel => {
       const col = styles[sel];
       Array
-        .from((this.viewport || this.document).querySelectorAll(sel))
+        .from(this.viewport.querySelectorAll(sel))
         .forEach(el => {
-          this.drawRect(this.rectRelTo(this.rectOfEl(el), this.root_rect), col);
+          this.drawRect(
+            this.scaleRect(
+              this.offsetRect(
+                this.rectRelTo(
+                  this.rectOfEl(el),
+                  this.contentRect,
+                ),
+                0, offset,
+              ),
+              this.scale,
+            ),
+            col,
+          );
         });
     });
   }
 
-  draw() {
-    this.root_rect = this.rectOfContent(this.viewport);
-    this.view_rect = this.rectOfViewport(this.viewport);
-    this.scale = this.calcScale()(this.root_rect.w, this.root_rect.h);
+  scaleRect(rect: Rect, scale: number | Partial<Rect>) {
+    return {
+      x: rect.x * (typeof scale === 'number' ? scale : scale.x ?? 1),
+      y: rect.y * (typeof scale === 'number' ? scale : scale.y ?? 1),
+      w: rect.w * (typeof scale === 'number' ? scale : scale.w ?? 1),
+      h: rect.h * (typeof scale === 'number' ? scale : scale.h ?? 1),
+    };
+  }
 
-    this.resizeCanvas(this.root_rect.w * this.scale, this.root_rect.h * this.scale);
+  offsetRect(rect: Rect, x: number, y: number) {
+    return {
+      h: rect.h,
+      w: rect.w,
+      x: rect.x + x,
+      y: rect.y + y,
+    };
+  }
+
+  draw() {
+    this.contentRect = this.rectOfContent(this.viewport);
+    this.viewportRect = this.rectOfViewport(this.viewport);
+    this.height = this.viewportRect.h;
 
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-    this.ctx.scale(this.scale, this.scale);
+    this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.drawRect(this.rectRelTo(this.root_rect, this.root_rect), this.settings.back);
-    this.applyStyles(this.settings.styles);
-    this.drawRect(this.rectRelTo(this.view_rect, this.root_rect), this.drag ? this.settings.drag : this.settings.view);
+    let scrollOffset = this.viewport.scrollTop;
+    let scrollPourcent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
+    const scrollbarSize = Math.min(this.viewportRect.h, this.contentRect.h) * this.scale;
+    const trackSize = Math.min(this.viewportRect.h, this.contentRect.h * this.scale);
+
+    const handleOffset = ~~((trackSize - scrollbarSize) * scrollPourcent);
+    const backgroundOffset = this.contentRect.h * this.scale > this.viewportRect.h ?
+      (this.viewportRect.h - (this.contentRect.h * this.scale)) * scrollPourcent : // TODO fix
+      0;
+
+    const dragRect: Rect = {
+      w: this.viewportRect.w,
+      h: Math.min(this.viewportRect.h, this.contentRect.h) * this.scale,
+      x: 0,
+      y: handleOffset,
+    };
+
+    this.applyStyles(this.settings.styles, backgroundOffset);
+    this.drawRect(dragRect, this.settings.drag);
   };
 
-  onDrag(ev) {
+  @HostListener('window:mousemove', ['$event'])
+  onDrag(ev: MouseEvent) {
     if (this.drag) {
       ev.preventDefault();
-      const cr = this.rectOfViewport(this.canvas.nativeElement);
-      const x = (ev.pageX - cr.x) / this.scale - this.view_rect.w * this.drag_rx;
-      const y = (ev.pageY - cr.y) / this.scale - this.view_rect.h * this.drag_ry;
-
-      if (this.viewport) {
-        this.viewport.scrollLeft = x;
-        this.viewport.scrollTop = y;
-      } else {
-        this.window.scrollTo(x, y);
-      }
+      const viewportRect = this.rectOfViewport(this.canvas.nativeElement);
+      const y = ((ev.pageY - viewportRect.y) / Math.min(this.viewportRect.h, this.contentRect.h * this.scale)) * this.contentRect.h;
+      this.viewport.scrollTop = y - (this.viewportRect.h * this.drag_ry);
       this.requestDraw();
     }
   }
 
-  onDragEnd(ev) {
+  @HostListener('window:mouseup', ['$event'])
+  onDragEnd(ev: MouseEvent) {
     if (this.drag) {
       this.drag = false;
-      this.canvas.nativeElement.style.cursor = 'pointer';
+      this.cursor = 'pointer';
       this.onDrag(ev);
     }
   }
 
-  onDragStart(ev) {
+  onDragStart(ev: MouseEvent) {
     this.drag = true;
 
     const cr = this.rectOfViewport(this.canvas.nativeElement);
-    const vr = this.rectRelTo(this.view_rect, this.root_rect);
-    this.drag_rx = ((ev.pageX - cr.x) / this.scale - vr.x) / vr.w;
-    this.drag_ry = ((ev.pageY - cr.y) / this.scale - vr.y) / vr.h;
-    if (this.drag_rx < 0 || this.drag_rx > 1 || this.drag_ry < 0 || this.drag_ry > 1) {
-      this.drag_rx = 0.5;
+    this.contentRect = this.rectOfContent(this.viewport);
+    this.viewportRect = this.rectOfViewport(this.viewport);
+    let scrollOffset = this.viewport.scrollTop;
+    let scrollPourcent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
+    const scrollbarSize = Math.min(this.viewportRect.h, this.contentRect.h) * this.scale;
+    const trackSize = Math.min(this.viewportRect.h, this.contentRect.h * this.scale);
+    const handleOffset = ~~((trackSize - scrollbarSize) * scrollPourcent);
+
+    this.drag_ry = ((ev.pageY - cr.y) - handleOffset) / (this.viewportRect.h * this.scale);
+    if (this.drag_ry < 0 || this.drag_ry > 1) {
       this.drag_ry = 0.5;
     }
 
-    this.canvas.nativeElement.style.cursor = 'crosshair';
+    this.cursor = 'crosshair';
     this.onDrag(ev);
   };
 
@@ -190,10 +222,6 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   }
 
   init() {
-    this.canvas.nativeElement.style.cursor = 'pointer';
-    if (this.settings.interval > 0) {
-      setInterval(() => this.draw(), this.settings.interval);
-    }
     setTimeout(() => {
       this.draw();
     }, 500);

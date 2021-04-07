@@ -1,8 +1,11 @@
 <div class="log-minimap">
   <canvas #map
+          [style.cursor]="cursor"
+          [style.width.px]="width"
+          [style.height.px]="height"
+          [width]="width"
+          [height]="height"
           (mousedown)="onDragStart($event)"
-          (mouseup)="onDragEnd($event)"
-          (mousemove)="drag ? onDrag($event) : null"
   ></canvas>
 </div>
 <div #content
