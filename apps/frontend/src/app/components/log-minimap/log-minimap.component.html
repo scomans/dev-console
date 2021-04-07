@@ -7,6 +7,8 @@
 </div>
 <div #content
      class="log-content"
+     autoScroll
+     [lock-y-offset]="100"
      (scroll)="requestDraw()"
      (cdkObserveContent)="requestDraw()"
      (window:resize)="requestDraw()"

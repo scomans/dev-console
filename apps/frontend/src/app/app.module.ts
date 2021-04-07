@@ -38,6 +38,7 @@ import { LogComponent } from './components/log/log.component';
 import { ProjectEditModalComponent } from './components/project-edit-modal/project-edit-modal.component';
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
 import { ProjectComponent } from './components/project/project.component';
+import { AutoScrollDirective } from './directives/auto-scroll.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
@@ -61,6 +62,7 @@ registerLocaleData(en);
     SmartTrimPipe,
     ColorSliderComponent,
     CallFunctionPipe,
+    AutoScrollDirective,
   ],
   imports: [
     BrowserModule,
