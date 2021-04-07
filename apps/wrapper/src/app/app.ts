@@ -70,8 +70,8 @@ export default class App {
     // Create the browser window.
     App.mainWindow = new BrowserWindow({
       frame: false,
-      minWidth: 1200,
-      minHeight: 600,
+      minWidth: 400,
+      minHeight: 350,
       show: false,
       webPreferences: {
         nodeIntegration: true,
