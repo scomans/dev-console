@@ -6,8 +6,8 @@ export interface Channel {
   executeIn?: string;
   executable: string;
   regex?: {
-    prefix?: string;
-    suffix?: string;
+    search: string;
+    replace: string;
   };
   active: boolean;
 }

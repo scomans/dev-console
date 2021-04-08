@@ -31,8 +31,8 @@ export class ChannelEditModalComponent implements OnInit {
       arguments: [this.channel?.arguments?.join('\n')],
       active: [this.channel?.active, [Validators.required]],
       regex: this.fb.group({
-        prefix: [this.channel?.regex?.prefix],
-        suffix: [this.channel?.regex?.suffix],
+        search: [this.channel?.regex?.search],
+        replace: [this.channel?.regex?.replace],
       }),
     });
   }

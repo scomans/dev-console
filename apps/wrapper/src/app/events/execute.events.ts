@@ -1,6 +1,7 @@
 import { ChildProcess } from 'child_process';
 import { ipcMain } from 'electron';
 import * as execa from 'execa';
+import { set } from 'lodash';
 import { Readable } from 'stream';
 
 let mainWindow: Electron.BrowserWindow = null;
@@ -50,6 +51,10 @@ function kill(id: string) {
 }
 
 function exec(channel) {
+  if (channel.regex?.search) {
+    set(channel, 'regex.searchRegex', new RegExp(channel.regex.search));
+  }
+
   const process = execa(
     channel.executable,
     (channel.arguments ?? []),
@@ -60,28 +65,13 @@ function exec(channel) {
       env: { FORCE_COLOR: 'true' },
     },
   );
+
   emitLines(process.stdout);
   emitLines(process.stderr);
-  process.stdout.on('line-data', function (data) {
-    if (mainWindow) {
-      mainWindow.webContents.send('execute-data', {
-        id: channel.id,
-        data: data.toString(),
-        type: 'data',
-        timestamp: Date.now(),
-      });
-    }
-  });
-  process.stderr.on('line-data', function (data) {
-    if (mainWindow) {
-      mainWindow.webContents.send('execute-data', {
-        id: channel.id,
-        data: data.toString(),
-        type: 'error',
-        timestamp: Date.now(),
-      });
-    }
-  });
+
+  process.stdout.on('line-data', (data) => sendData(channel, data.toString(), 'data'));
+  process.stderr.on('line-data', (data) => sendData(channel, data.toString(), 'error'));
+
   process.on('exit', (code, signal) => {
     runningProcesses.delete(channel.id);
     if (mainWindow) {
@@ -89,6 +79,21 @@ function exec(channel) {
     }
   });
   return process;
+}
+
+function sendData(channel, data: string, type: 'data' | 'error') {
+  if (mainWindow) {
+    if (channel.regex?.searchRegex) {
+      data = data.replace(channel.regex.searchRegex, channel.regex.replace ?? '');
+    }
+
+    mainWindow.webContents.send('execute-data', {
+      id: channel.id,
+      data: data,
+      type,
+      timestamp: Date.now(),
+    });
+  }
 }
 
 function emitLines(stream: Readable) {

@@ -53,15 +53,15 @@
   </nz-form-item>
   <ng-container formGroupName="regex">
     <nz-form-item>
-      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="prefix">Regex: Prefix</nz-form-label>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="prefix">Regex: Search</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
-        <input nz-input id="prefix" formControlName="prefix"/>
+        <input nz-input id="search" formControlName="search"/>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="suffix">Regex: Suffix</nz-form-label>
+      <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="suffix">Regex: Replace</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
-        <input nz-input id="suffix" formControlName="suffix"/>
+        <input nz-input id="replace" formControlName="replace"/>
       </nz-form-control>
     </nz-form-item>
   </ng-container>
