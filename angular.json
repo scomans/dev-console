@@ -205,7 +205,10 @@
           "options": {
             "name": "wrapper",
             "frontendProject": "frontend",
-            "outputPath": "dist/executables"
+            "outputPath": "dist/executables",
+            "platform": "windows",
+            "arch": "x64",
+            "publishPolicy": "never"
           }
         },
         "lint": {

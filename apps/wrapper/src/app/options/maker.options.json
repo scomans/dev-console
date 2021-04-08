@@ -1,3 +1,22 @@
 {
-  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json"
+  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
+  "productName": "DevConsole",
+  "win": {
+    "extraResources": [
+      {
+        "from": "apps/flap/src/extra/resources",
+        "to": ""
+      }
+    ]
+  },
+  "nsis": {
+    "artifactName": "frontend-setup-${version}.exe"
+  },
+  "directories": {
+    "app": "dist/apps/wrapper"
+  },
+  "publish": {
+    "provider": "generic",
+    "url": "https://update-dev-console.keyle.de/update/${channel}/"
+  }
 }
