@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { Project } from '../../stores/project/project.model';
   templateUrl: './project-selection.component.html',
   styleUrls: ['./project-selection.component.scss'],
 })
-export class ProjectSelectionComponent {
+export class ProjectSelectionComponent implements OnInit {
 
   projects$: Observable<Project[]>;
 
@@ -19,6 +19,10 @@ export class ProjectSelectionComponent {
     private readonly router: Router,
   ) {
     this.projects$ = this.globalStoreService.projects.query.selectAll();
+  }
+
+  ngOnInit() {
+    document.title = 'DevConsole';
   }
 
   openProject(project: Project) {

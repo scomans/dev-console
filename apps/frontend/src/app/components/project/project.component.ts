@@ -40,7 +40,10 @@ export class ProjectComponent {
       map(params => params.projectId),
       switchMap(id => this.globalStore.projects.query.selectEntity(id)),
       filterNil(),
-      tap(project => this.projectStore.openProject(project)),
+      tap(project => {
+        document.title = `${project.name} - DevConsole`;
+        void this.projectStore.openProject(project);
+      }),
     );
     this.selectedChannelId$ = this.projectStore.channel.query.selectActiveId();
     this.allLogs$ = this.selectedChannelId$.pipe(
