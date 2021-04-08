@@ -1,7 +1,6 @@
 {
   "name": "dev-console",
   "version": "0.0.0",
-  "license": "MIT",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && exitzero electron-builder install-app-deps && ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
@@ -14,6 +13,8 @@
     "build:all": "nx build frontend && nx build wrapper",
     "make": "nx build frontend --prod && nx build wrapper --prod && nx run wrapper:make",
     "make:flap": "nx build flap --prod && nx run flap:make",
+    "version": "node ./tools/ci/update-version.js",
+    "release": "node ./tools/ci/release.js",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
@@ -87,6 +88,7 @@
     "@nrwl/linter": "11.6.1",
     "@nrwl/tao": "11.6.1",
     "@nrwl/workspace": "11.6.1",
+    "@octokit/request": "^5.4.14",
     "@types/jest": "26.0.22",
     "@types/lodash": "^4.14.168",
     "@types/node": "14.14.37",
@@ -106,6 +108,7 @@
     "npm-run-all": "^4.1.5",
     "nx-electron": "^11.0.2",
     "prettier": "2.2.1",
+    "semver": "^7.3.5",
     "ts-jest": "26.5.4",
     "ts-node": "~9.1.1",
     "typescript": "~4.1.5"
