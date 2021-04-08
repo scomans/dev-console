@@ -10,5 +10,12 @@
   pre {
     display: inline;
     font-family: console-font, monospace;
+
+    &.data {
+    }
+
+    &.error {
+      color: red;
+    }
   }
 }

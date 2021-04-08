@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { LogEntry } from '../../services/log-store.service';
 
 @Component({
   selector: 'cl-log-entry',
@@ -7,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class LogEntryComponent implements OnInit {
 
-  @Input() entry;
+  @Input() entry: LogEntry;
   @Input() color;
 
   constructor() {
