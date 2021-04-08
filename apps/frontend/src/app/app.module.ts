@@ -2,7 +2,7 @@ import { ObserversModule } from '@angular/cdk/observers';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -26,12 +26,12 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
-import { LogAllComponent } from './components/all-log/log-all.component';
 import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
 import { ColorSliderComponent } from './components/color-slider/color-slider.component';
+import { LogAllComponent } from './components/log-all/log-all.component';
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogComponent } from './components/log/log.component';
@@ -43,6 +43,7 @@ import { AnsiPipe } from './pipes/ansi.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
+import { LogStoreService } from './services/log-store.service';
 
 registerLocaleData(en);
 
@@ -102,6 +103,12 @@ registerLocaleData(en);
     {
       provide: WINDOW,
       useValue: window,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (appInitService: LogStoreService) => () => appInitService.init(),
+      deps: [LogStoreService],
+      multi: true,
     },
   ],
   bootstrap: [AppComponent],

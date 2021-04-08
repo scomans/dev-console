@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ExecuteService } from '../../services/execute.service';
-import { LogEntry, LogStoreService } from '../../services/log-store.service';
+import { LogEntryWithSource, LogStoreService } from '../../services/log-store.service';
 import { Channel } from '../../stores/channel/channel.model';
 import { ProjectStoreService } from '../../stores/project-store.service';
 
@@ -18,7 +19,8 @@ export class LogAllComponent implements OnInit {
   subs = new SubSink();
 
   channels$: Observable<Channel[]>;
-  log$: Observable<LogEntry[]>;
+  channelColors$: Observable<Record<string, string>>;
+  log$: Observable<LogEntryWithSource[]>;
   executingStatuses$: Observable<boolean[]>;
   anythingExecuting$: Observable<boolean>;
   anythingNotExecuting$: Observable<boolean>;
@@ -38,6 +40,9 @@ export class LogAllComponent implements OnInit {
       .pipe(
         map(channels => channels.filter(channel => channel.active)),
       );
+    this.channelColors$ = this.channels$.pipe(
+      map(channels => mapValues(keyBy(channels, 'id'), 'color')),
+    );
 
     this.executingStatuses$ = this.channels$.pipe(
       switchMap(channels => combineLatest(channels.map(channel => this.executeService.selectStatus(channel.id)))),
@@ -50,11 +55,7 @@ export class LogAllComponent implements OnInit {
     this.anythingNotExecuting$ = this.executingStatuses$.pipe(
       map(statuses => statuses.includes(false)),
     );
-    this.log$ = this.projectStore.channel.query
-      .selectActiveId()
-      .pipe(
-        switchMap(id => this.logStoreService.getStore(id)),
-      );
+    this.log$ = this.logStoreService.allStoreSubject.asObservable();
   }
 
   async runAll() {

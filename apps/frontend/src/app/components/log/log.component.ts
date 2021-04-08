@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { filterNil } from '@dev-console/helpers';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -36,11 +37,13 @@ export class LogComponent implements OnInit {
     this.log$ = this.projectStore.channel.query
       .selectActiveId()
       .pipe(
+        filterNil(),
         switchMap(id => this.logStoreService.getStore(id)),
       );
     this.status$ = this.projectStore.channel.query
       .selectActiveId()
       .pipe(
+        filterNil(),
         switchMap(id => this.executeService.selectStatus(id)),
       );
   }

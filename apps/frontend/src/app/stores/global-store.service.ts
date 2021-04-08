@@ -40,10 +40,7 @@ export class GlobalStoreService implements GlobalStore {
       storage: {
         getItem: () => this.storageService.get('storage'),
         clear: () => this.storageService.delete('storage'),
-        setItem: (value) => {
-          console.log(value);
-          return this.storageService.set('storage', value);
-        },
+        setItem: (value) => this.storageService.set('storage', value),
       },
     }, this.stores);
   }

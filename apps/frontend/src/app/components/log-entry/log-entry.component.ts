@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class LogEntryComponent implements OnInit {
 
   @Input() entry;
+  @Input() color;
 
   constructor() {
   }
