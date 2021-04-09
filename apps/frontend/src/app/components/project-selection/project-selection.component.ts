@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
+import { Project } from '@dev-console/types';
 import { Observable } from 'rxjs';
 import { GlobalStoreService } from '../../stores/global-store.service';
-import { Project } from '../../stores/project/project.model';
 
 @Component({
   selector: 'cl-project-selection',

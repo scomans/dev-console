@@ -1,4 +1,4 @@
-import { Channel } from './channel.model';
+import { Channel } from '@dev-console/types';
 import { ChannelStore } from './channel.store';
 
 export class ChannelService {

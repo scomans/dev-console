@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, promises as fsp } from 'fs';
+import { stat } from 'fs/promises';
 import * as baseRimraf from 'rimraf';
 import { promisify } from 'util';
 
@@ -16,5 +17,14 @@ export async function isDirEmpty(path) {
 export function mkdirSyncIfNotExists(path: string) {
   if (!existsSync(path)) {
     mkdirSync(path, { recursive: true });
+  }
+}
+
+export async function getFileSize(filePath) {
+  try {
+    const { size } = await stat(filePath);
+    return size;
+  } catch (err) {
+    return -1;
   }
 }

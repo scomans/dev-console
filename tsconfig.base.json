@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@dev-console/helpers": ["libs/helpers/src/index.ts"]
+      "@dev-console/helpers": ["libs/helpers/src/index.ts"],
+      "@dev-console/types": ["libs/types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

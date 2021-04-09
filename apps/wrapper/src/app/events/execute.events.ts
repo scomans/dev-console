@@ -1,12 +1,16 @@
-import { ChildProcess } from 'child_process';
+import { Channel, ExecuteStatus } from '@dev-console/types';
 import { ipcMain } from 'electron';
 import * as execa from 'execa';
+import { ExecaChildProcess } from 'execa';
 import { set } from 'lodash';
 import { Readable } from 'stream';
+import { CancelToken } from '../helpers/cancel.helper';
+import { waitOn } from '../helpers/wait-on.helper';
 
 let mainWindow: Electron.BrowserWindow = null;
 
-const runningProcesses = new Map<string, ChildProcess>();
+const runningProcesses = new Map<string, ExecaChildProcess<string>>();
+const waitingProcesses = new Map<string, ((message) => void)>();
 
 
 export default class ExecuteEvents {
@@ -21,17 +25,31 @@ export default class ExecuteEvents {
   static quit() {
     mainWindow = null;
     runningProcesses.forEach(value => value.kill());
+    waitingProcesses.forEach(cancel => cancel('quit'));
     return true;
   }
 }
 
-ipcMain.handle('execute-run', (event, [channel]) => {
-  if (kill(channel.id)) {
-    const process = exec(channel);
-    runningProcesses.set(channel.id, process);
-    return true;
+ipcMain.handle('execute-run', async (event, [channel]: [Channel]) => {
+  try {
+    if (kill(channel.id)) {
+      if (channel.waitOn?.length > 0) {
+        const cancel = CancelToken.build();
+        waitingProcesses.set(channel.id, cancel.cancel);
+        mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.WAITING });
+        await waitOn({ resources: channel.waitOn }, cancel.token);
+        waitingProcesses.delete(channel.id);
+      }
+      const process = exec(channel);
+      runningProcesses.set(channel.id, process);
+      mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.RUNNING });
+      return true;
+    }
+  } catch (err) {
+    console.error(err);
+    mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.STOPPED });
+    return false;
   }
-  return false;
 });
 
 ipcMain.handle('execute-kill', (event, [id]) => {
@@ -46,6 +64,11 @@ function kill(id: string) {
       runningProcesses.delete(id);
     }
     return result;
+  }
+  if (waitingProcesses.has(id)) {
+    const cancel = waitingProcesses.get(id);
+    waitingProcesses.delete(id);
+    cancel('kill');
   }
   return true;
 }
@@ -75,7 +98,7 @@ function exec(channel) {
   process.on('exit', (code, signal) => {
     runningProcesses.delete(channel.id);
     if (mainWindow) {
-      mainWindow.webContents.send('execute-exit', { id: channel.id, code, signal });
+      mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.STOPPED, code, signal });
     }
   });
   return process;

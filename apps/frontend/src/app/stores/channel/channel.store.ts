@@ -1,5 +1,5 @@
 import { ActiveState, EntityState, EntityStore, StoreConfig } from '@datorama/akita';
-import { Channel } from './channel.model';
+import { Channel } from '@dev-console/types';
 
 export interface ChannelState extends EntityState<Channel, string>, ActiveState<string> {
 }

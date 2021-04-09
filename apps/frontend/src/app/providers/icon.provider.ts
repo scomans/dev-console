@@ -3,6 +3,7 @@ import { MenuFoldOutline, MenuUnfoldOutline } from '@ant-design/icons-angular/ic
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faCircle as farCircle,
+  faClock as farClock,
   faQuestionCircle as farQuestionCircle,
   faWindowClose as farWindowClose,
   faWindowMaximize as farWindowMaximize,
@@ -15,6 +16,7 @@ import {
   faDotCircle as fasDotCircle,
   faEdit as fasEdit,
   faFolderOpen as fasFolderOpen,
+  faInfoCircle as fasInfoCircle,
   faLayerGroup as fasLayerGroup,
   faPlay as fasPlay,
   faPlusCircle as fasPlusCircle,
@@ -33,6 +35,7 @@ const farIcons = [
   farWindowRestore,
   farQuestionCircle,
   farCircle,
+  farClock,
 ];
 
 const fasIcons = [
@@ -48,6 +51,7 @@ const fasIcons = [
   fasCircle,
   fasLayerGroup,
   fasDotCircle,
+  fasInfoCircle,
 ];
 
 const nzIcons = [

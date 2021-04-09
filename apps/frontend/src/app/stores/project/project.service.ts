@@ -1,4 +1,4 @@
-import { Project } from './project.model';
+import { Project } from '@dev-console/types';
 import { ProjectStore } from './project.store';
 
 export class ProjectService {

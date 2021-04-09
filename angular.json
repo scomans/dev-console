@@ -84,15 +84,10 @@
               "apps/frontend/src/styles/styles.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "apps/frontend/src/styles"
-              ]
+              "includePaths": ["apps/frontend/src/styles"]
             },
             "scripts": [],
-            "allowedCommonJsDependencies": [
-              "ansi-to-html",
-              "lodash"
-            ]
+            "allowedCommonJsDependencies": ["ansi-to-html", "lodash"]
           },
           "configurations": {
             "production": {
@@ -251,6 +246,31 @@
           "outputs": ["coverage/libs/helpers"],
           "options": {
             "jestConfig": "libs/helpers/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "types": {
+      "projectType": "library",
+      "root": "libs/types",
+      "sourceRoot": "libs/types/src",
+      "prefix": "dev-console",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/types/src/**/*.ts",
+              "libs/types/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/types"],
+          "options": {
+            "jestConfig": "libs/types/jest.config.js",
             "passWithNoTests": true
           }
         }

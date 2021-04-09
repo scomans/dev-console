@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
+import { Channel, ExecuteStatus } from '@dev-console/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ExecuteService } from '../../services/execute.service';
 import { LogEntry, LogStoreService } from '../../services/log-store.service';
-import { Channel } from '../../stores/channel/channel.model';
 import { ProjectStoreService } from '../../stores/project-store.service';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 
@@ -17,9 +17,10 @@ import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-mo
 })
 export class LogComponent implements OnInit {
 
+  ExecuteStatus = ExecuteStatus;
   subs = new SubSink();
 
-  status$: Observable<boolean>;
+  status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;
   log$: Observable<LogEntry[]>;
 

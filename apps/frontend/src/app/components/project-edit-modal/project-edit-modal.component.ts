@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Project } from '@dev-console/types';
 import { ElectronService } from '../../services/electron.service';
-import { Project } from '../../stores/project/project.model';
 
 @Component({
   selector: 'cl-project-edit-modal',

@@ -1,16 +1,15 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filterNil, uuidV4 } from '@dev-console/helpers';
+import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ElectronService } from '../../services/electron.service';
 import { ExecuteService } from '../../services/execute.service';
-import { Channel } from '../../stores/channel/channel.model';
 import { GlobalStoreService } from '../../stores/global-store.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
-import { Project } from '../../stores/project/project.model';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 
 @Component({
@@ -20,7 +19,9 @@ import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-mo
 })
 export class ProjectComponent {
 
+  ExecuteStatus = ExecuteStatus;
   subs = new SubSink();
+
   channels$: Observable<Channel[]>;
   selectedChannelId$: Observable<string>;
   project$: Observable<Project>;

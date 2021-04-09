@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { Channel, ExecuteStatus } from '@dev-console/types';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { mapElectronEvent } from '../helpers/electron.helper';
-import { Channel } from '../stores/channel/channel.model';
 import { ElectronService } from './electron.service';
 import { LogEntry } from './log-store.service';
 
@@ -15,18 +15,25 @@ export interface ExecuteData {
   id: string;
 }
 
-export interface ExecuteExitData extends ExecuteData {
+export interface ExecuteStatusData extends ExecuteData {
+  status: ExecuteStatus,
+}
+
+export interface ExecuteExitStatusData extends ExecuteStatusData {
+  status: ExecuteStatus.STOPPED,
   code: number;
   signal: string;
 }
 
+export type ExecuteStatuses = ExecuteExitStatusData | ExecuteStatusData
+
 export type ExecuteDataData = LogEntry & ExecuteData
 
-export type ExecuteExitEvent = ExecuteEvent<'execute-exit', ExecuteExitData>;
 export type ExecuteDataEvent = ExecuteEvent<'execute-data', ExecuteDataData>;
+export type ExecuteStatusEvent = ExecuteEvent<'execute-status', ExecuteStatuses>;
 
 export type ExecuteEvents =
-  ExecuteExitEvent |
+  ExecuteStatusEvent |
   ExecuteDataEvent
 
 @Injectable({
@@ -35,38 +42,34 @@ export type ExecuteEvents =
 export class ExecuteService {
 
   readonly executeData$: Observable<ExecuteDataEvent>;
-  readonly executeExit$: Observable<ExecuteExitEvent>;
 
-  runningExecutes = new Map<string, BehaviorSubject<boolean>>();
+  runningExecutes = new Map<string, BehaviorSubject<ExecuteStatus>>();
 
   constructor(
     private readonly electronService: ElectronService,
   ) {
-    this.executeData$ = mapElectronEvent<ExecuteExitEvent>(this.electronService, 'execute-data');
-    this.executeExit$ = mapElectronEvent<ExecuteExitEvent>(this.electronService, 'execute-exit');
+    this.executeData$ = mapElectronEvent<ExecuteDataEvent>(this.electronService, 'execute-data');
+
+    mapElectronEvent<ExecuteStatusEvent>(this.electronService, 'execute-status')
+      .subscribe(({ data }) => {
+        this.getRunningExecute(data.id).next(data.status);
+      });
   }
 
   selectStatus(channelId: string) {
-    return merge(
-      this.getRunningExecute(channelId),
-      this.executeExit$.pipe(
-        filter(exit => exit.data.id === channelId),
-        map(() => false),
-        tap(() => this.getRunningExecute(channelId).next(false)),
-      ),
-    );
+    return this.getRunningExecute(channelId);
   }
 
-  getStatus(channelId: string) {
+  getStatus(channelId: string): ExecuteStatus {
     if (this.runningExecutes.has(channelId)) {
       return this.runningExecutes.get(channelId).getValue();
     }
-    return false;
+    return ExecuteStatus.STOPPED;
   }
 
   private getRunningExecute(channelId: string) {
     if (!this.runningExecutes.has(channelId)) {
-      this.runningExecutes.set(channelId, new BehaviorSubject<boolean>(false));
+      this.runningExecutes.set(channelId, new BehaviorSubject<ExecuteStatus>(ExecuteStatus.STOPPED));
     }
     return this.runningExecutes.get(channelId);
   }
@@ -79,17 +82,12 @@ export class ExecuteService {
   }
 
   async run(channel: Channel) {
-    console.log('RUN', channel.name, channel.id);
     if (this.electronService.isElectron) {
-      const result = await this.electronService.emit<boolean>('execute-run', channel);
-      // TODO what to do when kill fails?
-      let runningExecute = this.getRunningExecute(channel.id);
-      runningExecute.next(true);
+      await this.electronService.emit<boolean>('execute-run', channel);
     }
   }
 
   async kill(channelId: string) {
-    console.log('RUN', channelId);
     if (this.electronService.isElectron) {
       return this.electronService.emit<boolean>('execute-kill', channelId);
     }

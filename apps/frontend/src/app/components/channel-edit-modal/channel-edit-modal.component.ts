@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Channel } from '@dev-console/types';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ElectronService } from '../../services/electron.service';
-import { Channel } from '../../stores/channel/channel.model';
 
 @Component({
   selector: 'cl-channel-edit-modal',
@@ -34,6 +34,7 @@ export class ChannelEditModalComponent implements OnInit {
         search: [this.channel?.regex?.search],
         replace: [this.channel?.regex?.replace],
       }),
+      waitOn: [this.channel?.waitOn?.join('\n')],
     });
   }
 
@@ -43,6 +44,11 @@ export class ChannelEditModalComponent implements OnInit {
       channel.arguments = channel.arguments.split('\n');
     } else {
       channel.arguments = null;
+    }
+    if (channel.waitOn) {
+      channel.waitOn = channel.waitOn.split('\n');
+    } else {
+      channel.waitOn = null;
     }
     console.log(channel);
     this.modal.close(channel);

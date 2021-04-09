@@ -10,8 +10,5 @@ export interface Channel {
     replace: string;
   };
   active: boolean;
-}
-
-export function createChannel(params: Partial<Channel>) {
-  return {} as Channel;
+  waitOn: string[];
 }

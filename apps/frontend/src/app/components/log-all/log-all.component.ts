@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Channel, ExecuteStatus } from '@dev-console/types';
 import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
@@ -6,7 +7,6 @@ import { map, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { ExecuteService } from '../../services/execute.service';
 import { LogEntryWithSource, LogStoreService } from '../../services/log-store.service';
-import { Channel } from '../../stores/channel/channel.model';
 import { ProjectStoreService } from '../../stores/project-store.service';
 
 @Component({
@@ -16,12 +16,13 @@ import { ProjectStoreService } from '../../stores/project-store.service';
 })
 export class LogAllComponent implements OnInit {
 
+  ExecuteStatus = ExecuteStatus;
   subs = new SubSink();
 
   channels$: Observable<Channel[]>;
   channelColors$: Observable<Record<string, string>>;
   log$: Observable<LogEntryWithSource[]>;
-  executingStatuses$: Observable<boolean[]>;
+  executingStatuses$: Observable<ExecuteStatus[]>;
   anythingExecuting$: Observable<boolean>;
   anythingNotExecuting$: Observable<boolean>;
 
@@ -49,11 +50,11 @@ export class LogAllComponent implements OnInit {
     );
 
     this.anythingExecuting$ = this.executingStatuses$.pipe(
-      map(statuses => !statuses.includes(true)),
+      map(statuses => !!statuses.find(status => status === ExecuteStatus.RUNNING || status === ExecuteStatus.WAITING)),
     );
 
     this.anythingNotExecuting$ = this.executingStatuses$.pipe(
-      map(statuses => statuses.includes(false)),
+      map(statuses => statuses.includes(ExecuteStatus.STOPPED)),
     );
     this.log$ = this.logStoreService.allStoreSubject.asObservable();
   }

@@ -42,11 +42,27 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="arguments">Arguments</nz-form-label>
-    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
+    <nz-form-control [nzSm]="14" [nzXs]="24">
       <textarea nz-input
                 id="arguments"
                 formControlName="arguments"
                 placeholder="One argument per line"
+                [nzAutosize]="{ minRows: 3 }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="waitOn">
+      <a href="https://github.com/jeffbski/wait-on#usage" target="_blank">
+        <fa-icon icon="info-circle"></fa-icon>
+      </a>&nbsp;
+      Wait on
+    </nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <textarea nz-input
+                id="waitOn"
+                formControlName="waitOn"
+                placeholder="One url per line"
                 [nzAutosize]="{ minRows: 3 }"
       ></textarea>
     </nz-form-control>

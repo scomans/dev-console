@@ -1,5 +1,5 @@
 import { EntityState, EntityStore, StoreConfig } from '@datorama/akita';
-import { Project } from './project.model';
+import { Project } from '@dev-console/types';
 
 export interface ProjectState extends EntityState<Project, string> {
 }

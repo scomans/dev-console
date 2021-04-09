@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@datorama/akita';
+import { Project } from '@dev-console/types';
 import { ProjectStorageService } from '../services/project-storage.service';
 import { ChannelQuery } from './channel/channel.query';
 import { ChannelService } from './channel/channel.service';
 import { ChannelStore } from './channel/channel.store';
 import { PersistState, persistState } from './persist-store';
-import { Project } from './project/project.model';
 import { UiQuery } from './ui/ui.query';
 import { UiService } from './ui/ui.service';
 import { UiStore } from './ui/ui.store';
