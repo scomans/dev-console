@@ -36,6 +36,8 @@ export type ExecuteEvents =
   ExecuteStatusEvent |
   ExecuteDataEvent
 
+let index = 0;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,7 +78,10 @@ export class ExecuteService {
 
   dataOfId(channelId) {
     return this.executeData$.pipe(
-      map(data => data.data),
+      map(data => ({
+        id: index++,
+        ...data.data,
+      })),
       filter(data => data.id === channelId),
     );
   }

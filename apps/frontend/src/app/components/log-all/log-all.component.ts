@@ -5,6 +5,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { trackById } from '../../helpers/angular.helper';
 import { ExecuteService } from '../../services/execute.service';
 import { LogEntryWithSource, LogStoreService } from '../../services/log-store.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
@@ -17,6 +18,7 @@ import { ProjectStoreService } from '../../stores/project-store.service';
 export class LogAllComponent implements OnInit {
 
   ExecuteStatus = ExecuteStatus;
+  trackById = trackById;
   subs = new SubSink();
 
   channels$: Observable<Channel[]>;

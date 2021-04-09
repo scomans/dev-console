@@ -7,6 +7,7 @@ import { ProjectStoreService } from '../stores/project-store.service';
 import { ExecuteService } from './execute.service';
 
 export interface LogEntry {
+  id: number;
   data: string;
   type: 'data' | 'error';
   timestamp: number;

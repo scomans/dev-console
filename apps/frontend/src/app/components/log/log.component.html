@@ -37,7 +37,7 @@
   </div>
 
   <cl-log-minimap>
-    <cl-log-entry *ngFor="let entry of log$ | async" [entry]="entry"></cl-log-entry>
+    <cl-log-entry *ngFor="let entry of log$ | async; trackBy:trackById" [entry]="entry"></cl-log-entry>
   </cl-log-minimap>
 
 </ng-container>
