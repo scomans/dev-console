@@ -24,7 +24,6 @@ import {
   faPlusCircle as fasPlusCircle,
   faRedo as fasRedo,
   faStop as fasStop,
-  faTerminal as fasTerminal,
   faTimes as fasTimes,
   faTrash as fasTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -47,7 +46,6 @@ const fasIcons = [
   fasTrash,
   fasEdit,
   fasPlay,
-  fasTerminal,
   fasFolderOpen,
   fasStop,
   fasRedo,

@@ -1,6 +1,7 @@
 {
   "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
   "productName": "DevConsole",
+  "icon": "apps/wrapper/logo.ico",
   "win": {
     "extraResources": [
       {
@@ -10,7 +11,9 @@
     ]
   },
   "nsis": {
-    "artifactName": "frontend-setup-${version}.exe"
+    "artifactName": "frontend-setup-${version}.exe",
+    "installerIcon": "apps/wrapper/logo.ico",
+    "installerHeaderIcon": "apps/wrapper/logo.ico"
   },
   "directories": {
     "app": "dist/apps/wrapper"
