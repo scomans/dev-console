@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -7,15 +7,15 @@ import { map, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { trackById } from '../../helpers/angular.helper';
 import { ExecuteService } from '../../services/execute.service';
-import { LogEntryWithSource, LogStoreService } from '../../services/log-store.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
+import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
 @Component({
-  selector: 'dc-log-all',
-  templateUrl: './log-all.component.html',
-  styleUrls: ['./log-all.component.scss'],
+  selector: 'dc-combined-log',
+  templateUrl: './combined-log.component.html',
+  styleUrls: ['./combined-log.component.scss'],
 })
-export class LogAllComponent implements OnInit {
+export class CombinedLogComponent implements OnInit {
 
   ExecuteStatus = ExecuteStatus;
   trackById = trackById;
@@ -23,16 +23,16 @@ export class LogAllComponent implements OnInit {
 
   channels$: Observable<Channel[]>;
   channelColors$: Observable<Record<string, string>>;
-  log$: Observable<LogEntryWithSource[]>;
   executingStatuses$: Observable<ExecuteStatus[]>;
   anythingExecuting$: Observable<boolean>;
   anythingNotExecuting$: Observable<boolean>;
+
+  @ViewChild(LogMinimapComponent, { read: ElementRef }) minimapElement: ElementRef<HTMLElement>;
 
   constructor(
     private readonly projectStore: ProjectStoreService,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly logStoreService: LogStoreService,
     private readonly executeService: ExecuteService,
   ) {
   }
@@ -58,7 +58,6 @@ export class LogAllComponent implements OnInit {
     this.anythingNotExecuting$ = this.executingStatuses$.pipe(
       map(statuses => statuses.includes(ExecuteStatus.STOPPED)),
     );
-    this.log$ = this.logStoreService.allStoreSubject.asObservable();
   }
 
   async runAll() {

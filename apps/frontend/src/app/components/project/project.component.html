@@ -78,8 +78,8 @@
     </nz-header>
     <nz-content>
       <div class="inner-content" *rxLet="allLogs$; let all">
-        <dc-log *ngIf="!all"></dc-log>
-        <dc-log-all *ngIf="all"></dc-log-all>
+        <dc-channel-log *ngIf="!all"></dc-channel-log>
+        <dc-combined-log *ngIf="all"></dc-combined-log>
       </div>
     </nz-content>
   </nz-layout>

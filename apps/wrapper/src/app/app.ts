@@ -4,6 +4,7 @@ import { format } from 'url';
 import { environment } from '../environments/environment';
 import { rendererAppName, rendererAppPort } from './constants';
 import ExecuteEvents from './events/execute.events';
+import LogEvents from './events/log.events';
 import { store } from './events/storage.events';
 import { WindowStateKeeper } from './helpers/window-state.helper';
 
@@ -52,6 +53,7 @@ export default class App {
     App.initMainWindow();
     await App.loadMainWindow();
     ExecuteEvents.setMainWindow(App.mainWindow);
+    LogEvents.setMainWindow(App.mainWindow);
 
     if (App.isDevelopmentMode()) {
       App.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -78,6 +80,8 @@ export default class App {
         backgroundThrottling: false,
         enableRemoteModule: true,
         contextIsolation: false,
+        webviewTag: true,
+        nodeIntegrationInSubFrames: true,
       },
       opacity: 0,
     });

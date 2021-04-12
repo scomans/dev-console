@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BrowserWindow } from '@electron/remote';
-import { Dialog, ipcRenderer, webFrame } from 'electron';
+import { Dialog, ipcRenderer, webContents, webFrame } from 'electron';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class ElectronService {
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
+  webContents: typeof webContents;
   browserWindow: typeof BrowserWindow;
   readonly dialog: Dialog;
 
@@ -30,7 +31,7 @@ export class ElectronService {
     return this.isElectron && this.firstWindow?.isMaximized();
   }
 
-  private get firstWindow() {
+  get firstWindow() {
     if (this.isElectron) {
       return this.browserWindow.getFocusedWindow() ?? this.browserWindow.getAllWindows()[0] ?? null;
     } else {
@@ -46,6 +47,7 @@ export class ElectronService {
       this.webFrame = window.require('electron').webFrame;
       this.browserWindow = window.require('@electron/remote').BrowserWindow;
       this.dialog = window.require('@electron/remote').dialog;
+      this.webContents = window.require('@electron/remote').webContents;
 
       this.minimized.next(this.isMinimized);
       this.maximized.next(this.isMaximized);
@@ -70,6 +72,10 @@ export class ElectronService {
 
   async emit<T>(event: string, ...data: any[]): Promise<T> {
     return this.isElectron ? this.toZoneAwarePromise(this.ipcRenderer.invoke(event, data)) : null;
+  }
+
+  sendToHost(event: string, ...data: any[]) {
+    this.ipcRenderer.sendToHost(event, ...data);
   }
 
   on<T extends any[]>(event: string) {

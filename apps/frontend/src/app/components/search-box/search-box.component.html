@@ -1,0 +1,44 @@
+<div class="find-box" fxLayout="row" fxLayoutAlign="start center">
+  <input #searchInput
+         nz-input
+         nzSize="small"
+         ngModel
+         (ngModelChange)="this.searchInputValue.next($event)"
+  >
+  <div class="find-matches">
+    {{ currentResultIndex }}/{{ resultCount }}
+  </div>
+  <div class="find-case">
+    <nz-switch [(ngModel)]="caseSensitive"
+               nzCheckedChildren="Aa"
+               nzUnCheckedChildren="Aa"
+               (ngModelChange)="startToFind()"
+    ></nz-switch>
+
+  </div>
+  <div class="find-back">
+    <button nz-button
+            nzType="text"
+            nzSize="small"
+            [disabled]="resultCount === 0"
+            (click)="previous()"
+    >
+      <fa-icon icon="chevron-up"></fa-icon>
+    </button>
+  </div>
+  <div class="find-forward">
+    <button nz-button
+            nzType="text"
+            nzSize="small"
+            [disabled]="resultCount === 0"
+            (click)="next()"
+    >
+      <fa-icon icon="chevron-down"></fa-icon>
+    </button>
+  </div>
+  <div class="find-close">
+    <button nz-button nzType="text" nzSize="small" (click)="stopFind()">
+      <fa-icon icon="times"></fa-icon>
+    </button>
+  </div>
+</div>

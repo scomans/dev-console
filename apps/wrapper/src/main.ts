@@ -7,6 +7,7 @@ import App from './app/app';
 import AppEvents from './app/events/app.events';
 import ElectronEvents from './app/events/electron.events';
 import ExecuteEvents from './app/events/execute.events';
+import LogEvents from './app/events/log.events';
 import ProjectStorageEvents from './app/events/project-storage.events';
 import StorageEvents from './app/events/storage.events';
 import UpdateEvents from './app/events/update.events';
@@ -44,6 +45,7 @@ class Main {
     StorageEvents.bootstrapStorageEvents();
     ProjectStorageEvents.bootstrapStorageEvents();
     ExecuteEvents.bootstrapExecuteEvents();
+    LogEvents.bootstrapLogEvents();
 
     UpdateEvents.checkForUpdates();
   }

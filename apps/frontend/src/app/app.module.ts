@@ -2,7 +2,7 @@ import { ObserversModule } from '@angular/cdk/observers';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -23,6 +23,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
@@ -30,20 +31,22 @@ import { WINDOW } from './components/app.const';
 
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
+import { ChannelLogComponent } from './components/channel-log/channel-log.component';
 import { ColorSliderComponent } from './components/color-slider/color-slider.component';
-import { LogAllComponent } from './components/log-all/log-all.component';
+import { CombinedLogComponent } from './components/combined-log/combined-log.component';
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
 import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
-import { LogComponent } from './components/log/log.component';
+import { LogViewerComponent } from './components/log-viewer/log-viewer.component';
 import { ProjectEditModalComponent } from './components/project-edit-modal/project-edit-modal.component';
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
 import { ProjectComponent } from './components/project/project.component';
+import { SearchBoxComponent } from './components/search-box/search-box.component';
 import { AutoScrollDirective } from './directives/auto-scroll.directive';
+import { WebviewDirective } from './directives/webview.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
-import { LogStoreService } from './services/log-store.service';
 
 registerLocaleData(en);
 
@@ -51,8 +54,8 @@ registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
-    LogComponent,
-    LogAllComponent,
+    ChannelLogComponent,
+    CombinedLogComponent,
     LogMinimapComponent,
     ChannelEditModalComponent,
     LogEntryComponent,
@@ -64,6 +67,9 @@ registerLocaleData(en);
     ColorSliderComponent,
     CallFunctionPipe,
     AutoScrollDirective,
+    SearchBoxComponent,
+    WebviewDirective,
+    LogViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,6 +88,7 @@ registerLocaleData(en);
     NzModalModule,
     NzButtonModule,
     NzPopconfirmModule,
+    NzSwitchModule,
     NzToolTipModule,
     FontAwesomeModule,
     FlexLayoutModule,
@@ -103,12 +110,6 @@ registerLocaleData(en);
     {
       provide: WINDOW,
       useValue: window,
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (appInitService: LogStoreService) => () => appInitService.init(),
-      deps: [LogStoreService],
-      multi: true,
     },
   ],
   bootstrap: [AppComponent],

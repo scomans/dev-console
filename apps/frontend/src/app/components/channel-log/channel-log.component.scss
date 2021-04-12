@@ -4,11 +4,6 @@
   height: 100%;
 }
 
-.log-menu {
-  overflow: auto;
-  max-height: calc(100% - 64px);
-}
-
 fa-icon {
   padding-right: 10px
 }
@@ -33,6 +28,6 @@ fa-icon {
   }
 }
 
-cl-log-minimap {
+webview {
   height: calc(100% - 42px);
 }

@@ -1,0 +1,6 @@
+<cl-log-minimap *rxLet="colors$; let colors">
+  <cl-log-entry *ngFor="let entry of log$ | async; trackBy:trackById"
+                [colors]="colors"
+                [entry]="entry"
+  ></cl-log-entry>
+</cl-log-minimap>

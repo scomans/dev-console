@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Channel, ExecuteStatus } from '@dev-console/types';
+import { Channel, ExecuteStatus, LogEntry } from '@dev-console/types';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { mapElectronEvent } from '../helpers/electron.helper';
 import { ElectronService } from './electron.service';
-import { LogEntry } from './log-store.service';
 
 export interface ExecuteEvent<E extends string, D extends ExecuteData> {
   event: E;

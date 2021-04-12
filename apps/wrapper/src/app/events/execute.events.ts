@@ -6,6 +6,7 @@ import { set } from 'lodash';
 import { Readable } from 'stream';
 import { CancelToken } from '../helpers/cancel.helper';
 import { waitOn } from '../helpers/wait-on.helper';
+import { addLine } from './log.events';
 
 let mainWindow: Electron.BrowserWindow = null;
 
@@ -110,7 +111,7 @@ function sendData(channel, data: string, type: 'data' | 'error') {
       data = data.replace(channel.regex.searchRegex, channel.regex.replace ?? '');
     }
 
-    mainWindow.webContents.send('execute-data', {
+    addLine(channel.id, {
       id: channel.id,
       data: data,
       type,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -7,16 +7,16 @@ import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { trackById } from '../../helpers/angular.helper';
 import { ExecuteService } from '../../services/execute.service';
-import { LogEntry, LogStoreService } from '../../services/log-store.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
+import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
 @Component({
-  selector: 'dc-log',
-  templateUrl: './log.component.html',
-  styleUrls: ['./log.component.scss'],
+  selector: 'dc-channel-log',
+  templateUrl: './channel-log.component.html',
+  styleUrls: ['./channel-log.component.scss'],
 })
-export class LogComponent implements OnInit {
+export class ChannelLogComponent implements OnInit {
 
   ExecuteStatus = ExecuteStatus;
   trackById = trackById;
@@ -24,25 +24,19 @@ export class LogComponent implements OnInit {
 
   status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;
-  log$: Observable<LogEntry[]>;
+
+  @ViewChild(LogMinimapComponent, { read: ElementRef }) minimapElement: ElementRef<HTMLElement>;
 
   constructor(
     private readonly projectStore: ProjectStoreService,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly logStoreService: LogStoreService,
     private readonly executeService: ExecuteService,
   ) {
   }
 
   ngOnInit() {
     this.channel$ = this.projectStore.channel.query.selectActive();
-    this.log$ = this.projectStore.channel.query
-      .selectActiveId()
-      .pipe(
-        filterNil(),
-        switchMap(id => this.logStoreService.getStore(id)),
-      );
     this.status$ = this.projectStore.channel.query
       .selectActiveId()
       .pipe(
@@ -94,5 +88,11 @@ export class LogComponent implements OnInit {
 
   stop(channel: Channel) {
     void this.executeService.kill(channel.id);
+  }
+
+  makeColor(channel: Channel) {
+    return {
+      [channel.id]: channel.color,
+    };
   }
 }

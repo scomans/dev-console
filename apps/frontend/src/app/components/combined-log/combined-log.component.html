@@ -19,8 +19,11 @@
     </button>
   </div>
 
-  <cl-log-minimap *rxLet="channelColors$; let colors">
-    <cl-log-entry *ngFor="let entry of log$ | async; trackBy:trackById" [entry]="entry" [color]="colors[entry.source]"></cl-log-entry>
-  </cl-log-minimap>
+  <webview #webview
+           link="/log"
+           [data]="{mode: 'combined', colors: (channelColors$ | async)}"
+  ></webview>
+
+  <cl-search-box [webview]="webview"></cl-search-box>
 
 </ng-container>

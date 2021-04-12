@@ -85,3 +85,10 @@ nz-content {
   overflow: hidden;
 }
 
+.log-menu {
+  overflow: auto;
+  max-height: calc(100% - 64px);
+  user-select: none;
+  -webkit-user-select: none;
+}
+

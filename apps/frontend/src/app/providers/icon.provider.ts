@@ -12,6 +12,8 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faAlignLeft as fasAlignLeft,
+  faChevronDown as fasChevronDown,
+  faChevronUp as fasChevronUp,
   faCircle as fasCircle,
   faDotCircle as fasDotCircle,
   faEdit as fasEdit,
@@ -23,6 +25,7 @@ import {
   faRedo as fasRedo,
   faStop as fasStop,
   faTerminal as fasTerminal,
+  faTimes as fasTimes,
   faTrash as fasTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
@@ -52,6 +55,9 @@ const fasIcons = [
   fasLayerGroup,
   fasDotCircle,
   fasInfoCircle,
+  fasChevronUp,
+  fasChevronDown,
+  fasTimes,
 ];
 
 const nzIcons = [
