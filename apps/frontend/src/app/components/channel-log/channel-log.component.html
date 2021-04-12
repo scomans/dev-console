@@ -40,7 +40,6 @@
            link="/log"
            [data]="{mode: 'channel', channel: channel, colors: channel | callFunction:makeColor}"
            [tunnels]="['log-new-line']"
-           [devTools]="true"
   ></webview>
 
   <cl-search-box [webview]="webview"></cl-search-box>
