@@ -57,7 +57,7 @@ async function main() {
       console.log('DID PRERELEASE', VERSION);
     } else {
       const latestRelease = result.data.filter(release => !release.prerelease && release.tag_name.startsWith(`${ project }-`))[0];
-      const releaseVersion = latestRelease.tag_name.replace(`${ project }-`, '');
+      const releaseVersion = latestRelease ? latestRelease.tag_name.replace(`${ project }-`, '') : '0.0.0';
 
       if (gt(VERSION, releaseVersion)) {
 
