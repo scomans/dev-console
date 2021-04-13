@@ -29,6 +29,10 @@ log.transports.file.resolvePath = () => {
 };
 Object.assign(console, log.functions);
 
+if (process.platform === 'win32') {
+  app.setAppUserModelId(app.name);
+}
+
 class Main {
 
   static initialize() {

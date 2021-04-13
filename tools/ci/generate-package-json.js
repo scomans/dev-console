@@ -72,7 +72,8 @@ function generatePackageJson(options) {
     return acc;
   }, {});
   const basePackageJson = {
-    name: options.project,
+    name: options.name ?? packageJson.name,
+    productName: options.productName ?? packageJson.productName,
     author: packageJson.author,
     description: packageJson.description,
     version: packageVersions[options.project],
