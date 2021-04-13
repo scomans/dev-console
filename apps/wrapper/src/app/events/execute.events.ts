@@ -24,10 +24,11 @@ export default class ExecuteEvents {
     mainWindow = win;
   }
 
-  static quit() {
+  static async quit() {
     mainWindow = null;
-    runningProcesses.forEach(value => value.kill());
     waitingProcesses.forEach(cancel => cancel('quit'));
+    const ids = Array.from(runningProcesses.keys());
+    await Promise.all(ids.map(id => kill(id)));
     return true;
   }
 }
