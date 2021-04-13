@@ -65,6 +65,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
             if (this.visibility) {
               this.findNext(!input.shift);
             }
+          } else if (input.control && input.shift && input.alt && input.key === 'O') {
+            this.webview.openDevTools();
           }
         });
       });
