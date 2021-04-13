@@ -79,6 +79,9 @@ export class CombinedLogComponent implements OnInit {
       if (status !== ExecuteStatus.STOPPED) {
         await this.executeService.kill(channel.id);
       }
+    }
+
+    for (let channel of channels) {
       void this.executeService.run(channel);
     }
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
 import { Channel, LogEntryWithSource } from '@dev-console/types';
 import { from, merge, Observable } from 'rxjs';
-import { distinctUntilKeyChanged, filter, map, scan, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, scan, startWith, switchMap } from 'rxjs/operators';
 import { trackById } from '../../helpers/angular.helper';
 import { ElectronService } from '../../services/electron.service';
 
@@ -15,7 +15,6 @@ export class LogViewerComponent implements OnInit {
 
   trackById = trackById;
 
-  channel$: Observable<Channel>;
   log$: Observable<LogEntryWithSource[]>;
   colors$: Observable<Record<string, string>>;
 
@@ -31,11 +30,6 @@ export class LogViewerComponent implements OnInit {
         map(data => data[0]),
         filterNil(),
       );
-    this.channel$ = data$.pipe(
-      filter(data => data.mode === 'channel'),
-      map(data => data.channel),
-      distinctUntilKeyChanged('id'),
-    );
     this.colors$ = data$.pipe(
       map(data => data.colors),
       startWith({}),
