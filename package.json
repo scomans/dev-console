@@ -16,6 +16,7 @@
     "make:wrapper": "nx build wrapper --prod && nx run wrapper:make",
     "version": "node ./tools/ci/update-version.js",
     "release": "node ./tools/ci/release.js",
+    "auto-changelog": "auto-changelog",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",

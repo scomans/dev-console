@@ -44,7 +44,7 @@ jobs:
 
       - name: Create changelog
         run: |
-          echo "CHANGELOG_CONTENT=$(auto-changelog --starting-version ${{ env.VERSION }})" >> $GITHUB_ENV
+          echo "CHANGELOG_CONTENT=$(yarn run auto-changelog --starting-version ${{ env.VERSION }})" >> $GITHUB_ENV
 
       - name: Deploy app
         run: yarn run release frontend xXKeyleXx DevConsole
