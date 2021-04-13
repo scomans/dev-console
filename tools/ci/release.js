@@ -1,12 +1,14 @@
-let { request } = require('@octokit/request');
+const { exec } = require('child_process');
 const { gt, prerelease } = require('semver');
 const { createReadStream, statSync } = require('fs');
 const { join, resolve, dirname, basename } = require('path');
+const { run: generateAutoChangelog } = require('auto-changelog/src/run');
+let { request } = require('@octokit/request');
 
+const originalStdoutWrite = process.stdout.write.bind(process.stdout);
 const TOKEN = process.env.TOKEN;
 const [, , project, owner, repo] = process.argv;
 const VERSION = require('../../versions.json')[project];
-const CHANGELOG_CONTENT = process.env.CHANGELOG_CONTENT && process.env.CHANGELOG_CONTENT !== '' ? process.env.CHANGELOG_CONTENT : null;
 
 request = request.defaults({
   owner: owner,
@@ -43,7 +45,7 @@ async function main() {
         name: `${ project } v${ VERSION }`,
         prerelease: true,
         draft: true,
-        body: CHANGELOG_CONTENT ?? `This is a development build!\n\n[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
+        body: `This is a development build!\n\n[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
       });
 
       await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
@@ -53,6 +55,14 @@ async function main() {
       await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
         release_id: newRelease.data.id,
         draft: false,
+      });
+
+      await exec('git fetch');
+
+      const changelog = await generateChangelog();
+      await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
+        release_id: newRelease.data.id,
+        body: changelog,
       });
 
       console.log('DID PRERELEASE', VERSION);
@@ -66,7 +76,7 @@ async function main() {
           tag_name: `${ project }-${ VERSION }`,
           name: `${ project } v${ VERSION }`,
           draft: true,
-          body: CHANGELOG_CONTENT ?? `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
+          body: `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
         });
 
         await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
@@ -78,12 +88,33 @@ async function main() {
           draft: false,
         });
 
+        await exec('git fetch');
+
+        const changelog = await generateChangelog();
+        await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
+          release_id: newRelease.data.id,
+          body: changelog,
+        });
+
         console.log(`DID RELEASE for ${ project }: ${ VERSION }`);
       }
     }
   } catch (err) {
     console.error(err);
   }
+}
+
+async function generateChangelog() {
+  process.stdout.write = (chunk) => result += chunk;
+  let result = '';
+  await generateAutoChangelog([
+    process.argv[0],
+    process.argv[1],
+    '--starting-version',
+    project + '-' + VERSION,
+  ]);
+  process.stdout.write = originalStdoutWrite;
+  return result;
 }
 
 async function uploadAsset(release, filePath) {

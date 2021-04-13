@@ -24,9 +24,9 @@ async function updateVersion() {
     const latestVersion = latestPreRelease.tag_name.replace(`${ project }-`, '');
     versions[project] = inc(latestVersion, 'prerelease', 'beta');
     await writeFile(join(__dirname, '../../versions.json'), JSON.stringify(versions, null, 2) + '\n');
-  }
 
-  console.log(`${ project }-${ versions[project] }`);
+    console.log(`Set version of ${ project } to ${ versions[project] }`);
+  }
 }
 
 void updateVersion();

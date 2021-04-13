@@ -8,11 +8,9 @@
   {{#commit-list commits heading='### Breaking Changes' message=':boom:'}}
     - {{subject}} [`{{shorthash}}`]({{href}})
   {{/commit-list}}
-
   {{#commit-list commits heading='#### Other Changes' exclude=':boom:|:bug:'}}
     - {{subject}} [`{{shorthash}}`]({{href}})
   {{/commit-list}}
-
   {{#commit-list commits heading='#### Bugs Fixed' message=':bug:' exclude=':boom:'}}
     - {{subject}} [`{{shorthash}}`]({{href}})
   {{/commit-list}}

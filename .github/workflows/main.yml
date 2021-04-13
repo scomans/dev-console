@@ -38,15 +38,10 @@ jobs:
         run: yarn install
 
       - name: Update version
-        run: |
-          echo "VERSION=$(yarn run version frontend xXKeyleXx DevConsole)" >> $GITHUB_ENV
+        run: yarn run version frontend xXKeyleXx DevConsole
 
       - name: Build app
         run: yarn run make
-
-      - name: Create changelog
-        run: |
-          echo "CHANGELOG_CONTENT=$(yarn run auto-changelog --starting-version ${{ env.VERSION }})" >> $GITHUB_ENV
 
       - name: Deploy app
         run: yarn run release frontend xXKeyleXx DevConsole
