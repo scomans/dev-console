@@ -42,7 +42,7 @@ async function main() {
         name: `${ project } v${ VERSION }`,
         prerelease: true,
         draft: true,
-        body: `This is a development build!\n\n[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
+        body: process.env.CHANGELOG_CONTENT ?? `This is a development build!\n\n[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
       });
 
       await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
@@ -65,7 +65,7 @@ async function main() {
           tag_name: `${ project }-${ VERSION }`,
           name: `${ project } v${ VERSION }`,
           draft: true,
-          body: `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
+          body: process.env.CHANGELOG_CONTENT ?? `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
         });
 
         await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
