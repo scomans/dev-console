@@ -1,6 +1,7 @@
 <div [style.border-color]="colors[entry.source]"
      [style.background-color]="entry.type === 'data' ? colors[entry.source] + '14' : 'rgba(196, 2, 2, 0.2)'"
      [class]="entry.type"
-     class="log-entry">
-  <pre [innerHTML]="entry.data | ansi" [class]="entry.type"></pre>
+     class="log-entry"
+>
+  <span [innerHTML]="entry.data | ansi" [class]="entry.type"></span>
 </div>

@@ -33,10 +33,8 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   black = (pc) => `rgba(255,255,255,${pc / 100})`;
   settings = {
     styles: {
-      'header,footer,section,article': this.black(8),
       'pre.error': 'rgba(255,0,0,0.4)',
-      'h1,a,p,pre': this.black(30),
-      'h2,h3,h4': this.black(8),
+      '.log-entry span': this.black(30),
     },
     back: this.black(2),
     view: this.black(5),
