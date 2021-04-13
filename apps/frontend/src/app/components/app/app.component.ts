@@ -35,7 +35,7 @@ export class AppComponent {
   }
 
   close() {
-    void this.electronService.quit();
+    this.electronService.quit();
   }
 
   @HostListener('document:keydown.control.alt.shift.i')

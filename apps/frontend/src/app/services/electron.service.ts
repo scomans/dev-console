@@ -1,7 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BrowserWindow } from '@electron/remote';
 import { Dialog, ipcRenderer, webContents, webFrame } from 'electron';
-import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, OperatorFunction, Subject } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,8 @@ export class ElectronService {
   public readonly minimized$ = this.minimized.asObservable();
   private readonly maximized = new BehaviorSubject(false);
   public readonly maximized$ = this.maximized.asObservable();
+  private readonly close = new Subject();
+  public readonly closeListeners = new Map<string, OperatorFunction<any, boolean>>();
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -68,6 +71,22 @@ export class ElectronService {
         this.minimized.next(false);
       });
     }
+
+    this.close.asObservable()
+      .pipe(
+        switchMap(() => {
+            const listeners = Array.from(this.closeListeners.values());
+            // @ts-ignore
+            const returnVal = of(true).pipe(
+              map(() => true),
+              ...listeners,
+            );
+            return returnVal as Observable<boolean>;
+          },
+        ),
+        filter(close => close),
+      )
+      .subscribe(() => window.close());
   }
 
   async emit<T>(event: string, ...data: any[]): Promise<T> {
@@ -98,7 +117,15 @@ export class ElectronService {
   }
 
   quit(): void {
-    return window.close();
+    this.close.next();
+  }
+
+  registerCloseListener(key: string, mapper: OperatorFunction<void, boolean>) {
+    this.closeListeners.set(key, mapper);
+  }
+
+  unregisterCloseListener(key: string) {
+    this.closeListeners.delete(key);
   }
 
   minimize(): void {

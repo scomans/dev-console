@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filterNil, uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
@@ -17,7 +17,7 @@ import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-mo
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss'],
 })
-export class ProjectComponent {
+export class ProjectComponent implements OnInit, OnDestroy {
 
   ExecuteStatus = ExecuteStatus;
   subs = new SubSink();
@@ -52,6 +52,14 @@ export class ProjectComponent {
       map(activeId => !activeId),
     );
     this.channels$ = this.projectStore.channel.query.selectAll();
+  }
+
+  ngOnInit() {
+    this.electronService.registerCloseListener('project-close', switchMap(() => this.checkRunning()));
+  }
+
+  ngOnDestroy() {
+    this.electronService.unregisterCloseListener('project-close');
   }
 
   toggleSidebar() {
@@ -94,7 +102,7 @@ export class ProjectComponent {
     return this.executeService.selectStatus(channelId);
   }
 
-  warnRunning() {
+  async checkRunning() {
     let hasRunning = false;
     const channels = this.projectStore.channel.query.getAll();
     for (let channel of channels) {
@@ -106,25 +114,31 @@ export class ProjectComponent {
     }
 
     if (hasRunning) {
-      this.modal.confirm({
-        nzTitle: 'Do you want to close this project?',
-        nzContent: 'When clicked the OK button, all running channels will be stopped!',
-        nzOnOk: async () => {
-          const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
-
-          for (let channel of channels) {
-            const status = this.executeService.getStatus(channel.id);
-            if (status !== ExecuteStatus.STOPPED) {
-              await this.executeService.kill(channel.id);
-            }
-          }
-          await this.executeService.clear();
-
-          return this.router.navigate(['/']);
-        },
+      return new Promise<boolean>(resolve => {
+        this.modal.confirm({
+          nzTitle: 'Do you want to close this project?',
+          nzContent: 'When clicked the OK button, all running channels will be stopped!',
+          nzOnOk: () => resolve(true),
+          nzOnCancel: () => resolve(false),
+        });
       });
-    } else {
-      void this.router.navigate(['/']);
+    }
+    return true;
+  }
+
+  async warnRunning() {
+    const close = await this.checkRunning();
+    if (close) {
+      const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
+
+      for (let channel of channels) {
+        const status = this.executeService.getStatus(channel.id);
+        if (status !== ExecuteStatus.STOPPED) {
+          await this.executeService.kill(channel.id);
+        }
+      }
+      await this.executeService.clear();
+      return this.router.navigate(['/']);
     }
   }
 }
