@@ -23,6 +23,11 @@ ipcMain.handle('log-get', (event, [id]: [string]) => {
   return logStores.get(id) ?? [];
 });
 
+ipcMain.handle('log-clear', () => {
+  allLogStores.clear();
+  logStores.clear();
+});
+
 ipcMain.handle('log-get-all', () => {
   return allLogStores.toArray();
 });

@@ -118,6 +118,7 @@ export class ProjectComponent {
               await this.executeService.kill(channel.id);
             }
           }
+          await this.executeService.clear();
 
           return this.router.navigate(['/']);
         },

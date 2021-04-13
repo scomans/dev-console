@@ -96,4 +96,10 @@ export class ExecuteService {
       return this.electronService.emit<boolean>('execute-kill', channelId);
     }
   }
+
+  clear() {
+    if (this.electronService.isElectron) {
+      return this.electronService.emit<boolean>('log-clear');
+    }
+  }
 }
