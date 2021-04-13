@@ -20,8 +20,8 @@ async function updateVersion() {
     });
 
     const result = await request('GET /repos/{owner}/{repo}/releases');
-    const latestPreRelease = result.data.filter(release => release.prerelease && release.tag_name.startsWith(`${ project }-`))[0];
-    const latestVersion = latestPreRelease.tag_name.replace(`${ project }-`, '');
+    const latestPreRelease = result.data.filter(release => release.prerelease && release.tag_name.startsWith(`${ project }-${ versions[project] }`))[0];
+    const latestVersion = latestPreRelease ? latestPreRelease.tag_name.replace(`${ project }-`, '') : versions[project];
     versions[project] = inc(latestVersion, 'prerelease', 'beta');
     await writeFile(join(__dirname, '../../versions.json'), JSON.stringify(versions, null, 2) + '\n');
 
