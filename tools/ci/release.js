@@ -65,7 +65,7 @@ async function main() {
           tag_name: `${ project }-${ VERSION }`,
           name: `${ project } v${ VERSION }`,
           draft: true,
-          body: `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-next/${ project }-setup-${ VERSION }.exe)`,
+          body: `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
         });
 
         await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
