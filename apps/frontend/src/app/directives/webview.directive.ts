@@ -62,7 +62,7 @@ export class WebviewDirective implements OnInit {
 
   ngOnInit() {
     const webview = this.el.nativeElement;
-    webview.src = document.baseURI + '#' + this._link;
+    webview.src = document.location.origin + document.location.pathname + '#' + this._link;
   }
 
   async tunnelEvents(events: string[]) {
@@ -76,7 +76,7 @@ export class WebviewDirective implements OnInit {
   }
 
   async loadLink(link: string) {
-    const url = document.baseURI + '#' + link;
+    const url = document.location.origin + document.location.pathname + '#' + link;
     const webview = await this.webview;
     if (webview.getURL() !== url) {
       await webview.loadURL(url);
