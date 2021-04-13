@@ -9,11 +9,11 @@
       <fa-icon icon="play"></fa-icon>
       Run All
     </button>
-    <button nz-button class="restart" (click)="restartAll()" [disabled]="anythingExecuting">
+    <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting">
       <fa-icon icon="play"></fa-icon>
       Restart All
     </button>
-    <button nz-button nzDanger (click)="stopAll()" [disabled]="anythingExecuting">
+    <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting">
       <fa-icon icon="stop"></fa-icon>
       Stop All
     </button>

@@ -60,13 +60,13 @@ export class CombinedLogComponent implements OnInit {
     );
   }
 
-  async runAll() {
+  runAll() {
     const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
 
     for (let channel of channels) {
-      const running = this.executeService.getStatus(channel.id);
-      if (!running) {
-        await this.executeService.run(channel);
+      const status = this.executeService.getStatus(channel.id);
+      if (status === ExecuteStatus.STOPPED) {
+        void this.executeService.run(channel);
       }
     }
   }
@@ -75,11 +75,11 @@ export class CombinedLogComponent implements OnInit {
     const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
 
     for (let channel of channels) {
-      const running = this.executeService.getStatus(channel.id);
-      if (running) {
+      const status = this.executeService.getStatus(channel.id);
+      if (status !== ExecuteStatus.STOPPED) {
         await this.executeService.kill(channel.id);
       }
-      await this.executeService.run(channel);
+      void this.executeService.run(channel);
     }
   }
 
@@ -87,8 +87,8 @@ export class CombinedLogComponent implements OnInit {
     const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
 
     for (let channel of channels) {
-      const running = this.executeService.getStatus(channel.id);
-      if (running) {
+      const status = this.executeService.getStatus(channel.id);
+      if (status !== ExecuteStatus.STOPPED) {
         await this.executeService.kill(channel.id);
       }
     }
