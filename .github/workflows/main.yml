@@ -13,6 +13,8 @@ jobs:
     runs-on: windows-latest
     env:
       TOKEN: ${{ secrets.TOKEN }}
+      VERSION: "frontend-0.0.0"
+      CHANGELOG_CONTENT: ""
 
     steps:
       - uses: actions/checkout@v2
