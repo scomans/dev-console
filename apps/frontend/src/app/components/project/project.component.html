@@ -6,7 +6,7 @@
             [nzCollapsed]="sidebarCollapsed$ | async"
             [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a routerLink="/">
+      <a (click)="warnRunning()">
         <img src="assets/logo.svg" alt="DevConsole" class="logo">
         <h1>{{ project.name }}</h1>
       </a>

@@ -1,5 +1,5 @@
 import { Component, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { filterNil, uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -36,6 +36,7 @@ export class ProjectComponent {
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecuteService,
+    private readonly router: Router,
   ) {
     this.project$ = this.route.params.pipe(
       map(params => params.projectId),
@@ -91,5 +92,38 @@ export class ProjectComponent {
 
   channelStatus(channelId: string) {
     return this.executeService.selectStatus(channelId);
+  }
+
+  warnRunning() {
+    let hasRunning = false;
+    const channels = this.projectStore.channel.query.getAll();
+    for (let channel of channels) {
+      const status = this.executeService.getStatus(channel.id);
+      if (status !== ExecuteStatus.STOPPED) {
+        hasRunning = true;
+        break;
+      }
+    }
+
+    if (hasRunning) {
+      this.modal.confirm({
+        nzTitle: 'Do you want to close this project?',
+        nzContent: 'When clicked the OK button, all running channels will be stopped!',
+        nzOnOk: async () => {
+          const channels = this.projectStore.channel.query.getAll().filter(channel => channel.active);
+
+          for (let channel of channels) {
+            const status = this.executeService.getStatus(channel.id);
+            if (status !== ExecuteStatus.STOPPED) {
+              await this.executeService.kill(channel.id);
+            }
+          }
+
+          return this.router.navigate(['/']);
+        },
+      });
+    } else {
+      void this.router.navigate(['/']);
+    }
   }
 }
