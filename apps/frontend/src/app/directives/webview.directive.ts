@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { WebviewTag } from 'electron';
 import { SubSink } from 'subsink';
 import { ElectronService } from '../services/electron.service';
@@ -7,7 +7,7 @@ import { ElectronService } from '../services/electron.service';
 @Directive({
   selector: 'webview',
 })
-export class WebviewDirective implements OnInit {
+export class WebviewDirective implements OnInit, OnDestroy {
 
   tunnelSubs = new SubSink();
 
@@ -63,6 +63,10 @@ export class WebviewDirective implements OnInit {
   ngOnInit() {
     const webview = this.el.nativeElement;
     webview.src = document.location.origin + document.location.pathname + '#' + this._link;
+  }
+
+  ngOnDestroy() {
+    this.tunnelSubs.unsubscribe();
   }
 
   async tunnelEvents(events: string[]) {
