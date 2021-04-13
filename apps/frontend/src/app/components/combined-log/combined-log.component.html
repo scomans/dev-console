@@ -22,6 +22,7 @@
   <webview #webview
            link="/log"
            [data]="{mode: 'combined', colors: (channelColors$ | async)}"
+           [tunnels]="['log-new-line']"
   ></webview>
 
   <cl-search-box [webview]="webview"></cl-search-box>
