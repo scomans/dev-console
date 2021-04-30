@@ -54,6 +54,9 @@ export class LogViewerComponent implements OnInit {
         ).pipe(
           scan((acc, entries) => {
             acc.push(...entries);
+            while (acc.length > 1000) {
+              acc.shift();
+            }
             return acc;
           }, []),
         );

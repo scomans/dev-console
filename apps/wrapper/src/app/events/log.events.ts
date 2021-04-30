@@ -4,6 +4,8 @@ import { ipcMain } from 'electron';
 
 let mainWindow: Electron.BrowserWindow = null;
 
+const maxLength = 1000;
+
 const allLogStores = new SortedArray<LogEntryWithSource>([], (a, b) => a.timestamp === b.timestamp, (a, b) => a.timestamp - b.timestamp);
 const logStores = new Map<string, LogEntry[]>();
 
@@ -46,8 +48,16 @@ export function addLine(id: string, line: LogEntry) {
   if (!logStores.has(id)) {
     logStores.set(id, []);
   }
-  logStores.get(id).push(newLine);
+  const logStore = logStores.get(id);
+  logStore.push(newLine);
+  if (logStore.length > maxLength) {
+    logStore.shift();
+  }
+
   allLogStores.add(newLine);
+  if (allLogStores.length > maxLength) {
+    allLogStores.shift();
+  }
 
   if (mainWindow) {
     mainWindow.webContents.send('log-new-line', newLine);
