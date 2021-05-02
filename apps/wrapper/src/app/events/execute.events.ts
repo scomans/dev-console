@@ -44,16 +44,19 @@ ipcMain.handle('execute-run', async (event, [channel, projectFile]: [Channel, st
       const cancel = CancelToken.build();
       waitingProcesses.set(channel.id, cancel.cancel);
       mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.WAITING });
+      sendData(channel, channel.name + ' is waiting to start...', 'info');
       await waitOn({ resources: channel.waitOn }, cancel.token);
       waitingProcesses.delete(channel.id);
     }
     const process = exec(channel, projectFile);
     runningProcesses.set(channel.id, process);
     mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.RUNNING });
+    sendData(channel, channel.name + ' is now running', 'info');
     return true;
   } catch (err) {
     console.error(err);
     mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.STOPPED });
+    sendData(channel, channel.name + ' failed to start!', 'info');
     return false;
   }
 });
@@ -136,12 +139,13 @@ function exec(channel: Channel, projectFile: string) {
     runningProcesses.delete(channel.id);
     if (mainWindow) {
       mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.STOPPED, code, signal });
+      sendData(channel, channel.name + ' exited', 'info');
     }
   });
   return process;
 }
 
-function sendData(channel, data: string, type: 'data' | 'error') {
+function sendData(channel, data: string, type: 'data' | 'error' | 'info') {
   if (mainWindow) {
     if (channel.regex?.searchRegex) {
       data = data.replace(channel.regex.searchRegex, channel.regex.replace ?? '');

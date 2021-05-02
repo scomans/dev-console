@@ -16,5 +16,14 @@
     &.error {
       color: red;
     }
+
+    &.info {
+      color: lightseagreen;
+      font-weight: bold;
+
+      &:before {
+        content: "ℹ️ ";
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 export interface LogEntry {
   id: number;
   data: string;
-  type: 'data' | 'error';
+  type: 'data' | 'error' | 'info';
   timestamp: number;
 }
 
