@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { ipcMain } from 'electron';
+import { ipcMain, shell } from 'electron';
 import App from '../app';
 
 
@@ -17,4 +17,8 @@ ipcMain.handle('open-folder', async (event, [path]: [string]) => {
 ipcMain.handle('open-devtools', async () => {
   App.mainWindow.webContents.openDevTools({ mode: 'detach' });
   return true;
+});
+
+ipcMain.handle('open-external', async (event, [url]) => {
+  return shell.openExternal(url);
 });

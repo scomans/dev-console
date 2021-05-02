@@ -1,22 +1,23 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
 import { Channel, ExecuteStatus } from '@dev-console/types';
+import { WebviewTag } from 'electron';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { trackById } from '../../helpers/angular.helper';
+import { ElectronService } from '../../services/electron.service';
 import { ExecuteService } from '../../services/execute.service';
 import { ProjectStoreService } from '../../stores/project-store.service';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
-import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
 @Component({
   selector: 'dc-channel-log',
   templateUrl: './channel-log.component.html',
   styleUrls: ['./channel-log.component.scss'],
 })
-export class ChannelLogComponent implements OnInit {
+export class ChannelLogComponent implements OnInit, AfterViewInit {
 
   ExecuteStatus = ExecuteStatus;
   trackById = trackById;
@@ -25,13 +26,14 @@ export class ChannelLogComponent implements OnInit {
   status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;
 
-  @ViewChild(LogMinimapComponent, { read: ElementRef }) minimapElement: ElementRef<HTMLElement>;
+  @ViewChild('webview', { read: ElementRef }) webview: ElementRef<WebviewTag>;
 
   constructor(
     private readonly projectStore: ProjectStoreService,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecuteService,
+    private readonly electronService: ElectronService,
   ) {
   }
 
@@ -43,6 +45,12 @@ export class ChannelLogComponent implements OnInit {
         filterNil(),
         switchMap(id => this.executeService.selectStatus(id)),
       );
+  }
+
+  ngAfterViewInit() {
+    this.webview.nativeElement.addEventListener('new-window', (event) => {
+      void this.electronService.emit('open-external', event.url);
+    });
   }
 
   deleteChannel(channel: Channel) {

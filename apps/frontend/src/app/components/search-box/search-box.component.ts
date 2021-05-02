@@ -31,7 +31,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly electronService: ElectronService,
-    private _ngZone: NgZone,
+    private readonly _ngZone: NgZone,
   ) {
   }
 

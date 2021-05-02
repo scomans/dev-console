@@ -45,7 +45,9 @@ import { SearchBoxComponent } from './components/search-box/search-box.component
 import { AutoScrollDirective } from './directives/auto-scroll.directive';
 import { WebviewDirective } from './directives/webview.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
+import { AutolinkPipe } from './pipes/autolink.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
+import { SafePipe } from './pipes/safe.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
 
@@ -71,6 +73,8 @@ registerLocaleData(en);
     SearchBoxComponent,
     WebviewDirective,
     LogViewerComponent,
+    AutolinkPipe,
+    SafePipe,
   ],
   imports: [
     BrowserModule,
