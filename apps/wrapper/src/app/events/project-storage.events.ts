@@ -7,7 +7,9 @@ import { StoreSchema } from '../types/store';
 
 app.setPath('userData', join(app.getPath('appData'), 'DevConsole'));
 
-let store = new Store<StoreSchema>();
+let store = new Store<StoreSchema>({
+  serialize: value => JSON.stringify(value, undefined, 2),
+});
 
 const updateWatchers: { [key: string]: { watchers: WebContents[], unsub: () => void } } = {};
 const syncedKeys: { from: string, to: string, unsub: () => EventEmitter }[] = [];
@@ -24,6 +26,7 @@ ipcMain.handle('project-store-open', (event, [path]) => {
   store = new Store<StoreSchema>({
     name,
     cwd,
+    serialize: value => JSON.stringify(value, undefined, 2),
   });
   return true;
 });
