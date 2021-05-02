@@ -34,7 +34,7 @@ export class ChannelEditModalComponent implements OnInit {
       envFile: [this.channel?.envFile],
       envVars: [this.channel?.envVars ? stringifyEnv(this.channel.envVars) : undefined],
       arguments: [this.channel?.arguments?.join('\n')],
-      active: [this.channel?.active, [Validators.required]],
+      active: [this.channel?.active ?? true, [Validators.required]],
       regex: this.fb.group({
         search: [this.channel?.regex?.search],
         replace: [this.channel?.regex?.replace],
