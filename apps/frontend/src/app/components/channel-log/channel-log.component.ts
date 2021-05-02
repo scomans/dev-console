@@ -38,9 +38,13 @@ export class ChannelLogComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.channel$ = this.projectStore.channel.query.selectActive();
-    this.status$ = this.projectStore.channel.query
-      .selectActiveId()
+    this.channel$ = this.projectStore.ui.query
+      .select('activeChannel')
+      .pipe(
+        switchMap(activeChannel => this.projectStore.channel.query.selectEntity(activeChannel)),
+      );
+    this.status$ = this.projectStore.ui.query
+      .select('activeChannel')
       .pipe(
         filterNil(),
         switchMap(id => this.executeService.selectStatus(id)),

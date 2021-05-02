@@ -4,23 +4,19 @@ import { ProjectStore } from './project.store';
 export class ProjectService {
 
   constructor(
-    private readonly channelStore: ProjectStore,
+    private readonly projectStore: ProjectStore,
   ) {
   }
 
   add(channel: Project) {
-    this.channelStore.add(channel);
+    this.projectStore.add(channel);
   }
 
   update(id, channel: Partial<Project>) {
-    this.channelStore.update(id, channel);
+    this.projectStore.update(id, channel);
   }
 
   remove(id: string) {
-    this.channelStore.remove(id);
-  }
-
-  setActive(id: string) {
-    this.channelStore.setActive(id);
+    this.projectStore.remove(id);
   }
 }

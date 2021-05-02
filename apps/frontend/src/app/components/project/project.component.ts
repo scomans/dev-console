@@ -47,7 +47,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
         void this.projectStore.openProject(project);
       }),
     );
-    this.selectedChannelId$ = this.projectStore.channel.query.selectActiveId();
+    this.selectedChannelId$ = this.projectStore.ui.query.select('activeChannel');
     this.allLogs$ = this.selectedChannelId$.pipe(
       map(activeId => !activeId),
     );
@@ -67,7 +67,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   openChannel(id: string) {
-    this.projectStore.channel.service.setActive(id);
+    this.projectStore.ui.service.setChannelActive(id);
   }
 
   newChannel() {

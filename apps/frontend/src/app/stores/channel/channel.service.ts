@@ -19,8 +19,4 @@ export class ChannelService {
   remove(id: string) {
     this.channelStore.remove(id);
   }
-
-  setActive(id: string) {
-    this.channelStore.setActive(id);
-  }
 }

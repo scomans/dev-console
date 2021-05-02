@@ -18,4 +18,10 @@ export class UiService {
       sidebarCollapsed: !state.sidebarCollapsed,
     }));
   }
+
+  setChannelActive(channelId: string) {
+    this.uiStore.update(state => ({
+      activeChannel: channelId,
+    }));
+  }
 }

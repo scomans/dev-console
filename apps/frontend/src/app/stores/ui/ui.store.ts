@@ -2,11 +2,13 @@ import { Store, StoreConfig } from '@datorama/akita';
 
 export interface UiState {
   sidebarCollapsed: boolean;
+  activeChannel: string;
 }
 
 export function createInitialState(): UiState {
   return {
     sidebarCollapsed: false,
+    activeChannel: null,
   };
 }
 

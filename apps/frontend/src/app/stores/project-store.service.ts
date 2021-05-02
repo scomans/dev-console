@@ -43,7 +43,6 @@ export class ProjectStoreService implements ProjectStore {
       query: new UiQuery(uiStore),
       service: new UiService(uiStore),
     };
-    this.stores.push(uiStore);
 
     const channelStore = new ChannelStore();
     this.channel = {
