@@ -85,9 +85,9 @@ export class ExecuteService {
     );
   }
 
-  async run(channel: Channel) {
+  async run(channel: Channel, projectFile: string) {
     if (this.electronService.isElectron) {
-      await this.electronService.emit<boolean>('execute-run', channel);
+      await this.electronService.emit<boolean>('execute-run', channel, projectFile);
     }
   }
 

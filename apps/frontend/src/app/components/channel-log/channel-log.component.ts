@@ -78,12 +78,12 @@ export class ChannelLogComponent implements OnInit {
   }
 
   run(channel: Channel) {
-    void this.executeService.run(channel);
+    void this.executeService.run(channel, this.projectStore.currentProject.file);
   }
 
   async restart(channel: Channel) {
     await this.executeService.kill(channel.id);
-    await this.executeService.run(channel);
+    await this.executeService.run(channel, this.projectStore.currentProject.file);
   }
 
   stop(channel: Channel) {

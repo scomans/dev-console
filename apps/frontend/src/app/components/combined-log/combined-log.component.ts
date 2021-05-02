@@ -66,7 +66,7 @@ export class CombinedLogComponent implements OnInit {
     for (let channel of channels) {
       const status = this.executeService.getStatus(channel.id);
       if (status === ExecuteStatus.STOPPED) {
-        void this.executeService.run(channel);
+        void this.executeService.run(channel, this.projectStore.currentProject.file);
       }
     }
   }
@@ -82,7 +82,7 @@ export class CombinedLogComponent implements OnInit {
     }
 
     for (let channel of channels) {
-      void this.executeService.run(channel);
+      void this.executeService.run(channel, this.projectStore.currentProject.file);
     }
   }
 

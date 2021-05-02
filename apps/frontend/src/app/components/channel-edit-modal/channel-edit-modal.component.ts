@@ -50,7 +50,6 @@ export class ChannelEditModalComponent implements OnInit {
     } else {
       channel.waitOn = null;
     }
-    console.log(channel);
     this.modal.close(channel);
   }
 

@@ -3,6 +3,7 @@ import { ipcMain } from 'electron';
 import * as execa from 'execa';
 import { ExecaChildProcess } from 'execa';
 import { set } from 'lodash';
+import { dirname, isAbsolute, join } from 'path';
 import { Readable } from 'stream';
 import * as terminate from 'terminate';
 import { CancelToken } from '../helpers/cancel.helper';
@@ -33,7 +34,7 @@ export default class ExecuteEvents {
   }
 }
 
-ipcMain.handle('execute-run', async (event, [channel]: [Channel]) => {
+ipcMain.handle('execute-run', async (event, [channel, projectFile]: [Channel, string]) => {
   try {
     await kill(channel.id);
     if (channel.waitOn?.length > 0) {
@@ -43,7 +44,7 @@ ipcMain.handle('execute-run', async (event, [channel]: [Channel]) => {
       await waitOn({ resources: channel.waitOn }, cancel.token);
       waitingProcesses.delete(channel.id);
     }
-    const process = exec(channel);
+    const process = exec(channel, projectFile);
     runningProcesses.set(channel.id, process);
     mainWindow.webContents.send('execute-status', { id: channel.id, status: ExecuteStatus.RUNNING });
     return true;
@@ -84,19 +85,26 @@ function kill(id: string) {
   }
 }
 
-function exec(channel) {
+function exec(channel, projectFile: string) {
   if (channel.regex?.search) {
     set(channel, 'regex.searchRegex', new RegExp(channel.regex.search));
+  }
+
+  let cwd = channel.executeIn ?? '.';
+  if (!isAbsolute(cwd)) {
+    cwd = join(dirname(projectFile), cwd);
   }
 
   const process = execa(
     channel.executable,
     (channel.arguments ?? []),
     {
-      cwd: channel.executeIn,
-      stripFinalNewline: true,
+      cwd,
+      stripFinalNewline: false,
       encoding: 'utf8',
-      env: { FORCE_COLOR: 'true' },
+      env: {
+        FORCE_COLOR: 'true',
+      },
     },
   );
 

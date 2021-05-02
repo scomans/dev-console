@@ -31,7 +31,8 @@ export class ProjectStoreService implements ProjectStore {
   ui: ProjectStore['ui'];
   channel: ProjectStore['channel'];
 
-  currentProject: PersistState;
+  currentProjectState: PersistState;
+  currentProject: Project;
 
   constructor(
     private readonly storageService: ProjectStorageService,
@@ -54,16 +55,17 @@ export class ProjectStoreService implements ProjectStore {
   }
 
   async openProject(project: Project) {
-    if (this.currentProject) {
-      this.currentProject.destroy();
+    if (this.currentProjectState) {
+      this.currentProjectState.destroy();
       for (const store of this.stores) {
         store.reset();
       }
     }
 
+    this.currentProject = project;
     await this.storageService.open(project.file);
 
-    this.currentProject = persistState({
+    this.currentProjectState = persistState({
       storage: {
         getItem: () => this.storageService.get('storage'),
         clear: () => this.storageService.delete('storage'),
