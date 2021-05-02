@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
+import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ElectronService } from '../../services/electron.service';
 
@@ -28,6 +30,8 @@ export class ChannelEditModalComponent implements OnInit {
       color: [this.channel?.color ?? '#ffffff', [Validators.required]],
       executeIn: [this.channel?.executeIn],
       executable: [this.channel?.executable, [Validators.required]],
+      envFile: [this.channel?.envFile],
+      envVars: [this.channel?.envVars ? stringifyEnv(this.channel.envVars) : undefined],
       arguments: [this.channel?.arguments?.join('\n')],
       active: [this.channel?.active, [Validators.required]],
       regex: this.fb.group({
@@ -40,15 +44,20 @@ export class ChannelEditModalComponent implements OnInit {
 
   done() {
     const channel = this.validateForm.getRawValue();
-    if (channel.arguments) {
+    if (!isEmpty(channel.arguments)) {
       channel.arguments = channel.arguments.split('\n');
     } else {
       channel.arguments = null;
     }
-    if (channel.waitOn) {
+    if (!isEmpty(channel.waitOn)) {
       channel.waitOn = channel.waitOn.split('\n');
     } else {
       channel.waitOn = null;
+    }
+    if (!isEmpty(channel.envVars)) {
+      channel.envVars = parseEnv(channel.envVars);
+    } else {
+      channel.envVars = null;
     }
     this.modal.close(channel);
   }
@@ -66,11 +75,22 @@ export class ChannelEditModalComponent implements OnInit {
 
   async selectExecutable() {
     const file = await this.electronService.dialog.showOpenDialog({
-      properties: ['openFile', 'promptToCreate', 'dontAddToRecent'],
+      properties: ['openFile', 'dontAddToRecent'],
     });
     if (!file.canceled) {
       this.validateForm.patchValue({
         executable: file.filePaths[0],
+      });
+    }
+  }
+
+  async selectEnvFile() {
+    const file = await this.electronService.dialog.showOpenDialog({
+      properties: ['openFile', 'dontAddToRecent'],
+    });
+    if (!file.canceled) {
+      this.validateForm.patchValue({
+        envFile: file.filePaths[0],
       });
     }
   }

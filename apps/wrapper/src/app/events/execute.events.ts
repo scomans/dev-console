@@ -1,7 +1,10 @@
+import { isEmpty } from '@dev-console/helpers';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { ipcMain } from 'electron';
+import { parse as parseEnv } from 'envfile';
 import * as execa from 'execa';
 import { ExecaChildProcess } from 'execa';
+import { existsSync, readFileSync } from 'fs';
 import { set } from 'lodash';
 import { dirname, isAbsolute, join } from 'path';
 import { Readable } from 'stream';
@@ -85,14 +88,27 @@ function kill(id: string) {
   }
 }
 
-function exec(channel, projectFile: string) {
+// can not be async!
+function exec(channel: Channel, projectFile: string) {
   if (channel.regex?.search) {
     set(channel, 'regex.searchRegex', new RegExp(channel.regex.search));
   }
 
-  let cwd = channel.executeIn ?? '.';
+  let cwd = isEmpty(channel.executeIn) ? '.' : channel.executeIn;
   if (!isAbsolute(cwd)) {
     cwd = join(dirname(projectFile), cwd);
+  }
+
+  let env: Record<string, string> = {};
+  let envFile = channel.envFile;
+  if (!isEmpty(envFile)) {
+    if (!isAbsolute(envFile)) {
+      envFile = join(dirname(projectFile), envFile);
+    }
+    if (existsSync(envFile)) {
+      const envFileContent = readFileSync(envFile, { encoding: 'utf8' });
+      env = parseEnv(envFileContent);
+    }
   }
 
   const process = execa(
@@ -104,6 +120,8 @@ function exec(channel, projectFile: string) {
       encoding: 'utf8',
       env: {
         FORCE_COLOR: 'true',
+        ...(channel.envVars ?? {}),
+        ...env,
       },
     },
   );

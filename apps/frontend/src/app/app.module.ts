@@ -23,6 +23,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
@@ -88,6 +89,7 @@ registerLocaleData(en);
     NzModalModule,
     NzButtonModule,
     NzPopconfirmModule,
+    NzPopoverModule,
     NzSwitchModule,
     NzToolTipModule,
     FontAwesomeModule,

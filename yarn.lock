@@ -5481,6 +5481,11 @@ env-paths@^2.2.0, env-paths@^2.2.1:
   resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
   integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
 
+envfile@^6.14.0:
+  version "6.14.0"
+  resolved "https://registry.yarnpkg.com/envfile/-/envfile-6.14.0.tgz#8dab1ab915a4c6567087a6bb9e732b1f164c2b30"
+  integrity sha512-JxpcaOgJQB/x0XFmNiqFu0BLK22PlI3F0d95of5SOqcLvBlGC0ug7MHYDWnmZqmx9svIue8v0cVcqAygPTyXHQ==
+
 err-code@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/err-code/-/err-code-1.1.2.tgz#06e0116d3028f6aef4806849eb0ea6a748ae6960"

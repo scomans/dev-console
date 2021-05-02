@@ -52,10 +52,44 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envFile" nzRequired>.env File</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-input-group [nzSuffix]="inputEnvFileTpl">
+        <input nz-input id="envFile" formControlName="envFile"/>
+      </nz-input-group>
+      <ng-template #inputEnvFileTpl>
+        <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectEnvFile(); $event.preventDefault()">
+          <fa-icon icon="folder-open"></fa-icon>
+        </button>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envVars">
+      <fa-icon icon="info-circle"
+               nz-popover
+               nzPopoverTitle="Format"
+               [nzPopoverContent]="envVarsHelpTpl"
+               nzPopoverPlacement="right"
+      ></fa-icon>
+      &nbsp;
+      env Variables
+    </nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <textarea nz-input
+                id="envVars"
+                formControlName="envVars"
+                placeholder="One key/value pair per line (key=value)"
+                [nzAutosize]="{ minRows: 3 }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="waitOn">
       <a href="https://github.com/jeffbski/wait-on#usage" target="_blank">
         <fa-icon icon="info-circle"></fa-icon>
-      </a>&nbsp;
+      </a>
+      &nbsp;
       Wait on
     </nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
@@ -87,3 +121,12 @@
     </nz-form-control>
   </nz-form-item>
 </form>
+
+<ng-template #envVarsHelpTpl>
+  <div>
+    a=1<br>
+    b:2<br>
+    c = 3<br>
+    d : 4<br>
+  </div>
+</ng-template>

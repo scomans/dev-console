@@ -5,6 +5,10 @@ export interface Channel {
   arguments?: string[];
   executeIn?: string;
   executable: string;
+  envFile: string;
+  envVars: {
+    [key: string]: string;
+  };
   regex?: {
     search: string;
     replace: string;
