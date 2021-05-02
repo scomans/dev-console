@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
+import { get, set } from 'lodash';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ElectronService } from '../../services/electron.service';
 
@@ -59,6 +60,12 @@ export class ChannelEditModalComponent implements OnInit {
     } else {
       channel.envVars = null;
     }
+    ['executeIn', 'envFile', 'regex.search', 'regex.replace'].forEach(field => {
+      const value = get(channel, field);
+      if (isEmpty(value)) {
+        set(channel, field, null);
+      }
+    });
     this.modal.close(channel);
   }
 
