@@ -135,7 +135,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       for (let channel of channels) {
         const status = this.executeService.getStatus(channel.id);
         if (status !== ExecuteStatus.STOPPED) {
-          await this.executeService.kill(channel.id);
+          await this.executeService.kill(channel);
         }
       }
       await this.executeService.clear();

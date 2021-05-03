@@ -91,9 +91,9 @@ export class ExecuteService {
     }
   }
 
-  async kill(channelId: string) {
+  async kill(channel: Channel) {
     if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('execute-kill', channelId);
+      return this.electronService.emit<boolean>('execute-kill', channel);
     }
   }
 

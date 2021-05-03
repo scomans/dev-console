@@ -94,12 +94,12 @@ export class ChannelLogComponent implements OnInit, AfterViewInit {
   }
 
   async restart(channel: Channel) {
-    await this.executeService.kill(channel.id);
+    await this.executeService.kill(channel);
     await this.executeService.run(channel, this.projectStore.currentProject.file);
   }
 
   stop(channel: Channel) {
-    void this.executeService.kill(channel.id);
+    void this.executeService.kill(channel);
   }
 
   makeColor(channel: Channel) {

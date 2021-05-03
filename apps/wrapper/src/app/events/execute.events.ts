@@ -39,7 +39,7 @@ export default class ExecuteEvents {
 
 ipcMain.handle('execute-run', async (event, [channel, projectFile]: [Channel, string]) => {
   try {
-    await kill(channel.id);
+    await kill(channel);
     if (channel.waitOn?.length > 0) {
       const cancel = CancelToken.build();
       waitingProcesses.set(channel.id, cancel.cancel);
@@ -61,9 +61,9 @@ ipcMain.handle('execute-run', async (event, [channel, projectFile]: [Channel, st
   }
 });
 
-ipcMain.handle('execute-kill', async (event, [id]) => {
+ipcMain.handle('execute-kill', async (event, [channel]) => {
   try {
-    await kill(id);
+    await kill(channel);
     return true;
   } catch (err) {
     console.error(err);
@@ -71,7 +71,8 @@ ipcMain.handle('execute-kill', async (event, [id]) => {
   }
 });
 
-function kill(id: string) {
+function kill(channel: Channel | string) {
+  const id = typeof channel === 'string' ? channel : channel.id;
   if (waitingProcesses.has(id)) {
     const cancel = waitingProcesses.get(id);
     cancel('kill');
@@ -80,13 +81,25 @@ function kill(id: string) {
   if (runningProcesses.has(id)) {
     return new Promise<void>((resolve, reject) => {
       const process = runningProcesses.get(id);
-      terminate(process.pid, (err) => {
-        if (err?.message !== 'kill ESRCH') {
-          return reject(err);
-        }
-        runningProcesses.delete(id);
-        resolve();
-      });
+      terminate(
+        process.pid,
+        typeof channel === 'string' ? 'SIGTERM' : isEmpty(channel.stopSignal) ? 'SIGTERM' : channel.stopSignal,
+        (err) => {
+          if (err) {
+            if (err.message !== 'kill ESRCH') {
+              return reject(err);
+            } else if (err.message.startsWith('timed out waiting for pids')) {
+              terminate(process.pid, () => {
+                runningProcesses.delete(id);
+                resolve();
+              });
+              return;
+            }
+          }
+          runningProcesses.delete(id);
+          resolve();
+        },
+      );
     });
   }
 }

@@ -5,6 +5,7 @@ export interface Channel {
   arguments?: string[];
   executeIn?: string;
   executable: string;
+  stopSignal: string;
   envFile: string;
   envVars: {
     [key: string]: string;

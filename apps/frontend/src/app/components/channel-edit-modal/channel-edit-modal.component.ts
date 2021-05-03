@@ -31,6 +31,7 @@ export class ChannelEditModalComponent implements OnInit {
       color: [this.channel?.color ?? '#ffffff', [Validators.required]],
       executeIn: [this.channel?.executeIn],
       executable: [this.channel?.executable, [Validators.required]],
+      stopSignal: [this.channel?.stopSignal ?? 'SIGTERM', [Validators.required]],
       envFile: [this.channel?.envFile],
       envVars: [this.channel?.envVars ? stringifyEnv(this.channel.envVars) : undefined],
       arguments: [this.channel?.arguments?.join('\n')],

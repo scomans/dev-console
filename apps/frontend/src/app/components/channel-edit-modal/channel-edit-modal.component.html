@@ -52,6 +52,20 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="stopSignal" nzRequired>Stop signal</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-select formControlName="stopSignal" id="stopSignal">
+        <nz-option nzValue="SIGTERM" nzLabel="SIGTERM"></nz-option>
+        <nz-option nzValue="SIGINT" nzLabel="SIGINT (Ctrl + C)"></nz-option>
+        <nz-option nzValue="SIGQUIT" nzLabel="SIGQUIT (Ctrl + \)"></nz-option>
+        <nz-option nzValue="SIGSTOP" nzLabel="SIGSTOP (Ctrl + Z)"></nz-option>
+        <nz-option nzValue="SIGHUP" nzLabel="SIGHUP"></nz-option>
+        <nz-option nzValue="SIGBREAK" nzLabel="SIGBREAK"></nz-option>
+        <nz-option nzValue="SIGKILL" nzLabel="SIGKILL"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envFile" nzRequired>.env File</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
       <nz-input-group [nzSuffix]="inputEnvFileTpl">
