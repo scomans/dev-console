@@ -530,7 +530,7 @@ export class RxFor<T, U extends NgIterable<T> = NgIterable<T>>
    * @param distinctBy
    */
 
-  /*@Input('rxForDistinctBy')*/
+  @Input('rxForDistinctBy')
   set distinctBy(distinctBy: (a: T, b: T) => boolean) {
     this._distinctBy = distinctBy;
   }

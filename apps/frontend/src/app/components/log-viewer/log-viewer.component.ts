@@ -3,7 +3,6 @@ import { filterNil } from '@dev-console/helpers';
 import { Channel, LogEntryWithSource } from '@dev-console/types';
 import { from, merge, Observable } from 'rxjs';
 import { filter, first, map, scan, startWith, switchMap } from 'rxjs/operators';
-import { trackById } from '../../helpers/angular.helper';
 import { ElectronService } from '../../services/electron.service';
 import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
@@ -14,8 +13,6 @@ import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogViewerComponent implements OnInit {
-
-  trackById = trackById;
 
   log$: Observable<LogEntryWithSource[]>;
   colors$: Observable<Record<string, string>>;
@@ -68,7 +65,10 @@ export class LogViewerComponent implements OnInit {
           newLineLogSource$,
         ).pipe(
           scan((acc, entries) => {
-            acc.push(...entries);
+            acc = [
+              ...acc,
+              ...entries,
+            ];
             while (acc.length > 1000) {
               acc.shift();
             }
@@ -79,5 +79,9 @@ export class LogViewerComponent implements OnInit {
     );
 
     this.electronService.sendToHost('webview-ready');
+  }
+
+  distinct() {
+    return false;
   }
 }
