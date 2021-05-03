@@ -1,4 +1,3 @@
-import { ObserversModule } from '@angular/cdk/observers';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
@@ -10,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TeleportModule } from '@ngneat/overview';
-import { LetModule } from '@rx-angular/template';
+import { LetModule, PushModule } from '@rx-angular/template';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -24,6 +23,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
@@ -43,6 +43,7 @@ import { ProjectSelectionComponent } from './components/project-selection/projec
 import { ProjectComponent } from './components/project/project.component';
 import { SearchBoxComponent } from './components/search-box/search-box.component';
 import { AutoScrollDirective } from './directives/auto-scroll.directive';
+import { RxFor } from './directives/rx-for.directive';
 import { WebviewDirective } from './directives/webview.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
 import { AutolinkPipe } from './pipes/autolink.pipe';
@@ -75,6 +76,7 @@ registerLocaleData(en);
     LogViewerComponent,
     AutolinkPipe,
     SafePipe,
+    RxFor,
   ],
   imports: [
     BrowserModule,
@@ -94,13 +96,14 @@ registerLocaleData(en);
     NzButtonModule,
     NzPopconfirmModule,
     NzPopoverModule,
+    NzSpinModule,
     NzSwitchModule,
     NzToolTipModule,
     FontAwesomeModule,
     FlexLayoutModule,
-    ObserversModule,
     TeleportModule,
     LetModule,
+    PushModule,
     ColorSliderModule,
 
     RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: true }),

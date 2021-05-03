@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Project } from '@dev-console/types';
@@ -9,6 +9,7 @@ import { GlobalStoreService } from '../../stores/global-store.service';
   selector: 'cl-project-selection',
   templateUrl: './project-selection.component.html',
   styleUrls: ['./project-selection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSelectionComponent implements OnInit {
 

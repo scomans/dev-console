@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
 import { Channel, LogEntryWithSource } from '@dev-console/types';
 import { from, merge, Observable } from 'rxjs';
-import { filter, map, scan, startWith, switchMap } from 'rxjs/operators';
+import { filter, first, map, scan, startWith, switchMap } from 'rxjs/operators';
 import { trackById } from '../../helpers/angular.helper';
 import { ElectronService } from '../../services/electron.service';
+import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
 @Component({
   selector: 'cl-log-viewer',
   templateUrl: './log-viewer.component.html',
   styleUrls: ['./log-viewer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogViewerComponent implements OnInit {
 
@@ -17,6 +19,19 @@ export class LogViewerComponent implements OnInit {
 
   log$: Observable<LogEntryWithSource[]>;
   colors$: Observable<Record<string, string>>;
+  loading$: Observable<boolean>;
+
+  @ViewChild(LogMinimapComponent)
+  set minimap(value: LogMinimapComponent) {
+    if (value) {
+      this.loading$ = value.drawThrottle.pipe(
+        filterNil(),
+        first(),
+        map(() => false),
+        startWith(true),
+      );
+    }
+  }
 
   constructor(
     private readonly electronService: ElectronService,

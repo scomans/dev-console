@@ -1,6 +1,8 @@
-<cl-log-minimap *rxLet="colors$; let colors">
-  <cl-log-entry *ngFor="let entry of log$ | async; trackBy:trackById"
-                [colors]="colors"
-                [entry]="entry"
-  ></cl-log-entry>
-</cl-log-minimap>
+<nz-spin nzTip="Loading..." [nzSpinning]="loading$ | push">
+  <cl-log-minimap #minimap *rxLet="colors$; let colors">
+    <cl-log-entry *rxFor="let entry of log$; trackBy:trackById; renderCallback: minimap.drawThrottle"
+                  [colors]="colors"
+                  [entry]="entry"
+    ></cl-log-entry>
+  </cl-log-minimap>
+</nz-spin>

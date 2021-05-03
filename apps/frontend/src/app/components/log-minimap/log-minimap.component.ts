@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { SubSink } from 'subsink';
@@ -15,6 +15,7 @@ export interface Rect {
   selector: 'cl-log-minimap',
   templateUrl: './log-minimap.component.html',
   styleUrls: ['./log-minimap.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogMinimapComponent implements OnInit, OnDestroy {
 
