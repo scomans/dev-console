@@ -96,4 +96,8 @@ export class CombinedLogComponent implements OnInit {
       }
     }
   }
+
+  clearAll() {
+    void this.executeService.clear();
+  }
 }

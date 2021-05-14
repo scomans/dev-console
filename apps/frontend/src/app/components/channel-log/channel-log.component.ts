@@ -107,4 +107,8 @@ export class ChannelLogComponent implements OnInit, AfterViewInit {
       [channel.id]: channel.color,
     };
   }
+
+  clearChannel(channel: Channel) {
+    void this.executeService.clear(channel);
+  }
 }

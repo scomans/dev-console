@@ -15,6 +15,10 @@
       </button>
     </div>
     <div>
+      <button nz-button (click)="clearChannel(channel)">
+        <fa-icon icon="broom"></fa-icon>
+        Clear
+      </button>
       <button nz-button (click)="editChannel(channel)">
         <fa-icon icon="edit"></fa-icon>
         Edit
@@ -39,7 +43,7 @@
   <webview #webview
            link="/log"
            [data]="{mode: 'channel', channel: channel, colors: channel | callFunction:makeColor}"
-           [tunnels]="['log-new-line']"
+           [tunnels]="['log-new-line', 'log-reset']"
   ></webview>
 
   <cl-search-box [webview]="webview"></cl-search-box>

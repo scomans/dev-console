@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faAlignLeft as fasAlignLeft,
+  faBroom as fasBroom,
   faChevronDown as fasChevronDown,
   faChevronUp as fasChevronUp,
   faCircle as fasCircle,
@@ -42,6 +43,7 @@ const farIcons = [
 
 const fasIcons = [
   fasAlignLeft,
+  fasBroom,
   fasPlusCircle,
   fasTrash,
   fasEdit,

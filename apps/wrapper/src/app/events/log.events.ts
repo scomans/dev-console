@@ -1,4 +1,4 @@
-import { LogEntry, LogEntryWithSource } from '@dev-console/types';
+import { Channel, LogEntry, LogEntryWithSource } from '@dev-console/types';
 import * as SortedArray from 'collections/sorted-array';
 import { ipcMain } from 'electron';
 
@@ -25,9 +25,22 @@ ipcMain.handle('log-get', (event, [id]: [string]) => {
   return logStores.get(id) ?? [];
 });
 
-ipcMain.handle('log-clear', () => {
-  allLogStores.clear();
-  logStores.clear();
+ipcMain.handle('log-clear', (event, [channel]: [Channel]) => {
+  if (!channel) {
+    allLogStores.clear();
+    logStores.clear();
+  } else {
+    for (let i = 0; i < allLogStores.length;) {
+      const value = allLogStores.toArray()[i];
+      if (value.source === channel.id) {
+        allLogStores.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+    logStores.delete(channel.id);
+  }
+  mainWindow.webContents.send('log-reset');
 });
 
 ipcMain.handle('log-get-all', () => {

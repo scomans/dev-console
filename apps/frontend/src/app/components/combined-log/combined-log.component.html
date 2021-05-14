@@ -1,28 +1,36 @@
 <ng-container *rxLet="anythingExecuting$; let anythingExecuting">
-  <div class="actions-bar" fxLayout="row" fxLayoutAlign="start center">
-    <button *rxLet="anythingNotExecuting$; let anythingNotExecuting"
-            nz-button
-            class="start"
-            [disabled]="!anythingNotExecuting"
-            (click)="runAll()"
-    >
-      <fa-icon icon="play"></fa-icon>
-      Run All
-    </button>
-    <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting">
-      <fa-icon icon="play"></fa-icon>
-      Restart All
-    </button>
-    <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting">
-      <fa-icon icon="stop"></fa-icon>
-      Stop All
-    </button>
+  <div class="actions-bar" fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <button *rxLet="anythingNotExecuting$; let anythingNotExecuting"
+              nz-button
+              class="start"
+              [disabled]="!anythingNotExecuting"
+              (click)="runAll()"
+      >
+        <fa-icon icon="play"></fa-icon>
+        Run All
+      </button>
+      <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting">
+        <fa-icon icon="play"></fa-icon>
+        Restart All
+      </button>
+      <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting">
+        <fa-icon icon="stop"></fa-icon>
+        Stop All
+      </button>
+    </div>
+    <div>
+      <button nz-button (click)="clearAll()">
+        <fa-icon icon="broom"></fa-icon>
+        Clear
+      </button>
+    </div>
   </div>
 
   <webview #webview
            link="/log"
            [data]="{mode: 'combined', colors: (channelColors$ | async)}"
-           [tunnels]="['log-new-line']"
+           [tunnels]="['log-new-line', 'log-reset']"
   ></webview>
 
   <cl-search-box [webview]="webview"></cl-search-box>

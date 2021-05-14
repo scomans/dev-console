@@ -49,33 +49,37 @@ export class LogViewerComponent implements OnInit {
 
     this.log$ = data$.pipe(
       filter(data => !!data.mode),
-      switchMap(data => {
-        let initialLogSource$: Observable<LogEntryWithSource[]>;
-        let newLineLogSource$: Observable<LogEntryWithSource[]> = this.electronService.on('log-new-line');
-        if (data.mode === 'channel') {
-          initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get', data.channel.id));
-          newLineLogSource$ = newLineLogSource$.pipe(
-            filter(line => line[0].source === data.channel.id),
+      switchMap(data => this.electronService.on('log-reset').pipe(
+        startWith(0),
+        switchMap(() => {
+          let initialLogSource$: Observable<LogEntryWithSource[]>;
+          let newLineLogSource$: Observable<LogEntryWithSource[]> = this.electronService.on('log-new-line');
+          if (data.mode === 'channel') {
+            initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get', data.channel.id));
+            newLineLogSource$ = newLineLogSource$.pipe(
+              filter(line => line[0].source === data.channel.id),
+            );
+          } else {
+            initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get-all'));
+          }
+          return merge(
+            initialLogSource$,
+            newLineLogSource$,
+          ).pipe(
+            scan((acc, entries) => {
+              acc = [
+                ...acc,
+                ...entries,
+              ];
+              while (acc.length > 1000) {
+                acc.shift();
+              }
+              return acc;
+            }, []),
           );
-        } else {
-          initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get-all'));
-        }
-        return merge(
-          initialLogSource$,
-          newLineLogSource$,
-        ).pipe(
-          scan((acc, entries) => {
-            acc = [
-              ...acc,
-              ...entries,
-            ];
-            while (acc.length > 1000) {
-              acc.shift();
-            }
-            return acc;
-          }, []),
-        );
-      }),
+        }),
+        ),
+      ),
     );
 
     this.electronService.sendToHost('webview-ready');

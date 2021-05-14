@@ -97,9 +97,9 @@ export class ExecuteService {
     }
   }
 
-  clear() {
+  clear(channel?: Channel) {
     if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('log-clear');
+      return this.electronService.emit<boolean>('log-clear', channel);
     }
   }
 }
