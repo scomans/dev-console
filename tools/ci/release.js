@@ -1,11 +1,10 @@
+const { generateChangelog } = require('./changelog/generate-changelog');
 const { exec } = require('child_process');
 const { gt, prerelease } = require('semver');
 const { createReadStream, statSync } = require('fs');
 const { join, resolve, dirname, basename } = require('path');
-const { run: generateAutoChangelog } = require('auto-changelog/src/run');
 let { request } = require('@octokit/request');
 
-const originalStdoutWrite = process.stdout.write.bind(process.stdout);
 const TOKEN = process.env.TOKEN;
 const [, , project, owner, repo] = process.argv;
 const VERSION = require('../../versions.json')[project];
@@ -59,7 +58,7 @@ async function main() {
 
       await exec('git fetch');
 
-      const changelog = await generateChangelog();
+      const changelog = await generateChangelog(project, VERSION);
       await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
         release_id: newRelease.data.id,
         body: changelog,
@@ -90,7 +89,7 @@ async function main() {
 
         await exec('git fetch');
 
-        const changelog = await generateChangelog();
+        const changelog = await generateChangelog(project, VERSION);
         await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
           release_id: newRelease.data.id,
           body: changelog,
@@ -102,19 +101,6 @@ async function main() {
   } catch (err) {
     console.error(err);
   }
-}
-
-async function generateChangelog() {
-  process.stdout.write = (chunk) => result += chunk;
-  let result = '';
-  await generateAutoChangelog([
-    process.argv[0],
-    process.argv[1],
-    '--starting-version',
-    project + '-' + VERSION,
-  ]);
-  process.stdout.write = originalStdoutWrite;
-  return result;
 }
 
 async function uploadAsset(release, filePath) {
