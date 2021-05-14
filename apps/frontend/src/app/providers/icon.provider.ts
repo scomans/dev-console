@@ -4,6 +4,7 @@ import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faCircle as farCircle,
   faClock as farClock,
+  faDotCircle as farDotCircle,
   faQuestionCircle as farQuestionCircle,
   faWindowClose as farWindowClose,
   faWindowMaximize as farWindowMaximize,
@@ -32,13 +33,14 @@ import { NZ_ICONS } from 'ng-zorro-antd/icon';
 
 
 const farIcons = [
+  farCircle,
+  farClock,
+  farDotCircle,
   farWindowMinimize,
   farWindowMaximize,
   farWindowClose,
   farWindowRestore,
   farQuestionCircle,
-  farCircle,
-  farClock,
 ];
 
 const fasIcons = [

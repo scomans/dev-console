@@ -45,7 +45,11 @@
                   ></fa-icon>
                   <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" icon="circle" [style.color]="channel.color"></fa-icon>
                 </ng-container>
-                <fa-icon *ngIf="!channel.active" [icon]="['far','circle']" [style.color]="channel.color"></fa-icon>
+                <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | async">
+                  <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="['far', 'dot-circle']" [style.color]="channel.color"></fa-icon>
+                  <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="['far','clock']" [style.color]="channel.color"></fa-icon>
+                  <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="['far', 'circle']" [style.color]="channel.color"></fa-icon>
+                </ng-container>
                 {{ channel.name }}
               </a>
             </ng-container>
