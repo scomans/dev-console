@@ -52,7 +52,9 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.allLogs$ = this.selectedChannelId$.pipe(
       map(activeId => !activeId),
     );
-    this.channels$ = this.projectStore.channel.query.selectAll();
+    this.channels$ = this.projectStore.channel.query.selectAll().pipe(
+      map(channels => channels.sort((a, b) => a.index - b.index)),
+    );
   }
 
   ngOnInit() {
@@ -140,6 +142,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
       }
       await this.executeService.clear();
       return this.router.navigate(['/']);
+    }
+  }
+
+  changeOrder(updates: { id: string; index: number }[]) {
+    for (let update of updates) {
+      this.projectStore.channel.service.update(update.id, { index: update.index });
     }
   }
 }

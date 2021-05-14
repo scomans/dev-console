@@ -20,6 +20,8 @@ import {
   faDotCircle as fasDotCircle,
   faEdit as fasEdit,
   faFolderOpen as fasFolderOpen,
+  faGripHorizontal as fasGripHorizontal,
+  faGripLines as fasGripLines,
   faInfoCircle as fasInfoCircle,
   faLayerGroup as fasLayerGroup,
   faPlay as fasPlay,
@@ -46,6 +48,8 @@ const farIcons = [
 const fasIcons = [
   fasAlignLeft,
   fasBroom,
+  fasGripHorizontal,
+  fasGripLines,
   fasPlusCircle,
   fasTrash,
   fasEdit,

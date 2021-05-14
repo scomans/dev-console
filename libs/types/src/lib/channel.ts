@@ -1,5 +1,6 @@
 export interface Channel {
   id: string;
+  index: number;
   name: string;
   color: string;
   arguments?: string[];

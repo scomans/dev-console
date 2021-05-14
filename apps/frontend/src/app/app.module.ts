@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
@@ -34,6 +35,7 @@ import { WINDOW } from './components/app.const';
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
 import { ChannelLogComponent } from './components/channel-log/channel-log.component';
+import { ChannelOrderModalComponent } from './components/channel-order-modal/channel-order-modal.component';
 import { ColorSliderComponent } from './components/color-slider/color-slider.component';
 import { CombinedLogComponent } from './components/combined-log/combined-log.component';
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
@@ -78,9 +80,11 @@ registerLocaleData(en);
     AutolinkPipe,
     SafePipe,
     RxFor,
+    ChannelOrderModalComponent,
   ],
   imports: [
     BrowserModule,
+    DragDropModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
