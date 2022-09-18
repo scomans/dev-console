@@ -37,6 +37,20 @@
     "help": "nx help"
   },
   "private": true,
+  "pnpm": {
+    "auto-install-peers": true,
+    "overrides": {
+      "ini@<1.3.6": ">=1.3.6",
+      "nx@<14": ">=14"
+    },
+    "packageExtensions": {
+      "nx-electron": {
+        "@nrwl/devkit": "14.x",
+        "@nrwl/workspace": "14.x",
+        "nx": "14.x"
+      }
+    }
+  },
   "dependencies": {
     "@angular/animations": "14.2.2",
     "@angular/cdk": "14.2.2",
