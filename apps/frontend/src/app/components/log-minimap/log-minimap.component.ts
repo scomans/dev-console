@@ -4,6 +4,7 @@ import { auditTime } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { WINDOW } from '../app.const';
 
+
 export interface Rect {
   w: number;
   h: number;
@@ -12,7 +13,7 @@ export interface Rect {
 }
 
 @Component({
-  selector: 'cl-log-minimap',
+  selector: 'dc-log-minimap',
   templateUrl: './log-minimap.component.html',
   styleUrls: ['./log-minimap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,23 +1,34 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { filterNil } from '@dev-console/helpers';
-import { Channel, ExecuteStatus } from '@dev-console/types';
-import { WebviewTag } from 'electron';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
+import { faBroom, faEdit, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { sleep } from '../../../../../../libs/helpers/src/lib/promise.helper';
 import { trackById } from '../../helpers/angular.helper';
-import { ElectronService } from '../../services/electron.service';
 import { ExecuteService } from '../../services/execute.service';
-import { ProjectStoreService } from '../../stores/project-store.service';
-import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
+import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { ChannelRepository } from '../../stores/channel.repository';
+import { GlobalLogsRepository } from '../../stores/global-log.repository';
+import { ProjectRepository } from '../../stores/project.repository';
+
 
 @Component({
   selector: 'dc-channel-log',
   templateUrl: './channel-log.component.html',
   styleUrls: ['./channel-log.component.scss'],
 })
-export class ChannelLogComponent implements OnInit, AfterViewInit {
+export class ChannelLogComponent implements OnInit {
+
+  readonly farQuestionCircle = faQuestionCircle;
+  readonly fasTrash = faTrash;
+  readonly fasPlay = faPlay;
+  readonly fasRedo = faRedo;
+  readonly fasStop = faStop;
+  readonly fasBroom = faBroom;
+  readonly fasEdit = faEdit;
 
   ExecuteStatus = ExecuteStatus;
   trackById = trackById;
@@ -25,81 +36,54 @@ export class ChannelLogComponent implements OnInit, AfterViewInit {
 
   status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;
-
-  @ViewChild('webview', { read: ElementRef }) webview: ElementRef<WebviewTag>;
+  logs$: Observable<LogEntryWithSource[]>;
 
   constructor(
-    private readonly projectStore: ProjectStoreService,
-    private readonly modal: NzModalService,
+    private readonly projectRepository: ProjectRepository,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecuteService,
-    private readonly electronService: ElectronService,
+    private readonly channelRepository: ChannelRepository,
+    private readonly channelLogRepository: ChannelLogRepository,
+    private readonly globalLogsRepository: GlobalLogsRepository,
   ) {
   }
 
   ngOnInit() {
-    this.channel$ = this.projectStore.ui.query
-      .select('activeChannel')
-      .pipe(
-        switchMap(activeChannel => this.projectStore.channel.query.selectEntity(activeChannel)),
-      );
-    this.status$ = this.projectStore.ui.query
-      .select('activeChannel')
+    this.channel$ = this.channelRepository.activeChannel$;
+    this.status$ = this.channelRepository.activeChannelId$
       .pipe(
         filterNil(),
         switchMap(id => this.executeService.selectStatus(id)),
       );
-  }
-
-  ngAfterViewInit() {
-    this.webview.nativeElement.addEventListener('new-window', (event) => {
-      void this.electronService.emit('open-external', event.url);
-    });
+    this.logs$ = this.channelRepository.activeChannelId$
+      .pipe(
+        switchMap(id => this.channelLogRepository.selectLogsByChannelId(id)),
+      );
   }
 
   deleteChannel(channel: Channel) {
-    this.projectStore.channel.service.remove(channel.id);
+    this.channelRepository.removeChannel(channel.id);
+    this.channelRepository.setChannelActive(null);
   }
 
-  editChannel(channel: Channel) {
-    const modal = this.modal.create({
-      nzTitle: 'Edit channel',
-      nzContent: ChannelEditModalComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzComponentParams: {
-        channel,
-      },
-      nzFooter: [
-        {
-          label: 'Cancel',
-          onClick: () => modal.triggerCancel(),
-        },
-        {
-          label: 'Done',
-          type: 'primary',
-          onClick: componentInstance => componentInstance!.done(),
-        },
-      ],
-    });
-
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.projectStore.channel.service.update(channel.id, result);
-      }
-    });
+  updateChannel(channel?: Omit<Channel, 'index'>) {
+    this.channelRepository.updateChannel(channel.id, channel);
   }
 
   run(channel: Channel) {
-    void this.executeService.run(channel, this.projectStore.currentProject.file);
+    void this.executeService.run(channel, this.projectRepository.getActiveProject().file);
   }
 
   async restart(channel: Channel) {
-    await this.executeService.kill(channel);
-    await this.executeService.run(channel, this.projectStore.currentProject.file);
+    const killed = await this.executeService.kill(channel);
+    if (killed) {
+      await sleep(1000);
+      await this.executeService.run(channel, this.projectRepository.getActiveProject().file);
+    }
   }
 
   stop(channel: Channel) {
-    void this.executeService.kill(channel);
+    return this.executeService.kill(channel);
   }
 
   makeColor(channel: Channel) {
@@ -109,6 +93,8 @@ export class ChannelLogComponent implements OnInit, AfterViewInit {
   }
 
   clearChannel(channel: Channel) {
-    void this.executeService.clear(channel);
+    void this.channelLogRepository.clearChannelLogs(channel.id);
+    void this.globalLogsRepository.clearChannelLogs(channel.id);
   }
+
 }

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import * as Convert from 'ansi-to-html';
+import { default as Convert } from 'ansi-to-html';
+
 
 @Pipe({
   name: 'ansi',

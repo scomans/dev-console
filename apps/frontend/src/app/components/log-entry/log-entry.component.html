@@ -1,11 +1,8 @@
-<div [style.border-color]="colors[entry.source]"
-     [style.background-color]="
-      entry.type === 'data' ?
-        colors[entry.source] + '14' :
-        (entry.type === 'info' ? 'rgba(32, 178, 170, 0.1)' : 'rgba(196, 2, 2, 0.1)')
-     "
-     [class]="entry.type"
-     class="log-entry"
+<div
+  [style.border-color]="borderColor"
+  [style.background-color]="backgroundColor"
+  [class]="entry.type"
+  class="log-entry"
 >
-  <span [innerHTML]="entry.data | ansi | autolink:{target:'_blank'} | safe:'html'" [class]="entry.type"></span>
+  <span [innerHTML]="entry.data | ansi | autolink:{ target:'_blank' } | safe:'html'" [class]="entry.type"></span>
 </div>

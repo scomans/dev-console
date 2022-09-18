@@ -1,13 +1,7 @@
-<nz-spin nzTip="Loading..." [nzSpinning]="loading$ | push">
-  <cl-log-minimap #minimap *rxLet="colors$; let colors">
-    <cl-log-entry *rxFor="
-      let entry of log$;
-      trackBy:'id';
-      renderCallback: minimap.drawThrottle;
-      distinctBy: distinct;
-    "
-                  [colors]="colors"
-                  [entry]="entry"
-    ></cl-log-entry>
-  </cl-log-minimap>
-</nz-spin>
+<div
+  class="h-full overflow-auto"
+  autoScroll
+  [lock-y-offset]="100"
+>
+  <dc-log-entry *rxFor="let entry of log$; trackBy: trackById;" [entry]="entry"></dc-log-entry>
+</div>

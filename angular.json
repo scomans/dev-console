@@ -3,6 +3,7 @@
   "projects": {
     "frontend": "apps/frontend",
     "helpers": "libs/helpers",
+    "nx-electron": "tools/executors/nx-electron",
     "types": "libs/types",
     "wrapper": "apps/wrapper"
   }

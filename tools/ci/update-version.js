@@ -1,32 +1,37 @@
 'use strict';
 
 let { request } = require('@octokit/request');
-const { prerelease, inc } = require('semver');
-const { writeFile } = require('fs/promises');
+const { inc } = require('semver');
+const { writeFile, readFile } = require('fs/promises');
 const { join } = require('path');
-const versions = require('../../versions.json');
+const project = require('../../package.json');
+const cliArgs = process.argv.slice(2);
 
-const [, , project, owner, repo] = process.argv;
+const version = project.version;
+const owner = project.author;
+const repo = project.name;
+
 
 async function updateVersion() {
-  if (prerelease(versions[project])) {
-    const TOKEN = process.env.TOKEN;
-    request = request.defaults({
-      owner: owner,
-      repo: repo,
-      headers: {
-        authorization: `token ${ TOKEN }`,
-      },
-    });
+  const TOKEN = process.env.TOKEN_GITHUB;
+  request = request.defaults({
+    owner,
+    repo,
+    headers: {
+      authorization: `token ${ TOKEN }`,
+    },
+  });
+  const result = await request('GET /repos/{owner}/{repo}/releases');
 
-    const result = await request('GET /repos/{owner}/{repo}/releases');
-    const latestPreRelease = result.data.filter(release => release.prerelease && release.tag_name.startsWith(`${ project }-${ versions[project] }`))[0];
-    const latestVersion = latestPreRelease ? latestPreRelease.tag_name.replace(`${ project }-`, '') : versions[project];
-    versions[project] = inc(latestVersion, 'prerelease', 'beta');
-    await writeFile(join(__dirname, '../../versions.json'), JSON.stringify(versions, null, 2) + '\n');
+  const latestRelease = result.data.filter(release => !release.prerelease)[0];
+  const latestVersion = latestRelease.tag_name;
+  let newVersion = inc(latestVersion, cliArgs[0].toLowerCase());
 
-    console.log(`Set version of ${ project } to ${ versions[project] }`);
-  }
+  let packageJsonContent = await readFile(join(__dirname, '../../package.json'), 'utf-8');
+  packageJsonContent = packageJsonContent.replace(`"version": "${ version }",`, `"version": "${ newVersion }",`);
+  await writeFile(join(__dirname, '../../package.json'), packageJsonContent);
+
+  console.log(`Set version to ${ newVersion }`);
 }
 
 void updateVersion();

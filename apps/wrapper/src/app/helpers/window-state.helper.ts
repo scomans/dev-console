@@ -1,4 +1,4 @@
-import { BrowserWindow, remote, screen as electronScreen } from 'electron';
+import { BrowserWindow, screen as electronScreen } from 'electron';
 
 
 export interface Options {
@@ -33,7 +33,7 @@ export interface State {
   y: number;
 }
 
-const screen = electronScreen || remote.screen;
+const screen = electronScreen;
 
 export class WindowStateKeeper {
 
@@ -159,6 +159,7 @@ export class WindowStateKeeper {
       this.state.maximized = win.isMaximized();
       this.state.displayBounds = screen.getDisplayMatching(winBounds).bounds;
     } catch (err) {
+      // ignore
     }
   }
 

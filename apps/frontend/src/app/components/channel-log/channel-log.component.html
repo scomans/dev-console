@@ -2,50 +2,46 @@
   <div class="actions-bar" fxLayout="row" fxLayoutAlign="space-between center">
     <div *rxLet="status$; let status;">
       <button nz-button class="start" (click)="run(channel)" [disabled]="status !== ExecuteStatus.STOPPED">
-        <fa-icon icon="play"></fa-icon>
+        <fa-icon [icon]="fasPlay"></fa-icon>
         Run
       </button>
       <button nz-button class="restart" (click)="restart(channel)" [disabled]="status === ExecuteStatus.STOPPED">
-        <fa-icon icon="redo"></fa-icon>
+        <fa-icon [icon]="fasRedo"></fa-icon>
         Restart
       </button>
       <button nz-button nzDanger (click)="stop(channel)" [disabled]="status === ExecuteStatus.STOPPED">
-        <fa-icon icon="stop"></fa-icon>
+        <fa-icon [icon]="fasStop"></fa-icon>
         Stop
       </button>
     </div>
     <div>
       <button nz-button (click)="clearChannel(channel)">
-        <fa-icon icon="broom"></fa-icon>
+        <fa-icon [icon]="fasBroom"></fa-icon>
         Clear
       </button>
-      <button nz-button (click)="editChannel(channel)">
-        <fa-icon icon="edit"></fa-icon>
+      <button nz-button (click)="channelEditModal.show(channel)">
+        <fa-icon [icon]="fasEdit"></fa-icon>
         Edit
       </button>
-      <button nz-button
-              nz-popconfirm
-              nzPopconfirmTitle="Are you sure delete this channel?"
-              nzPopconfirmPlacement="bottom"
-              [nzIcon]="iconTpl"
-              (nzOnConfirm)="deleteChannel(channel)"
+      <button
+        nz-button
+        nz-popconfirm
+        nzPopconfirmTitle="Are you sure delete this channel?"
+        nzPopconfirmPlacement="bottom"
+        [nzIcon]="iconTpl"
+        (nzOnConfirm)="deleteChannel(channel)"
       >
         <ng-template #iconTpl>
-          <fa-icon [icon]="['far','question-circle']"
-                   style="color: red; position: absolute; top: 4px;"></fa-icon>
+          <fa-icon [icon]="farQuestionCircle" style="color: red; position: absolute; top: 4px;"></fa-icon>
         </ng-template>
-        <fa-icon icon="trash"></fa-icon>
+        <fa-icon [icon]="fasTrash"></fa-icon>
         Delete
       </button>
     </div>
   </div>
 
-  <webview #webview
-           link="/log"
-           [data]="{mode: 'channel', channel: channel, colors: channel | callFunction:makeColor}"
-           [tunnels]="['log-new-line', 'log-reset']"
-  ></webview>
-
-  <cl-search-box [webview]="webview"></cl-search-box>
+  <dc-log-viewer></dc-log-viewer>
 
 </ng-container>
+
+<dc-channel-edit-modal #channelEditModal (dcResult)="updateChannel($event)"></dc-channel-edit-modal>

@@ -1,32 +1,30 @@
-import { dialog } from 'electron';
+import { ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import App from '../app';
+import { isDevelopmentMode } from '../helpers/electron.helper';
+
 
 export default class UpdateEvents {
 
   static checkForUpdates() {
     console.log('Initializing auto update service...');
-    if (!App.isDevelopmentMode()) {
-      void autoUpdater.checkForUpdatesAndNotify();
+    if (!isDevelopmentMode()) {
+      return autoUpdater.checkForUpdates();
     }
   }
 }
 
-autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate) => {
-  console.log({ releaseNotes, releaseName, releaseDate });
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Restart', 'Later'],
-    title: 'DevConsole Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail: 'A new version has been downloaded. Restart the application to apply the updates.',
-  };
-
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if (returnValue.response === 0) {
-      autoUpdater.quitAndInstall();
+ipcMain.handle('check-for-updates', async () => {
+  if (!isDevelopmentMode()) {
+    const result = await autoUpdater.checkForUpdates();
+    if (result) {
+      console.log(result.updateInfo);
+      return result.downloadPromise;
     }
-  });
+  }
+});
+
+ipcMain.handle('restart-for-update', async () => {
+  autoUpdater.quitAndInstall(false);
 });
 
 autoUpdater.on('checking-for-update', () => {
@@ -39,10 +37,6 @@ autoUpdater.on('update-available', () => {
 
 autoUpdater.on('update-not-available', () => {
   console.log('Up to date!');
-});
-
-autoUpdater.on('before-quit-for-update', () => {
-  console.log('Application update is about to begin...');
 });
 
 autoUpdater.on('error', message => {

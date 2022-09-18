@@ -1,17 +1,19 @@
-const { generateChangelog } = require('./changelog/generate-changelog');
-const { exec } = require('child_process');
+let { request } = require('@octokit/request');
 const { gt, prerelease } = require('semver');
 const { createReadStream, statSync } = require('fs');
 const { join, resolve, dirname, basename } = require('path');
-let { request } = require('@octokit/request');
+const simpleGit = require('simple-git');
 
-const TOKEN = process.env.TOKEN;
-const [, , project, owner, repo] = process.argv;
-const VERSION = require('../../versions.json')[project];
+const project = require('../../package.json');
+const VERSION = project.version;
+const TOKEN = process.env.TOKEN_GITHUB;
+
+const owner = project.author;
+const repo = project.name;
 
 request = request.defaults({
-  owner: owner,
-  repo: repo,
+  owner,
+  repo,
   headers: {
     authorization: `token ${ TOKEN }`,
   },
@@ -22,81 +24,38 @@ const assetPath = resolve(join(dirname(__filename), '../..', 'dist/executables')
 async function main() {
   try {
     const result = await request('GET /repos/{owner}/{repo}/releases');
+    const latestRelease = result.data[0];
+    const releaseVersion = latestRelease.tag_name;
 
-    if (prerelease(VERSION)) {
-      const latestPreRelease = result.data.filter(release => release.prerelease && release.tag_name.startsWith(`${ project }-`))[0];
-
-      if (latestPreRelease) {
-        await request('DELETE /repos/{owner}/{repo}/releases/{release_id}', {
-          release_id: latestPreRelease.id,
-        });
-        try {
-          await request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
-            ref: `tags/${ latestPreRelease.tag_name }`,
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      }
+    if (gt(VERSION, releaseVersion)) {
+      const pre = !!prerelease(VERSION);
+      const commits = await simpleGit().log({ from: 'HEAD', to: releaseVersion });
+      let body = '## Changelog\n\n';
+      body += commits.all
+        .reverse()
+        .map(c => `* ${ c.message } ([${ c.hash.substring(0, 7) }](https://github.com/${ owner }/${ repo }/commit/${ c.hash }))`)
+        .join('\n');
+      body += '\n\n## Download\n\n';
+      body += `* [landing-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ VERSION }/dev-console-setup-${ VERSION }.exe)`;
 
       const newRelease = await request('POST /repos/{owner}/{repo}/releases', {
-        tag_name: `${ project }-${ VERSION }`,
-        name: `${ project } v${ VERSION }`,
-        prerelease: true,
+        tag_name: VERSION,
+        name: `v${ VERSION }`,
+        prerelease: pre,
         draft: true,
-        body: `This is a development build!\n\n[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
+        body,
       });
 
-      await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
-      await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe.blockmap`));
-      await uploadAsset(newRelease, join(assetPath, `beta.yml`));
+      await uploadAsset(newRelease, join(assetPath, `dev-console-setup-${ VERSION }.exe`));
+      await uploadAsset(newRelease, join(assetPath, `dev-console-setup-${ VERSION }.exe.blockmap`));
+      await uploadAsset(newRelease, join(assetPath, pre ? 'beta.yml' : 'latest.yml'));
 
       await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
         release_id: newRelease.data.id,
         draft: false,
       });
 
-      await exec('git fetch');
-
-      const changelog = await generateChangelog(project, VERSION);
-      await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
-        release_id: newRelease.data.id,
-        body: changelog,
-      });
-
-      console.log('DID PRERELEASE', VERSION);
-    } else {
-      const latestRelease = result.data.filter(release => !release.prerelease && release.tag_name.startsWith(`${ project }-`))[0];
-      const releaseVersion = latestRelease ? latestRelease.tag_name.replace(`${ project }-`, '') : '0.0.0';
-
-      if (gt(VERSION, releaseVersion)) {
-
-        const newRelease = await request('POST /repos/{owner}/{repo}/releases', {
-          tag_name: `${ project }-${ VERSION }`,
-          name: `${ project } v${ VERSION }`,
-          draft: true,
-          body: `[${ project }-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ project }-${ VERSION }/${ project }-setup-${ VERSION }.exe)`,
-        });
-
-        await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe`));
-        await uploadAsset(newRelease, join(assetPath, `${ project }-setup-${ VERSION }.exe.blockmap`));
-        await uploadAsset(newRelease, join(assetPath, `latest.yml`));
-
-        await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
-          release_id: newRelease.data.id,
-          draft: false,
-        });
-
-        await exec('git fetch');
-
-        const changelog = await generateChangelog(project, VERSION);
-        await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
-          release_id: newRelease.data.id,
-          body: changelog,
-        });
-
-        console.log(`DID RELEASE for ${ project }: ${ VERSION }`);
-      }
+      console.log(`DID ${ pre ? 'PRE' : '' }RELEASE`, VERSION);
     }
   } catch (err) {
     console.error(err);

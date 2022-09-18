@@ -1,7 +1,5 @@
 :host {
-  display: block;
-  overflow: hidden;
-  height: 100%;
+  @apply overflow-hidden h-full flex flex-col;
 }
 
 fa-icon {
@@ -28,6 +26,6 @@ fa-icon {
   }
 }
 
-webview {
-  height: calc(100% - 42px);
+dc-log-viewer {
+  @apply flex-1 overflow-hidden;
 }

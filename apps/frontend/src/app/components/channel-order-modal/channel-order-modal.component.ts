@@ -1,13 +1,17 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Channel } from '@dev-console/types';
+import { faGripLines } from '@fortawesome/free-solid-svg-icons';
+
 
 @Component({
-  selector: 'cl-channel-order-modal',
+  selector: 'dc-channel-order-modal',
   templateUrl: './channel-order-modal.component.html',
   styleUrls: ['./channel-order-modal.component.scss'],
 })
 export class ChannelOrderModalComponent implements OnInit {
+
+  readonly fasGripLines = faGripLines;
 
   channels: Channel[];
   @Input() isVisible: boolean = false;

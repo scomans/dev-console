@@ -6,14 +6,12 @@ const path = require('path');
 const util = require('util');
 const { builtinModules } = require('module');
 const packageJson = require('../../package.json');
-const packageVersions = require('../../versions.json');
+const packageVersions = packageJson.version;
 
 function packageJsonPlugin(options) {
   return (config, context) => {
     // Extract output path from context
-    const {
-      options: { outputPath },
-    } = context;
+    const outputPath = context.normalizedOptions?.outputPath;
 
     // Install additional plugins
     config.plugins = config.plugins || [];
@@ -39,7 +37,7 @@ function packageJsonPlugin(options) {
  */
 function extractRelevantNodeModules(outputPath, options) {
   return [
-    copyYarnLockFile(outputPath),
+    copyPnpmLockFile(outputPath),
     generatePackageJson(options),
   ];
 }
@@ -51,10 +49,10 @@ function extractRelevantNodeModules(outputPath, options) {
  * @param {String} outputPath The path to the bundle being built
  * @returns {*} A Webpack plugin
  */
-function copyYarnLockFile(outputPath) {
+function copyPnpmLockFile(outputPath) {
   return new CopyPlugin({
     patterns: [
-      { from: 'yarn.lock', to: path.join(outputPath, 'yarn.lock') },
+      { from: 'pnpm-lock.yaml', to: path.join(outputPath, 'pnpm-lock.yaml') },
     ],
   });
 }

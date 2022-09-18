@@ -21,14 +21,14 @@
       >
         <li nz-menu-item [nzSelected]="!(selectedChannelId$ | async)">
           <a title (click)="openChannel(null)" [nz-tooltip]="sidebarCollapsed ? 'All Channels' : null">
-            <fa-icon icon="layer-group" class="anticon"
+            <fa-icon [icon]="fasLayerGroup" class="anticon"
             ></fa-icon>
             <span *ngIf="!(sidebarCollapsed)">All Channels</span>
           </a>
         </li>
-        <li nz-submenu nzOpen>
+        <li nz-submenu [nzOpen]="true">
           <span title>
-            <fa-icon icon="align-left" class="anticon"></fa-icon>
+            <fa-icon [icon]="fasAlignLeft" class="anticon"></fa-icon>
             <span *ngIf="!(sidebarCollapsed)">Channels</span>
           </span>
           <ul>
@@ -36,22 +36,23 @@
                 nz-menu-item
                 [nzSelected]="channel.id === (selectedChannelId$ | async)"
             >
-              <ng-container *ngIf="channel.id | callFunction:channelStatus.bind(this) as status$">
+              <ng-container *ngIf="channel.id | callFunction:channelStatus as status$">
                 <a (click)="openChannel(channel.id)">
                   <ng-container *ngIf="channel.active" [ngSwitch]="status$ | async">
-                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" icon="dot-circle" [style.color]="channel.color"></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.WAITING"
-                             [icon]="['far','clock']"
-                             transform="shrink-4"
-                             mask="circle"
-                             [style.color]="channel.color"
+                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="fasDotCircle" [style.color]="channel.color"></fa-icon>
+                    <fa-icon
+                      *ngSwitchCase="ExecuteStatus.WAITING"
+                      [icon]="farClock"
+                      transform="shrink-4"
+                      [mask]="fasCircle"
+                      [style.color]="channel.color"
                     ></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" icon="circle" [style.color]="channel.color"></fa-icon>
+                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="fasCircle" [style.color]="channel.color"></fa-icon>
                   </ng-container>
                   <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | async">
-                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="['far', 'dot-circle']" [style.color]="channel.color"></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="['far','clock']" [style.color]="channel.color"></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="['far', 'circle']" [style.color]="channel.color"></fa-icon>
+                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="farDotCircle" [style.color]="channel.color"></fa-icon>
+                    <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="farClock" [style.color]="channel.color"></fa-icon>
+                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="farCircle" [style.color]="channel.color"></fa-icon>
                   </ng-container>
                   {{ channel.name }}
                 </a>
@@ -67,16 +68,18 @@
           [nzInlineCollapsed]="sidebarCollapsed"
       >
         <li *rxLet="channels$; let channels" nz-menu-item nzMatchRouter (click)="channelOrderModal.show(channels)">
-          <fa-icon icon="grip-horizontal"
-                   class="anticon"
-                   [nz-tooltip]="sidebarCollapsed ? 'Change channel ordering' : null"
+          <fa-icon
+            [icon]="fasGripHorizontal"
+            class="anticon"
+            [nz-tooltip]="sidebarCollapsed ? 'Change channel ordering' : null"
           ></fa-icon>
           <span *ngIf="!sidebarCollapsed">Change channel ordering</span>
         </li>
-        <li nz-menu-item nzMatchRouter (click)="newChannel()">
-          <fa-icon icon="plus-circle"
-                   class="anticon"
-                   [nz-tooltip]="sidebarCollapsed ? 'Add new channel' : null"
+        <li nz-menu-item nzMatchRouter (click)="channelEditModal.show()">
+          <fa-icon
+            [icon]="fasPlusCircle"
+            class="anticon"
+            [nz-tooltip]="sidebarCollapsed ? 'Add new channel' : null"
           ></fa-icon>
           <span *ngIf="!sidebarCollapsed">Add new channel</span>
         </li>
@@ -86,15 +89,13 @@
       <nz-header>
         <div class="app-header" fxLayout="row" fxLayoutAlign="space-between center">
           <div>
-            <button nz-button
-                    nzType="text"
-                    nzSize="large"
-                    (click)="toggleSidebar()"
+            <button
+              nz-button
+              nzType="text"
+              nzSize="large"
+              (click)="toggleSidebar()"
             >
-              <i class="trigger"
-                 nz-icon
-                 [nzType]="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'"
-              ></i>
+              <fa-icon class="trigger" [icon]="sidebarCollapsed ? fasSquareCaretRight : fasSquareCaretLeft"></fa-icon>
             </button>
           </div>
           <ng-container teleportOutlet="window-actions"></ng-container>
@@ -102,14 +103,15 @@
       </nz-header>
       <nz-content>
         <div class="inner-content" *rxLet="allLogs$; let all">
-          <dc-channel-log *ngIf="!all"></dc-channel-log>
-          <dc-combined-log *ngIf="all"></dc-combined-log>
+          <dc-channel-log *ngIf="!all; else elseTpl"></dc-channel-log>
+          <ng-template #elseTpl>
+            <dc-combined-log></dc-combined-log>
+          </ng-template>
         </div>
       </nz-content>
     </nz-layout>
   </ng-container>
 </nz-layout>
 
-<cl-channel-order-modal #channelOrderModal
-                        (result)="changeOrder($event)"
-></cl-channel-order-modal>
+<dc-channel-order-modal #channelOrderModal (result)="changeOrder($event)"></dc-channel-order-modal>
+<dc-channel-edit-modal #channelEditModal (dcResult)="addChannel($event)"></dc-channel-edit-modal>

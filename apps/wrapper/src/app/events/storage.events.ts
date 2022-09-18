@@ -3,12 +3,15 @@ import * as Store from 'electron-store';
 import { EventEmitter } from 'events';
 import { uniq } from 'lodash';
 import { join } from 'path';
+import { migrations } from '../storage/migrations';
 import { StoreSchema } from '../types/store';
+
 
 app.setPath('userData', join(app.getPath('appData'), 'DevConsole'));
 
 export const store = new Store<StoreSchema>({
   serialize: value => JSON.stringify(value, undefined, 2),
+  migrations,
 });
 
 const updateWatchers: { [key: string]: { watchers: WebContents[], unsub: () => void } } = {};

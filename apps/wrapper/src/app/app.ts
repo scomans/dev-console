@@ -4,7 +4,6 @@ import { format } from 'url';
 import { environment } from '../environments/environment';
 import { rendererAppName, rendererAppPort } from './constants';
 import ExecuteEvents from './events/execute.events';
-import LogEvents from './events/log.events';
 import { store } from './events/storage.events';
 import { WindowStateKeeper } from './helpers/window-state.helper';
 
@@ -53,7 +52,6 @@ export default class App {
     App.initMainWindow();
     await App.loadMainWindow();
     ExecuteEvents.setMainWindow(App.mainWindow);
-    LogEvents.setMainWindow(App.mainWindow);
 
     if (App.isDevelopmentMode()) {
       App.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -71,6 +69,12 @@ export default class App {
   private static initMainWindow() {
     // Create the browser window.
     App.mainWindow = new BrowserWindow({
+      titleBarStyle: 'hidden',
+      titleBarOverlay: {
+        color: '#1d242a',
+        symbolColor: '#ffffff',
+        height: 64,
+      },
       frame: false,
       minWidth: 400,
       minHeight: 350,
@@ -78,10 +82,7 @@ export default class App {
       webPreferences: {
         nodeIntegration: true,
         backgroundThrottling: false,
-        enableRemoteModule: true,
         contextIsolation: false,
-        webviewTag: true,
-        nodeIntegrationInSubFrames: true,
       },
       opacity: 0,
     });
@@ -113,7 +114,7 @@ export default class App {
   private static async loadMainWindow() {
     // load the index.html of the app.
     if (!App.application.isPackaged) {
-      await App.mainWindow.loadURL(`http://localhost:${rendererAppPort}`);
+      await App.mainWindow.loadURL(`http://localhost:${ rendererAppPort }`);
     } else {
       await App.mainWindow.loadURL(format({
         pathname: join(__dirname, '..', rendererAppName, 'index.html'),

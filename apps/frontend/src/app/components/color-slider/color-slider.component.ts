@@ -2,8 +2,9 @@ import { Component, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SliderComponent } from 'ngx-color/slider';
 
+
 @Component({
-  selector: 'cl-color-slider',
+  selector: 'dc-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss'],
   providers: [
@@ -37,4 +38,5 @@ export class ColorSliderComponent implements ControlValueAccessor {
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
+
 }

@@ -4,6 +4,7 @@
 }
 
 .logo {
+  @apply inline-block;
   width: 30px;
 }
 
@@ -14,6 +15,7 @@ nz-header {
 }
 
 .app-header {
+  @apply flex flex-wrap justify-between items-center;
   position: relative;
   height: 64px;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);

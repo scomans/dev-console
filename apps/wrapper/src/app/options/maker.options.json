@@ -3,15 +3,10 @@
   "productName": "DevConsole",
   "icon": "apps/wrapper/logo.ico",
   "win": {
-    "extraResources": [
-      {
-        "from": "apps/flap/src/extra/resources",
-        "to": ""
-      }
-    ]
+    "extraResources": []
   },
   "nsis": {
-    "artifactName": "frontend-setup-${version}.exe",
+    "artifactName": "dev-console-setup-${version}.exe",
     "installerIcon": "apps/wrapper/logo.ico",
     "installerHeaderIcon": "apps/wrapper/logo.ico"
   },

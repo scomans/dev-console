@@ -262,7 +262,7 @@ function createFileResource$({ delay, interval, reverse, simultaneous, window: s
 
   return timer(delay, interval).pipe(
     mergeMap(() => from(getFileSize(filePath)), simultaneous),
-    checkOperator,
+    checkOperator as any,
     map((x) => (isNotABoolean(x) ? false : x)),
     startWith(false),
     distinctUntilChanged(),

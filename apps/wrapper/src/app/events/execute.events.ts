@@ -1,5 +1,5 @@
 import { isEmpty } from '@dev-console/helpers';
-import { Channel, ExecuteStatus } from '@dev-console/types';
+import { Channel, ExecuteStatus, LogEntry, LogEntryWithSource } from '@dev-console/types';
 import { ipcMain } from 'electron';
 import { parse as parseEnv } from 'envfile';
 import * as execa from 'execa';
@@ -8,16 +8,24 @@ import { existsSync, readFileSync } from 'fs';
 import { set } from 'lodash';
 import { dirname, isAbsolute, join } from 'path';
 import { Readable } from 'stream';
-import * as terminate from 'terminate';
+import { default as terminate } from 'terminate';
 import { CancelToken } from '../helpers/cancel.helper';
 import { waitOn } from '../helpers/wait-on.helper';
-import { addLine } from './log.events';
+
+
+interface Batch<T> {
+  hasDispatched: boolean;
+  values: T[];
+  callback: (values: T[]) => void;
+}
 
 let mainWindow: Electron.BrowserWindow = null;
 
 const runningProcesses = new Map<string, ExecaChildProcess<string>>();
 const waitingProcesses = new Map<string, ((message) => void)>();
 
+let index = 0;
+let batch: Batch<LogEntryWithSource>;
 
 export default class ExecuteEvents {
   static bootstrapExecuteEvents(): Electron.IpcMain {
@@ -192,4 +200,35 @@ function emitLines(stream: Readable) {
       stream.emit('line-data', dataBacklog);
     }
   });
+}
+
+export function addLine(id: string, line: LogEntry) {
+  const newLine: LogEntryWithSource = {
+    ...line,
+    id: index++,
+    source: id,
+  };
+
+  if (mainWindow) {
+    if (batch && !batch.hasDispatched) {
+      batch.values.push(newLine);
+    } else {
+      batch = {
+        hasDispatched: false,
+        values: [newLine],
+        callback: newLines => mainWindow.webContents.send('log-new-lines', newLines),
+      };
+
+      const executor = typeof setImmediate === 'function' ? function (fn) {
+        setImmediate(fn);
+      } : function (fn) {
+        setTimeout(fn);
+      };
+
+      executor(() => {
+        batch.hasDispatched = true;
+        batch.callback(batch.values);
+      });
+    }
+  }
 }

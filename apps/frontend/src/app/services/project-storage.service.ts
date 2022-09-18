@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { doOnSubscribe } from '@dev-console/helpers';
 import { EMPTY, merge, Observable } from 'rxjs';
 import { filter, finalize, map } from 'rxjs/operators';
+import { createDeferredPromise } from '../../../../../libs/helpers/src/lib/promise.helper';
 import { ElectronService } from './electron.service';
+
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +12,7 @@ import { ElectronService } from './electron.service';
 export class ProjectStorageService {
 
   private readonly onUpdate$: Observable<[string, any, any]> = EMPTY;
+  private isOpened = createDeferredPromise<void>();
 
   constructor(
     private readonly electronService: ElectronService,
@@ -21,13 +24,18 @@ export class ProjectStorageService {
 
   async open(file: string) {
     if (this.electronService.isElectron) {
-      return this.electronService.emit('project-store-open', file);
+      this.isOpened.resolve();
+      this.isOpened = createDeferredPromise<void>();
+      await this.electronService.emit('project-store-open', file);
+      this.isOpened.resolve();
+      return true;
     }
     return false;
   }
 
   async get<T>(key: string, def?: T) {
     if (this.electronService.isElectron) {
+      await this.isOpened;
       return this.electronService.emit<T>('project-store-get', key, def);
     } else {
       const value = localStorage.getItem(key);
@@ -37,6 +45,7 @@ export class ProjectStorageService {
 
   async set(key: string, value: any) {
     if (this.electronService.isElectron) {
+      await this.isOpened;
       return this.electronService.emit<void>('project-store-set', key, value);
     } else {
       return localStorage.setItem(key, JSON.stringify(value));
@@ -45,6 +54,7 @@ export class ProjectStorageService {
 
   async delete(key: string) {
     if (this.electronService.isElectron) {
+      await this.isOpened;
       return this.electronService.emit<void>('project-store-delete', key);
     } else {
       return localStorage.removeItem(key);
@@ -53,12 +63,14 @@ export class ProjectStorageService {
 
   async sync(fromKey: string, toKey: string) {
     if (this.electronService.isElectron) {
+      await this.isOpened;
       return this.electronService.emit<void>('project-store-sync', fromKey, toKey);
     }
   }
 
   async unsync(fromKey: string, toKey: string) {
     if (this.electronService.isElectron) {
+      await this.isOpened;
       return this.electronService.emit<void>('project-store-unsync', fromKey, toKey);
     }
   }
@@ -78,4 +90,5 @@ export class ProjectStorageService {
       finalize(() => this.electronService.emit('project-store-unregister-watcher', key)),
     );
   }
+
 }

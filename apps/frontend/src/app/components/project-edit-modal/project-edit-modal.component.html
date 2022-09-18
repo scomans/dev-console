@@ -1,6 +1,13 @@
-<nz-modal [(nzVisible)]="isVisible" [nzTitle]="(project ? 'Edit' : 'Add') + ' project'" (nzOnCancel)="handleCancel()" (nzOnOk)="done()">
+<nz-modal
+  [nzVisible]="isVisible | push"
+  [nzTitle]="((project | push) ? 'Edit' : 'Add') + ' project'"
+  [nzOkDisabled]="validateForm.invalid$ | push"
+  (nzOnCancel)="hide()"
+  (nzOnOk)="done()"
+>
+
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="validateForm" (ngSubmit)="done()">
+    <form nz-form [formGroup]="form" (ngSubmit)="done()">
       <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a name">
@@ -15,15 +22,12 @@
           </nz-input-group>
           <ng-template #inputFileTpl>
             <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectFile(); $event.preventDefault()">
-              <fa-icon icon="folder-open"></fa-icon>
+              <fa-icon [icon]="fasFolderOpen" transform="right-1"></fa-icon>
             </button>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
     </form>
   </ng-container>
-  <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    <button nz-button nzType="primary" (click)="done()" [disabled]="validateForm.invalid">Done</button>
-  </div>
+
 </nz-modal>

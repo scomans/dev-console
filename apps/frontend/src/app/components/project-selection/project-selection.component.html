@@ -1,7 +1,7 @@
 <nz-layout class="app-layout">
 
   <nz-header>
-    <div class="app-header" fxLayout="row wrap" fxLayoutAlign="space-between center">
+    <div class="app-header">
       <div class="title-bar">
         <img src="assets/logo.svg" alt="DevConsole" class="logo">
         <h1>DevConsole</h1>
@@ -12,34 +12,33 @@
   <nz-content>
     <div class="inner-content">
       <div class="actions-bar" fxLayoutAlign="end">
-        <button nz-button nzType="primary" (click)="addProjectModal.show()">Add project</button>
-        <cl-project-edit-modal #addProjectModal (result)="addProject($event)"></cl-project-edit-modal>
+        <button nz-button nzType="primary" (click)="projectEditModal.show()">Add project</button>
       </div>
       <div fxLayout="row" fxLayoutGap="10px">
         <ng-container *ngFor="let project of projects$ | async">
-          <cl-project-edit-modal #editProjectModal [project]="project" (result)="editProject($event)"></cl-project-edit-modal>
-          <nz-card class="project-card"
-                   [nzCover]="coverTemplate"
-                   [nzActions]="[actionEdit, actionRemove]"
-                   (click)="openProject(project)"
+          <nz-card
+            class="project-card"
+            [nzCover]="coverTemplate"
+            [nzActions]="[actionEdit, actionRemove]"
+            (click)="openProject(project)"
           >
             <nz-card-meta [nzTitle]="project.name" [nzDescription]="descriptionTemplate"></nz-card-meta>
           </nz-card>
           <ng-template #coverTemplate>
           </ng-template>
           <ng-template #descriptionTemplate>
-          <span nz-tooltip [nzTooltipTitle]="project.file" nzTooltipPlacement="bottom">
-            {{ project.file | smartTrim:33 }}
-          </span>
+            <span [nz-tooltip]="project.file" nzTooltipPlacement="bottom">
+              {{ project.file | smartTrim:33 }}
+            </span>
           </ng-template>
           <ng-template #actionEdit>
-            <button nz-button nzType="text" (click)="editProjectModal.show(); $event.stopPropagation()">
-              <fa-icon icon="edit"></fa-icon>
+            <button nz-button nzType="text" (click)="projectEditModal.show(project); $event.stopPropagation()">
+              <fa-icon [icon]="fasEdit"></fa-icon>
             </button>
           </ng-template>
           <ng-template #actionRemove>
             <ng-template #iconTpl>
-              <fa-icon [icon]="['far','question-circle']"
+              <fa-icon [icon]="farQuestionCircle"
                        style="color: red; position: absolute; top: 4px;"
               ></fa-icon>
             </ng-template>
@@ -52,7 +51,7 @@
                     (click)="$event.stopPropagation()"
                     (nzOnConfirm)="removeProject(project)"
             >
-              <fa-icon icon="trash"></fa-icon>
+              <fa-icon [icon]="fasTrash"></fa-icon>
             </button>
           </ng-template>
         </ng-container>
@@ -60,3 +59,5 @@
     </div>
   </nz-content>
 </nz-layout>
+
+<dc-project-edit-modal #projectEditModal (dcResult)="upsertProject($event)"></dc-project-edit-modal>

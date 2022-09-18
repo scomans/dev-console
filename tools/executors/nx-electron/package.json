@@ -1,0 +1,7 @@
+{
+  "name": "@dev-console/tools-executors",
+  "version": "14.0.0-alpha.0",
+  "main": "src/index.js",
+  "executors": "./executors.json",
+  "builders": "./executors.json"
+}

@@ -5,6 +5,7 @@ import { filter, map } from 'rxjs/operators';
 import { mapElectronEvent } from '../helpers/electron.helper';
 import { ElectronService } from './electron.service';
 
+
 export interface ExecuteEvent<E extends string, D extends ExecuteData> {
   event: E;
   data: D;
@@ -95,11 +96,7 @@ export class ExecuteService {
     if (this.electronService.isElectron) {
       return this.electronService.emit<boolean>('execute-kill', channel);
     }
+    return true;
   }
 
-  clear(channel?: Channel) {
-    if (this.electronService.isElectron) {
-      return this.electronService.emit<boolean>('log-clear', channel);
-    }
-  }
 }

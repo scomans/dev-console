@@ -1,91 +1,47 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { filterNil } from '@dev-console/helpers';
-import { Channel, LogEntryWithSource } from '@dev-console/types';
-import { from, merge, Observable } from 'rxjs';
-import { filter, first, map, scan, startWith, switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { combineLatestWith, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { trackById } from '../../helpers/angular.helper';
 import { ElectronService } from '../../services/electron.service';
-import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
+import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { ChannelRepository } from '../../stores/channel.repository';
+import { GlobalLogsRepository } from '../../stores/global-log.repository';
+import { LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
+
 
 @Component({
-  selector: 'cl-log-viewer',
+  selector: 'dc-log-viewer',
   templateUrl: './log-viewer.component.html',
   styleUrls: ['./log-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogViewerComponent implements OnInit {
+export class LogViewerComponent {
 
-  log$: Observable<LogEntryWithSource[]>;
-  colors$: Observable<Record<string, string>>;
-  loading$: Observable<boolean>;
+  readonly trackById = trackById;
 
-  @ViewChild(LogMinimapComponent)
-  set minimap(value: LogMinimapComponent) {
-    if (value) {
-      this.loading$ = value.drawThrottle.pipe(
-        filterNil(),
-        first(),
-        map(() => false),
-        startWith(true),
-      );
-    }
-  }
+  log$: Observable<LogEntryWithSourceAndColor[]>;
 
   constructor(
     private readonly electronService: ElectronService,
+    private readonly channelRepository: ChannelRepository,
+    private readonly globalLogsRepository: GlobalLogsRepository,
+    private readonly channelLogRepository: ChannelLogRepository,
   ) {
   }
 
   ngOnInit(): void {
-    const data$ = this.electronService
-      .on<[{ mode: string, channel?: Channel, colors?: Record<string, string> }]>('webview-data')
-      .pipe(
-        map(data => data[0]),
-        filterNil(),
-      );
-    this.colors$ = data$.pipe(
-      map(data => data.colors),
-      startWith({}),
-    );
-
-    this.log$ = data$.pipe(
-      filter(data => !!data.mode),
-      switchMap(data => this.electronService.on('log-reset').pipe(
-        startWith(0),
-        switchMap(() => {
-          let initialLogSource$: Observable<LogEntryWithSource[]>;
-          let newLineLogSource$: Observable<LogEntryWithSource[]> = this.electronService.on('log-new-line');
-          if (data.mode === 'channel') {
-            initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get', data.channel.id));
-            newLineLogSource$ = newLineLogSource$.pipe(
-              filter(line => line[0].source === data.channel.id),
-            );
-          } else {
-            initialLogSource$ = from(this.electronService.emit<LogEntryWithSource[]>('log-get-all'));
-          }
-          return merge(
-            initialLogSource$,
-            newLineLogSource$,
-          ).pipe(
-            scan((acc, entries) => {
-              acc = [
-                ...acc,
-                ...entries,
-              ];
-              while (acc.length > 1000) {
-                acc.shift();
-              }
-              return acc;
-            }, []),
-          );
-        }),
-        ),
+    const colors$: Observable<Record<string, string>> = this.channelRepository.channels$.pipe(
+      map(channels => channels
+        .map(c => ({ id: c.id, color: c.color }))
+        .reduce((a, v) => ({ ...a, [v.id]: v.color }), {}),
       ),
     );
-
-    this.electronService.sendToHost('webview-ready');
+    this.log$ = this.channelRepository.activeChannelId$
+      .pipe(
+        switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
+        combineLatestWith(colors$),
+        map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
+      );
   }
 
-  distinct() {
-    return false;
-  }
 }

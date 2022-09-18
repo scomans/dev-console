@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TeleportModule } from '@ngneat/overview';
+import { ForModule } from '@rx-angular/template';
 import { LetModule } from '@rx-angular/template/let';
 import { PushModule } from '@rx-angular/template/push';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -32,7 +33,6 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
 import { WINDOW } from './components/app.const';
-
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
 import { ChannelLogComponent } from './components/channel-log/channel-log.component';
@@ -45,16 +45,12 @@ import { LogViewerComponent } from './components/log-viewer/log-viewer.component
 import { ProjectEditModalComponent } from './components/project-edit-modal/project-edit-modal.component';
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
 import { ProjectComponent } from './components/project/project.component';
-import { SearchBoxComponent } from './components/search-box/search-box.component';
 import { AutoScrollDirective } from './directives/auto-scroll.directive';
-import { RxFor } from './directives/rx-for.directive';
-import { WebviewDirective } from './directives/webview.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
 import { AutolinkPipe } from './pipes/autolink.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
-import { iconProvider } from './providers/icon.provider';
 
 
 registerLocaleData(en);
@@ -75,12 +71,9 @@ registerLocaleData(en);
     ColorSliderComponent,
     CallFunctionPipe,
     AutoScrollDirective,
-    SearchBoxComponent,
-    WebviewDirective,
     LogViewerComponent,
     AutolinkPipe,
     SafePipe,
-    RxFor,
     ChannelOrderModalComponent,
   ],
   imports: [
@@ -109,6 +102,7 @@ registerLocaleData(en);
     FontAwesomeModule,
     FlexLayoutModule,
     TeleportModule,
+    ForModule,
     LetModule,
     PushModule,
     ColorSliderModule,
@@ -119,7 +113,6 @@ registerLocaleData(en);
     }),
   ],
   providers: [
-    iconProvider,
     // storageProvider,
 
     {

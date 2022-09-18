@@ -12,9 +12,10 @@
         "main": "apps/frontend/src/main.ts",
         "polyfills": "apps/frontend/src/polyfills.ts",
         "tsConfig": "apps/frontend/tsconfig.app.json",
-        "aot": true,
+        "aot": false,
         "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
         "styles": [
+          "apps/frontend/src/styles/base.scss",
           "apps/frontend/src/styles/styles.less",
           "apps/frontend/src/styles/styles.scss"
         ],
@@ -25,6 +26,14 @@
         "allowedCommonJsDependencies": ["ansi-to-html", "lodash"]
       },
       "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "aot": false
+        },
         "production": {
           "fileReplacements": [
             {
@@ -32,6 +41,7 @@
               "with": "apps/frontend/src/environments/environment.prod.ts"
             }
           ],
+          "aot": true,
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
@@ -62,8 +72,12 @@
       "configurations": {
         "production": {
           "browserTarget": "frontend:build:production"
+        },
+        "development": {
+          "browserTarget": "frontend:build:development"
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
