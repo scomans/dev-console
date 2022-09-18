@@ -10,7 +10,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TeleportModule } from '@ngneat/overview';
-import { LetModule, PushModule } from '@rx-angular/template';
+import { LetModule } from '@rx-angular/template/let';
+import { PushModule } from '@rx-angular/template/push';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -55,8 +56,8 @@ import { SafePipe } from './pipes/safe.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
 import { iconProvider } from './providers/icon.provider';
 
-registerLocaleData(en);
 
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
@@ -112,7 +113,10 @@ registerLocaleData(en);
     PushModule,
     ColorSliderModule,
 
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: true }),
+    RouterModule.forRoot(routes, {
+      initialNavigation: 'enabledBlocking',
+      useHash: true,
+    }),
   ],
   providers: [
     iconProvider,

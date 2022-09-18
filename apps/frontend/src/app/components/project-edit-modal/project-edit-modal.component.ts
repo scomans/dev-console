@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Project } from '@dev-console/types';
 import { ElectronService } from '../../services/electron.service';
+
 
 @Component({
   selector: 'cl-project-edit-modal',
@@ -10,7 +11,7 @@ import { ElectronService } from '../../services/electron.service';
 })
 export class ProjectEditModalComponent implements OnInit {
 
-  validateForm!: FormGroup;
+  validateForm!: UntypedFormGroup;
 
   @Input() project?: Project;
   @Input() isVisible: boolean = false;
@@ -18,7 +19,7 @@ export class ProjectEditModalComponent implements OnInit {
   @Output('result') resultEmitter = new EventEmitter<Project>();
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly electronService: ElectronService,
   ) {
   }

@@ -1,5 +1,5 @@
 {
-  "root": "apps/wrapper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/wrapper/src",
   "projectType": "application",
   "prefix": "wrapper",
@@ -63,7 +63,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/wrapper"],
       "options": {
-        "jestConfig": "apps/wrapper/jest.config.js",
+        "jestConfig": "apps/wrapper/jest.config.ts",
         "passWithNoTests": true
       }
     }

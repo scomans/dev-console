@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'types',
+/* eslint-disable */
+export default {
+  displayName: 'frontend',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -14,7 +15,7 @@ module.exports = {
       },
     },
   },
-  coverageDirectory: '../../coverage/libs/types',
+  coverageDirectory: '../../coverage/apps/frontend',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

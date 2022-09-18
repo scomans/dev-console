@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { get, set } from 'lodash';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { ElectronService } from '../../services/electron.service';
+
 
 @Component({
   selector: 'cl-channel-edit-modal',
@@ -14,13 +15,13 @@ import { ElectronService } from '../../services/electron.service';
 })
 export class ChannelEditModalComponent implements OnInit {
 
-  validateForm!: FormGroup;
+  validateForm!: UntypedFormGroup;
 
   @Input() channel?: Channel;
 
   constructor(
     private readonly modal: NzModalRef,
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly electronService: ElectronService,
   ) {
   }
