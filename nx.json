@@ -22,19 +22,5 @@
       }
     }
   },
-  "projects": {
-    "frontend": {
-      "tags": []
-    },
-    "wrapper": {
-      "tags": [],
-      "implicitDependencies": ["frontend"]
-    },
-    "helpers": {
-      "tags": []
-    },
-    "types": {
-      "tags": []
-    }
-  }
+  "projects": {}
 }

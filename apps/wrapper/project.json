@@ -1,0 +1,73 @@
+{
+  "root": "apps/wrapper",
+  "sourceRoot": "apps/wrapper/src",
+  "projectType": "application",
+  "prefix": "wrapper",
+  "targets": {
+    "build": {
+      "executor": "nx-electron:build",
+      "options": {
+        "outputPath": "dist/apps/wrapper",
+        "main": "apps/wrapper/src/main.ts",
+        "tsConfig": "apps/wrapper/tsconfig.app.json",
+        "assets": ["apps/wrapper/src/assets"],
+        "webpackConfig": "apps/wrapper/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/wrapper/src/environments/environment.ts",
+              "with": "apps/wrapper/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx-electron:execute",
+      "options": {
+        "buildTarget": "wrapper:build"
+      }
+    },
+    "package": {
+      "executor": "nx-electron:package",
+      "options": {
+        "name": "wrapper",
+        "frontendProject": "frontend",
+        "outputPath": "dist/packages",
+        "prepackageOnly": true
+      }
+    },
+    "make": {
+      "executor": "nx-electron:make",
+      "options": {
+        "name": "wrapper",
+        "frontendProject": "frontend",
+        "outputPath": "dist/executables",
+        "platform": "windows",
+        "arch": "x64",
+        "publishPolicy": "never"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/wrapper/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/wrapper"],
+      "options": {
+        "jestConfig": "apps/wrapper/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["frontend"]
+}
