@@ -6,7 +6,7 @@ const simpleGit = require('simple-git');
 
 const project = require('../../package.json');
 const VERSION = project.version;
-const TOKEN = process.env.TOKEN_GITHUB;
+const TOKEN = process.env.TOKEN;
 
 const owner = project.author;
 const repo = project.name;

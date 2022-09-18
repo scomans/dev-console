@@ -13,7 +13,7 @@ const repo = project.name;
 
 
 async function updateVersion() {
-  const TOKEN = process.env.TOKEN_GITHUB;
+  const TOKEN = process.env.TOKEN;
   request = request.defaults({
     owner,
     repo,
