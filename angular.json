@@ -230,7 +230,7 @@
       "projectType": "library",
       "root": "libs/helpers",
       "sourceRoot": "libs/helpers/src",
-      "prefix": "dev-console",
+      "prefix": "dc",
       "architect": {
         "lint": {
           "builder": "@nrwl/linter:eslint",
@@ -255,7 +255,7 @@
       "projectType": "library",
       "root": "libs/types",
       "sourceRoot": "libs/types/src",
-      "prefix": "dev-console",
+      "prefix": "dc",
       "architect": {
         "lint": {
           "builder": "@nrwl/linter:eslint",

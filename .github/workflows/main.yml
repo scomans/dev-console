@@ -38,11 +38,11 @@ jobs:
         run: yarn install
 
       - name: Update version
-        run: yarn run version frontend xXKeyleXx DevConsole
+        run: yarn run version frontend scomans DevConsole
 
       - name: Build app
         run: yarn run make
 
       - name: Deploy app
-        run: yarn run release frontend xXKeyleXx DevConsole
+        run: yarn run release frontend scomans DevConsole
 
