@@ -53,4 +53,4 @@ jobs:
         run: yarn run make
 
       - name: 🚀 Deploy
-        run: node ./tools/release/release.js
+        run: pnpm release

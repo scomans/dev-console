@@ -6,7 +6,6 @@ const path = require('path');
 const util = require('util');
 const { builtinModules } = require('module');
 const packageJson = require('../../package.json');
-const packageVersions = packageJson.version;
 
 function packageJsonPlugin(options) {
   return (config, context) => {
@@ -74,7 +73,7 @@ function generatePackageJson(options) {
     productName: options.productName ?? packageJson.productName,
     author: packageJson.author,
     description: packageJson.description,
-    version: packageVersions[options.project],
+    version: packageJson.version,
     private: true,
     scripts: options.scripts,
     dependencies,
