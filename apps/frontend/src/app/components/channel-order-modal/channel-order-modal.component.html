@@ -10,8 +10,6 @@
       <div *ngFor="let channel of channels"
            class="channel"
            cdkDrag
-           fxLayout="row"
-           fxLayoutAlign="start center"
            [cdkDragData]="channel"
       >
         <div *cdkDragPlaceholder class="channel placeholder"></div>

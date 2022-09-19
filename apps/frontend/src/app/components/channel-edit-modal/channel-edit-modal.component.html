@@ -17,8 +17,8 @@
       <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="color">Color</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter or select a color">
-          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
-            <dc-color-slider id="color" formControlName="color" fxFlex></dc-color-slider>
+          <div class="flex justify-start items-center gap-8">
+            <dc-color-slider id="color" formControlName="color" class="flex-1"></dc-color-slider>
             <fa-icon [icon]="fasCircle" [style.color]="validateForm.get('color')?.value" transform="grow-15"></fa-icon>
           </div>
         </nz-form-control>

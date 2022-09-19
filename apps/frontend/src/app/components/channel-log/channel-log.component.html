@@ -1,5 +1,5 @@
 <ng-container *ngIf="channel$ | async as channel">
-  <div class="actions-bar" fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="actions-bar">
     <div *rxLet="status$; let status;">
       <button nz-button class="start" (click)="run(channel)" [disabled]="status !== ExecuteStatus.STOPPED">
         <fa-icon [icon]="fasPlay"></fa-icon>

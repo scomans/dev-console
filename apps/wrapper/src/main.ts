@@ -1,4 +1,3 @@
-import * as remoteMain from '@electron/remote/main';
 import { app, BrowserWindow, nativeTheme } from 'electron';
 import log from 'electron-log';
 import { unlinkSync } from 'fs';
@@ -35,7 +34,6 @@ if (process.platform === 'win32') {
 class Main {
 
   static initialize() {
-    remoteMain.initialize();
   }
 
   static bootstrapApp() {

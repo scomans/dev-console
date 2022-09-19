@@ -7,6 +7,7 @@ fa-icon {
 }
 
 .actions-bar {
+  @apply flex justify-between items-center;
   margin-bottom: 10px;
 
   button {

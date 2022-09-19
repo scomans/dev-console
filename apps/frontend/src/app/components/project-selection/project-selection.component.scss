@@ -66,5 +66,6 @@ nz-content {
 }
 
 .actions-bar {
+  @apply flex justify-end;
   margin-bottom: 10px;
 }

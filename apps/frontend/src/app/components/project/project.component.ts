@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable, takeUntil } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -32,7 +33,7 @@ import { UiRepository } from '../../stores/ui.repository';
     UiRepository,
   ],
 })
-export class ProjectComponent implements OnInit, OnDestroy {
+export class ProjectComponent implements OnInit {
 
   readonly fasAlignLeft = faAlignLeft;
   readonly fasCircle = fasCircle;
@@ -83,18 +84,13 @@ export class ProjectComponent implements OnInit, OnDestroy {
       map(activeId => !activeId),
     );
     this.channels$ = this.channelRepository.channels$.pipe(
-      map(channels => channels.sort((a, b) => a.index - b.index)),
+      map(channels => sortBy(channels, 'index')),
     );
   }
 
   ngOnInit() {
-    // this.electronService.registerCloseListener('project-close', switchMap(() => this.checkRunning()));
     this.channelLogRepository.checkForUpdates().pipe(takeUntil(this.destroy$)).subscribe();
     this.globalLogsRepository.checkForUpdates().pipe(takeUntil(this.destroy$)).subscribe();
-  }
-
-  ngOnDestroy() {
-    // this.electronService.unregisterCloseListener('project-close');
   }
 
   toggleSidebar() {

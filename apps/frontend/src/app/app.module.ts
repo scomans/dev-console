@@ -3,13 +3,11 @@ import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TeleportModule } from '@ngneat/overview';
 import { ForModule } from '@rx-angular/template';
 import { LetModule } from '@rx-angular/template/let';
 import { PushModule } from '@rx-angular/template/push';
@@ -100,8 +98,6 @@ registerLocaleData(en);
     NzSwitchModule,
     NzToolTipModule,
     FontAwesomeModule,
-    FlexLayoutModule,
-    TeleportModule,
     ForModule,
     LetModule,
     PushModule,
