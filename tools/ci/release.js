@@ -36,7 +36,7 @@ async function main() {
         .map(c => `* ${ c.message } ([${ c.hash.substring(0, 7) }](https://github.com/${ owner }/${ repo }/commit/${ c.hash }))`)
         .join('\n');
       body += '\n\n## Download\n\n';
-      body += `* [landing-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ VERSION }/dev-console-setup-${ VERSION }.exe)`;
+      body += `* [dev-console-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ VERSION }/dev-console-setup-${ VERSION }.exe)`;
 
       const newRelease = await request('POST /repos/{owner}/{repo}/releases', {
         tag_name: VERSION,
