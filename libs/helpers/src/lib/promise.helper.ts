@@ -31,3 +31,7 @@ export function createDeferredPromise<T>(
 
   return promise;
 }
+
+export function isPromise(v: any) {
+  return v && typeof v.then === 'function';
+}

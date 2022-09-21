@@ -5,7 +5,6 @@ import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { SubSink } from 'subsink';
 import { trackById } from '../../helpers/angular.helper';
 import { ExecuteService } from '../../services/execute.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
@@ -28,7 +27,6 @@ export class CombinedLogComponent {
 
   readonly ExecuteStatus = ExecuteStatus;
   readonly trackById = trackById;
-  subs = new SubSink();
 
   channels$: Observable<Channel[]>;
   channelColors$: Observable<Record<string, string>>;

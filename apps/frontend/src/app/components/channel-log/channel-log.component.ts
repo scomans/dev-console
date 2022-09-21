@@ -5,7 +5,6 @@ import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faBroom, faEdit, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { SubSink } from 'subsink';
 import { sleep } from '../../../../../../libs/helpers/src/lib/promise.helper';
 import { trackById } from '../../helpers/angular.helper';
 import { ExecuteService } from '../../services/execute.service';
@@ -32,7 +31,6 @@ export class ChannelLogComponent implements OnInit {
 
   ExecuteStatus = ExecuteStatus;
   trackById = trackById;
-  subs = new SubSink();
 
   status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;

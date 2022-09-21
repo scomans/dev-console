@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
-import { SubSink } from 'subsink';
+import { DestroyService } from '../../services/destroy.service';
 import { WINDOW } from '../app.const';
 
 
@@ -17,10 +17,11 @@ export interface Rect {
   templateUrl: './log-minimap.component.html',
   styleUrls: ['./log-minimap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    DestroyService,
+  ],
 })
 export class LogMinimapComponent implements OnInit, OnDestroy {
-
-  subs = new SubSink();
 
   contentRect: Rect;
   viewportRect: Rect;
@@ -51,6 +52,7 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   @ViewChild('content', { static: true }) contentEl: ElementRef;
 
   constructor(
+    private readonly destroy$: DestroyService,
     @Inject(WINDOW) private readonly window: Window,
     private readonly ngZone: NgZone,
     private readonly cdr: ChangeDetectorRef,
@@ -62,15 +64,12 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.viewport = this.contentEl.nativeElement;
     this.init();
 
-    this.subs.sink = this.drawThrottle
+    this.drawThrottle
       .pipe(
+        takeUntil(this.destroy$),
         auditTime(10),
       )
       .subscribe(() => this.draw());
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
   }
 
   black(pc) {
