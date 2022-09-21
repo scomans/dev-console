@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { SubSink } from 'subsink';
@@ -32,7 +32,7 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   drag = false;
   drawThrottle = new BehaviorSubject<void>(undefined);
 
-  black = (pc) => `rgba(255,255,255,${pc / 100})`;
+
   settings = {
     styles: {
       '.log-entry > span.error': 'rgba(255, 0, 0, 0.4)',
@@ -44,14 +44,16 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     drag: this.black(10),
   };
 
-  @Input() width: number = 100;
-  @Input() scale: number = 0.10;
+  @Input() width = 100;
+  @Input() scale = 0.10;
 
   @ViewChild('map', { static: true }) canvas: ElementRef;
   @ViewChild('content', { static: true }) contentEl: ElementRef;
 
   constructor(
     @Inject(WINDOW) private readonly window: Window,
+    private readonly ngZone: NgZone,
+    private readonly cdr: ChangeDetectorRef,
   ) {
   }
 
@@ -71,33 +73,37 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  black(pc) {
+    return `rgba(255,255,255,${ pc / 100 })`;
+  }
+
   toRect(x, y, w, h): Rect {
     return { x, y, w, h };
-  };
+  }
 
   rectRelTo(rect: Rect, pos = { x: 0, y: 0 }) {
     return this.toRect(rect.x - pos.x, rect.y - pos.y, rect.w, rect.h);
-  };
+  }
 
   elGetOffset(el) {
     const br = el.getBoundingClientRect();
-    return { x: br.left + this.window.pageXOffset, y: br.top + this.window.pageYOffset };
-  };
+    return { x: br.left + this.window.scrollX, y: br.top + this.window.scrollY };
+  }
 
   rectOfEl(el) {
     const { x, y } = this.elGetOffset(el);
     return this.toRect(x, y, el.offsetWidth, el.offsetHeight);
-  };
+  }
 
   rectOfViewport(el) {
     const { x, y } = this.elGetOffset(el);
     return this.toRect(x + el.clientLeft, y + el.clientTop, el.clientWidth, el.clientHeight);
-  };
+  }
 
   rectOfContent(el) {
     const { x, y } = this.elGetOffset(el);
     return this.toRect(x + el.clientLeft - el.scrollLeft, y + el.clientTop - el.scrollTop, el.scrollWidth, el.scrollHeight);
-  };
+  }
 
   drawRect(rect: Rect, color: string) {
     if (color) {
@@ -150,33 +156,35 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   }
 
   draw() {
-    this.contentRect = this.rectOfContent(this.viewport);
-    this.viewportRect = this.rectOfViewport(this.viewport);
-    this.height = this.viewportRect.h;
+    this.ngZone.runOutsideAngular(() => {
+      this.contentRect = this.rectOfContent(this.viewport);
+      this.viewportRect = this.rectOfViewport(this.viewport);
+      this.height = this.viewportRect.h;
 
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+      this.ctx.clearRect(0, 0, this.width, this.height);
 
-    let scrollOffset = this.viewport.scrollTop;
-    let scrollPourcent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
-    const scrollbarSize = Math.min(this.viewportRect.h, this.contentRect.h) * this.scale;
-    const trackSize = Math.min(this.viewportRect.h, this.contentRect.h * this.scale);
+      const scrollOffset = this.viewport.scrollTop;
+      const scrollPercent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
+      const scrollbarSize = Math.min(this.viewportRect.h, this.contentRect.h) * this.scale;
+      const trackSize = Math.min(this.viewportRect.h, this.contentRect.h * this.scale);
 
-    const handleOffset = ~~((trackSize - scrollbarSize) * scrollPourcent);
-    const backgroundOffset = this.contentRect.h * this.scale > this.viewportRect.h ?
-      (this.viewportRect.h - (this.contentRect.h * this.scale)) * scrollPourcent : // TODO fix
-      0;
+      const handleOffset = ~~((trackSize - scrollbarSize) * scrollPercent);
+      const backgroundOffset = this.contentRect.h * this.scale > this.viewportRect.h ?
+        (this.viewportRect.h - (this.contentRect.h * this.scale)) * scrollPercent : // TODO fix
+        0;
 
-    const dragRect: Rect = {
-      w: this.viewportRect.w,
-      h: Math.min(this.viewportRect.h, this.contentRect.h) * this.scale,
-      x: 0,
-      y: handleOffset,
-    };
+      const dragRect: Rect = {
+        w: this.viewportRect.w,
+        h: Math.min(this.viewportRect.h, this.contentRect.h) * this.scale,
+        x: 0,
+        y: handleOffset,
+      };
 
-    this.applyStyles(this.settings.styles, backgroundOffset);
-    this.drawRect(dragRect, this.settings.drag);
-  };
+      this.applyStyles(this.settings.styles, backgroundOffset);
+      this.drawRect(dragRect, this.settings.drag);
+    });
+  }
 
   @HostListener('window:mousemove', ['$event'])
   onDrag(ev: MouseEvent) {
@@ -194,6 +202,7 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     if (this.drag) {
       this.drag = false;
       this.cursor = 'pointer';
+      this.cdr.detectChanges();
       this.onDrag(ev);
     }
   }
@@ -204,11 +213,11 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     const cr = this.rectOfViewport(this.canvas.nativeElement);
     this.contentRect = this.rectOfContent(this.viewport);
     this.viewportRect = this.rectOfViewport(this.viewport);
-    let scrollOffset = this.viewport.scrollTop;
-    let scrollPourcent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
+    const scrollOffset = this.viewport.scrollTop;
+    const scrollPercent = scrollOffset / (this.contentRect.h - this.viewportRect.h);
     const scrollbarSize = Math.min(this.viewportRect.h, this.contentRect.h) * this.scale;
     const trackSize = Math.min(this.viewportRect.h, this.contentRect.h * this.scale);
-    const handleOffset = ~~((trackSize - scrollbarSize) * scrollPourcent);
+    const handleOffset = ~~((trackSize - scrollbarSize) * scrollPercent);
 
     this.drag_ry = ((ev.pageY - cr.y) - handleOffset) / (this.viewportRect.h * this.scale);
     if (this.drag_ry < 0 || this.drag_ry > 1) {
@@ -216,8 +225,9 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     }
 
     this.cursor = 'crosshair';
+    this.cdr.detectChanges();
     this.onDrag(ev);
-  };
+  }
 
   requestDraw() {
     this.drawThrottle.next();
@@ -227,5 +237,6 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.draw();
     }, 500);
-  };
+  }
+
 }

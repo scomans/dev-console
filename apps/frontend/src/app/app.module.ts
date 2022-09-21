@@ -38,7 +38,6 @@ import { ChannelOrderModalComponent } from './components/channel-order-modal/cha
 import { ColorSliderComponent } from './components/color-slider/color-slider.component';
 import { CombinedLogComponent } from './components/combined-log/combined-log.component';
 import { LogEntryComponent } from './components/log-entry/log-entry.component';
-import { LogMinimapComponent } from './components/log-minimap/log-minimap.component';
 import { LogViewerComponent } from './components/log-viewer/log-viewer.component';
 import { ProjectEditModalComponent } from './components/project-edit-modal/project-edit-modal.component';
 import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
@@ -58,7 +57,6 @@ registerLocaleData(en);
     AppComponent,
     ChannelLogComponent,
     CombinedLogComponent,
-    LogMinimapComponent,
     ChannelEditModalComponent,
     LogEntryComponent,
     AnsiPipe,

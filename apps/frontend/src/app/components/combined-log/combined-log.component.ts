@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faBroom, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
 import { keyBy, mapValues } from 'lodash';
@@ -12,7 +12,6 @@ import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
-import { LogMinimapComponent } from '../log-minimap/log-minimap.component';
 
 
 @Component({
@@ -36,8 +35,6 @@ export class CombinedLogComponent {
   executingStatuses$: Observable<ExecuteStatus[]>;
   anythingExecuting$: Observable<boolean>;
   anythingNotExecuting$: Observable<boolean>;
-
-  @ViewChild(LogMinimapComponent, { read: ElementRef }) minimapElement: ElementRef<HTMLElement>;
 
   constructor(
     private readonly modal: NzModalService,
