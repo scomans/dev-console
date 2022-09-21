@@ -92,6 +92,7 @@ export default class App {
       save: state => store.set('window-state', state),
       load: () => store.get('window-state'),
       defaultWidth: 1200,
+      defaultHeight: 700,
     });
 
     App.mainWindow.setMenu(null);
