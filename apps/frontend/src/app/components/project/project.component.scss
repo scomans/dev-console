@@ -20,6 +20,37 @@
   min-height: 100vh;
   box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
   overflow: hidden;
+
+  ::ng-deep {
+
+    &.ant-menu.ant-menu-inline-collapsed .ant-menu-item-group-title {
+      > span {
+        @apply justify-center;
+      }
+    }
+
+    .ant-menu-item-group-title {
+      @apply py-0;
+      height: 40px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      padding-left: 24px;
+      padding-right: 16px;
+
+      > span {
+        @apply w-full h-full flex items-center;
+        gap: 0.8rem;
+      }
+    }
+
+    &.ant-menu.ant-menu-inline-collapsed .ant-menu-item-group-list .ant-menu-item {
+      padding: 0 calc(50% - 4px);
+    }
+  }
+}
+
+.channel-name {
+  margin-left: 0.8rem;
 }
 
 .header-trigger {

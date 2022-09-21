@@ -1,11 +1,13 @@
-<nz-layout class="app-layout" *ngIf="project$ | async as project">
+<nz-layout *ngIf="project$ | push as project" class="app-layout">
   <ng-container *rxLet="sidebarCollapsed$; let sidebarCollapsed">
-    <nz-sider class="menu-sidebar"
-              nzCollapsible
-              nzWidth="256px"
-              nzBreakpoint="md"
-              [nzCollapsed]="sidebarCollapsed"
-              [nzTrigger]="null"
+    <nz-sider
+      class="menu-sidebar"
+      nzCollapsible
+      nzWidth="256px"
+      nzBreakpoint="md"
+      [nzCollapsed]="sidebarCollapsed"
+      (nzCollapsedChange)="toggleSidebar()"
+      [nzTrigger]="null"
     >
       <div class="sidebar-logo">
         <a (click)="warnRunning()">
@@ -19,26 +21,27 @@
           [nzInlineCollapsed]="sidebarCollapsed"
           class="log-menu"
       >
-        <li nz-menu-item [nzSelected]="!(selectedChannelId$ | async)">
-          <a title (click)="openChannel(null)" [nz-tooltip]="sidebarCollapsed ? 'All Channels' : null">
+        <li nz-menu-item [nzSelected]="!(selectedChannelId$ | push)">
+          <a title (click)="openChannel(null)" [nz-tooltip]="sidebarCollapsed ? 'All Channels' : null" nzTooltipPlacement="right">
             <fa-icon [icon]="fasLayerGroup" class="anticon"
             ></fa-icon>
             <span *ngIf="!(sidebarCollapsed)">All Channels</span>
           </a>
         </li>
-        <li nz-submenu [nzOpen]="true">
-          <span title>
+        <li nz-menu-divider></li>
+        <li nz-menu-group>
+          <span title [nz-tooltip]="sidebarCollapsed ? 'Channels' : null" nzTooltipPlacement="right">
             <fa-icon [icon]="fasAlignLeft" class="anticon"></fa-icon>
             <span *ngIf="!(sidebarCollapsed)">Channels</span>
           </span>
           <ul>
-            <li *ngFor="let channel of (channels$ | async)"
+            <li *ngFor="let channel of (channels$ | push)"
                 nz-menu-item
-                [nzSelected]="channel.id === (selectedChannelId$ | async)"
+                [nzSelected]="channel.id === (selectedChannelId$ | push)"
             >
               <ng-container *ngIf="channel.id | callFunction:channelStatus as status$">
-                <a (click)="openChannel(channel.id)">
-                  <ng-container *ngIf="channel.active" [ngSwitch]="status$ | async">
+                <a (click)="openChannel(channel.id)" [nz-tooltip]="sidebarCollapsed ? channel.name : null" nzTooltipPlacement="right">
+                  <ng-container *ngIf="channel.active" [ngSwitch]="status$ | push">
                     <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="fasDotCircle" [style.color]="channel.color"></fa-icon>
                     <fa-icon
                       *ngSwitchCase="ExecuteStatus.WAITING"
@@ -49,12 +52,12 @@
                     ></fa-icon>
                     <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="fasCircle" [style.color]="channel.color"></fa-icon>
                   </ng-container>
-                  <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | async">
+                  <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | push">
                     <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="farDotCircle" [style.color]="channel.color"></fa-icon>
                     <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="farClock" [style.color]="channel.color"></fa-icon>
                     <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="farCircle" [style.color]="channel.color"></fa-icon>
                   </ng-container>
-                  {{ channel.name }}
+                  <span *ngIf="!(sidebarCollapsed)" class="channel-name">{{ channel.name }}</span>
                 </a>
               </ng-container>
             </li>
