@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable, takeUntil } from 'rxjs';
@@ -35,7 +35,6 @@ import { UiRepository } from '../../stores/ui.repository';
 })
 export class ProjectComponent implements OnInit {
 
-  readonly fasAlignLeft = faAlignLeft;
   readonly fasCircle = fasCircle;
   readonly farCircle = farCircle;
   readonly farClock = faClock;

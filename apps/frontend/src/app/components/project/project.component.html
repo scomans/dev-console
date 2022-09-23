@@ -28,40 +28,35 @@
             <span *ngIf="!(sidebarCollapsed)">All Channels</span>
           </a>
         </li>
+
         <li nz-menu-divider></li>
-        <li nz-menu-group>
-          <span title [nz-tooltip]="sidebarCollapsed ? 'Channels' : null" nzTooltipPlacement="right">
-            <fa-icon [icon]="fasAlignLeft" class="anticon"></fa-icon>
-            <span *ngIf="!(sidebarCollapsed)">Channels</span>
-          </span>
-          <ul>
-            <li *ngFor="let channel of (channels$ | push)"
-                nz-menu-item
-                [nzSelected]="channel.id === (selectedChannelId$ | push)"
-            >
-              <ng-container *ngIf="channel.id | callFunction:channelStatus as status$">
-                <a (click)="openChannel(channel.id)" [nz-tooltip]="sidebarCollapsed ? channel.name : null" nzTooltipPlacement="right">
-                  <ng-container *ngIf="channel.active" [ngSwitch]="status$ | push">
-                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="fasDotCircle" [style.color]="channel.color"></fa-icon>
-                    <fa-icon
-                      *ngSwitchCase="ExecuteStatus.WAITING"
-                      [icon]="farClock"
-                      transform="shrink-4"
-                      [mask]="fasCircle"
-                      [style.color]="channel.color"
-                    ></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="fasCircle" [style.color]="channel.color"></fa-icon>
-                  </ng-container>
-                  <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | push">
-                    <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="farDotCircle" [style.color]="channel.color"></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="farClock" [style.color]="channel.color"></fa-icon>
-                    <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="farCircle" [style.color]="channel.color"></fa-icon>
-                  </ng-container>
-                  <span *ngIf="!(sidebarCollapsed)" class="channel-name">{{ channel.name }}</span>
-                </a>
+
+        <li
+          *ngFor="let channel of (channels$ | push)"
+          nz-menu-item
+          [nzSelected]="channel.id === (selectedChannelId$ | push)"
+        >
+          <ng-container *ngIf="channel.id | callFunction:channelStatus as status$">
+            <a (click)="openChannel(channel.id)" [nz-tooltip]="sidebarCollapsed ? channel.name : null" nzTooltipPlacement="right">
+              <ng-container *ngIf="channel.active" [ngSwitch]="status$ | push">
+                <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="fasDotCircle" [style.color]="channel.color"></fa-icon>
+                <fa-icon
+                  *ngSwitchCase="ExecuteStatus.WAITING"
+                  [icon]="farClock"
+                  transform="shrink-4"
+                  [mask]="fasCircle"
+                  [style.color]="channel.color"
+                ></fa-icon>
+                <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="fasCircle" [style.color]="channel.color"></fa-icon>
               </ng-container>
-            </li>
-          </ul>
+              <ng-container *ngIf="!channel.active" [ngSwitch]="status$ | push">
+                <fa-icon *ngSwitchCase="ExecuteStatus.RUNNING" [icon]="farDotCircle" [style.color]="channel.color"></fa-icon>
+                <fa-icon *ngSwitchCase="ExecuteStatus.WAITING" [icon]="farClock" [style.color]="channel.color"></fa-icon>
+                <fa-icon *ngSwitchCase="ExecuteStatus.STOPPED" [icon]="farCircle" [style.color]="channel.color"></fa-icon>
+              </ng-container>
+              <span *ngIf="!(sidebarCollapsed)" class="channel-name">{{ channel.name }}</span>
+            </a>
+          </ng-container>
         </li>
       </ul>
       <div style="width: auto"></div>
