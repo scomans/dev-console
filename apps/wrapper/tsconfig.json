@@ -4,5 +4,5 @@
     "types": ["node"]
   },
   "include": ["**/*.ts"],
-  "exclude": ["jest.config.ts"]
+  "exclude": []
 }

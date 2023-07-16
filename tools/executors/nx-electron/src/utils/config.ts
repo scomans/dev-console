@@ -1,4 +1,4 @@
-import { readTsConfig } from '@nrwl/workspace/src/utilities/typescript';
+import { readTsConfig } from '@nx/workspace/src/utilities/typescript';
 import * as CopyWebpackPlugin from 'copy-webpack-plugin';
 import { LicenseWebpackPlugin } from 'license-webpack-plugin';
 import { join } from 'path';
@@ -8,13 +8,14 @@ import { Configuration, DefinePlugin, ProgressPlugin, WebpackPluginInstance } fr
 import { BuildBuilderOptions } from './types';
 import ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-
 export const MAIN_OUTPUT_FILENAME = 'main.js';
 export const INDEX_OUTPUT_FILENAME = 'index.js';
 export const DEFAULT_APPS_DIR = 'apps';
 export const OUT_FILENAME_TEMPLATE = '[name].js';
 
-export function getBaseWebpackPartial(options: BuildBuilderOptions): Configuration {
+export function getBaseWebpackPartial(
+  options: BuildBuilderOptions,
+): Configuration {
   const { options: compilerOptions } = readTsConfig(options.tsConfig);
   const supportsEs2015 =
     compilerOptions.target !== ts.ScriptTarget.ES3 &&
@@ -22,8 +23,11 @@ export function getBaseWebpackPartial(options: BuildBuilderOptions): Configurati
   const mainFields = [...(supportsEs2015 ? ['es2015'] : []), 'module', 'main'];
   const extensions = ['.ts', '.tsx', '.mjs', '.js', '.jsx'];
 
-  const additionalEntryPoints = options.additionalEntryPoints?.reduce(
-    (obj, current) => ({ ...obj, [current.entryName]: current.entryPath }), {} as { [entryName: string]: string }) ?? {};
+  const additionalEntryPoints =
+    options.additionalEntryPoints?.reduce(
+      (obj, current) => ({ ...obj, [current.entryName]: current.entryPath }),
+      {} as { [entryName: string]: string },
+    ) ?? {};
 
   const webpackConfig: Configuration = {
     entry: {
@@ -36,7 +40,9 @@ export function getBaseWebpackPartial(options: BuildBuilderOptions): Configurati
     output: {
       path: options.outputPath,
       filename: (pathData) => {
-        return pathData.chunk.name === 'main' ? options.outputFileName : OUT_FILENAME_TEMPLATE;
+        return pathData.chunk.name === 'main'
+          ? options.outputFileName
+          : OUT_FILENAME_TEMPLATE;
       },
       hashFunction: 'xxhash64',
       // Disabled for performance
@@ -83,7 +89,9 @@ export function getBaseWebpackPartial(options: BuildBuilderOptions): Configurati
       }),
       new DefinePlugin({
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        __BUILD_VERSION__: JSON.stringify(require(join(options.root, 'package.json')).version),
+        __BUILD_VERSION__: JSON.stringify(
+          require(join(options.root, 'package.json')).version,
+        ),
         __BUILD_DATE__: Date.now(),
       }),
     ],

@@ -1,11 +1,12 @@
 {
+  "name": "types",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/types/src",
   "prefix": "dc",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "libs/types/src/**/*.ts",
@@ -14,8 +15,10 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/types"],
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/types"
+      ],
       "options": {
         "jestConfig": "libs/types/jest.config.ts",
         "passWithNoTests": true
