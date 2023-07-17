@@ -1,14 +1,12 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { FormGroup as AngularFormGroup, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
 import { faCircle, faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
-import { BehaviorSubject } from 'rxjs';
-import { SetOptional } from 'type-fest';
-import { ElectronService } from '../../services/electron.service';
-
+import { open } from '@tauri-apps/api/dialog';
+import { isNil } from 'lodash';
 
 @Component({
   selector: 'dc-channel-edit-modal',
@@ -21,15 +19,14 @@ export class ChannelEditModalComponent {
   readonly fasFolderOpen = faFolderOpen;
   readonly fasInfoCircle = faInfoCircle;
 
-  isVisible = new BehaviorSubject(false);
-  channel = new BehaviorSubject<Channel | null>(null);
+  isVisible = signal(false);
+  channel = signal<Channel | null>(null);
 
-  validateForm = new FormGroup({
+  form = new FormGroup({
     name: new FormControl<string>(null, Validators.required),
     color: new FormControl<string>('#ffffff', Validators.required),
     executeIn: new FormControl<string>(),
     executable: new FormControl<string>(null, Validators.required),
-    stopSignal: new FormControl('SIGTERM', Validators.required),
     envFile: new FormControl<string>(),
     envVars: new FormControl<string>(),
     arguments: new FormControl<string>(),
@@ -40,19 +37,15 @@ export class ChannelEditModalComponent {
     }),
     waitOn: new FormControl<string>(),
   });
-  form: AngularFormGroup = this.validateForm;
+  angularForm: AngularFormGroup = this.form;
 
-  @Output() dcResult = new EventEmitter<SetOptional<Omit<Channel, 'index'>, 'id'>>();
-
-  constructor(
-    private readonly electronService: ElectronService,
-  ) {
-  }
+  @Output() dcResult = new EventEmitter<Omit<Channel, 'index'>>();
 
   done() {
-    const data = this.validateForm.getRawValue();
-    const channel: SetOptional<Omit<Channel, 'index'>, 'id'> = {
+    const data = this.form.getRawValue();
+    const channel: Omit<Channel, 'index'> = {
       ...data,
+      id: this.channel()?.id,
       arguments: isEmpty(data.arguments) ? null : data.arguments.split('\n'),
       waitOn: isEmpty(data.waitOn) ? null : data.waitOn.split('\n'),
       envVars: isEmpty(data.envVars) ? null : parseEnv(data.envVars),
@@ -68,56 +61,48 @@ export class ChannelEditModalComponent {
   }
 
   hide() {
-    this.form.reset({
+    this.angularForm.reset({
       color: '#ffffff',
     });
-    this.channel.next(null);
-    this.isVisible.next(false);
+    this.channel.update(() => null);
+    this.isVisible.update(() => false);
   }
 
   show(channel?: Channel) {
-    this.channel.next(channel ?? null);
+    this.channel.update(() => channel ?? null);
     if (channel) {
-      this.validateForm.patchValue({
+      this.form.patchValue({
         ...channel,
         color: channel.color ?? '#ffffff',
-        arguments: channel.arguments.join('\n'),
-        waitOn: channel.waitOn.join('\n'),
+        arguments: channel.arguments?.join('\n') ?? null,
+        waitOn: channel.waitOn?.join('\n') ?? null,
         envVars: channel.envVars ? stringifyEnv(channel.envVars) : null,
       });
     }
-    this.isVisible.next(true);
+    this.isVisible.update(() => true);
   }
 
   async selectCwd() {
-    const file = await this.electronService.showOpenDialog({
-      properties: ['openDirectory', 'promptToCreate', 'dontAddToRecent'],
-    });
-    if (!file.canceled) {
-      this.validateForm.patchValue({
-        executeIn: file.filePaths[0],
-      });
+    const file = await open({ directory: true }) as string;
+    if (!isNil(file)) {
+      this.form.patchValue({ executeIn: file });
     }
   }
 
   async selectExecutable() {
-    const file = await this.electronService.showOpenDialog({
-      properties: ['openFile', 'dontAddToRecent'],
-    });
-    if (!file.canceled) {
-      this.validateForm.patchValue({
-        executable: file.filePaths[0],
+    const file = await open() as string;
+    if (!isNil(file)) {
+      this.form.patchValue({
+        executable: file,
       });
     }
   }
 
   async selectEnvFile() {
-    const file = await this.electronService.showOpenDialog({
-      properties: ['openFile', 'dontAddToRecent'],
-    });
-    if (!file.canceled) {
-      this.validateForm.patchValue({
-        envFile: file.filePaths[0],
+    const file = await open() as string;
+    if (!isNil(file)) {
+      this.form.patchValue({
+        envFile: file,
       });
     }
   }

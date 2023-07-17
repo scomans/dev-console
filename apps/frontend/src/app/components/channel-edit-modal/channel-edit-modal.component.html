@@ -1,17 +1,17 @@
 <nz-modal
-  [nzVisible]="isVisible | push"
-  [nzTitle]="(channel | push)  ? 'Edit Channel' : 'Add Channel'"
-  [nzOkDisabled]="validateForm.invalid$ | push"
+  [nzVisible]="isVisible()"
+  [nzTitle]="channel()  ? 'Edit Channel' : 'Add Channel'"
+  [nzOkDisabled]="form.invalid$ | push"
   (nzOnOk)="done()"
   (nzOnCancel)="hide()"
 >
 
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="form">
+    <form nz-form [formGroup]="angularForm">
       <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a name">
-          <input nz-input formControlName="name" id="name"/>
+          <input nz-input formControlName="name" id="name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -19,7 +19,7 @@
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter or select a color">
           <div class="flex justify-start items-center gap-8">
             <dc-color-slider id="color" formControlName="color" class="flex-1"></dc-color-slider>
-            <fa-icon [icon]="fasCircle" [style.color]="validateForm.get('color')?.value" transform="grow-15"></fa-icon>
+            <fa-icon [icon]="fasCircle" [style.color]="form.get('color')?.value" transform="grow-15"></fa-icon>
           </div>
         </nz-form-control>
       </nz-form-item>
@@ -62,20 +62,6 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="stopSignal" nzRequired>Stop signal</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24">
-          <nz-select formControlName="stopSignal" id="stopSignal">
-            <nz-option nzValue="SIGTERM" nzLabel="SIGTERM"></nz-option>
-            <nz-option nzValue="SIGINT" nzLabel="SIGINT (Ctrl + C)"></nz-option>
-            <nz-option nzValue="SIGQUIT" nzLabel="SIGQUIT (Ctrl + \)"></nz-option>
-            <nz-option nzValue="SIGSTOP" nzLabel="SIGSTOP (Ctrl + Z)"></nz-option>
-            <nz-option nzValue="SIGHUP" nzLabel="SIGHUP"></nz-option>
-            <nz-option nzValue="SIGBREAK" nzLabel="SIGBREAK"></nz-option>
-            <nz-option nzValue="SIGKILL" nzLabel="SIGKILL"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envFile">.env File</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
           <nz-input-group [nzSuffix]="inputEnvFileTpl">
@@ -93,7 +79,7 @@
           <fa-icon
             [icon]="fasInfoCircle"
             nz-popover
-            nzPopoverTitle="Format"
+            [nzPopoverTitle]="'Format'"
             [nzPopoverContent]="envVarsHelpTpl"
             nzPopoverPlacement="right"
           ></fa-icon>
@@ -112,9 +98,13 @@
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="waitOn">
-          <a href="https://github.com/jeffbski/wait-on#usage" target="_blank">
-            <fa-icon [icon]="fasInfoCircle"></fa-icon>
-          </a>
+          <fa-icon
+            [icon]="fasInfoCircle"
+            nz-popover
+            [nzPopoverTitle]="'Examples:'"
+            [nzPopoverContent]="waitOnHelpTpl"
+            nzPopoverPlacement="right"
+          ></fa-icon>
           &nbsp;
           Wait on
         </nz-form-label>
@@ -144,7 +134,7 @@
       </ng-container>
       <nz-form-item nz-row class="register-area">
         <nz-form-control [nzSpan]="12" [nzOffset]="8">
-          <label nz-checkbox formControlName="active">Active?</label>
+          <label nz-checkbox formControlName="active">Active</label>
         </nz-form-control>
       </nz-form-item>
     </form>
@@ -159,5 +149,16 @@
     b:2<br>
     c = 3<br>
     d : 4<br>
+  </div>
+</ng-template>
+
+<ng-template #waitOnHelpTpl>
+  <div>
+    http://localhost:4000<br>
+    https://localhost:4000<br>
+    http-get://localhost:4000<br>
+    https-get://localhost:4000<br>
+    tcp:localhost:4000<br>
+    tcp:4000<br>
   </div>
 </ng-template>

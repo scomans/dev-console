@@ -1,55 +1,27 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Channel } from '@dev-console/types';
 import { createStore } from '@ngneat/elf';
-import { addEntities, deleteEntities, getAllEntities, getEntity, selectActiveEntity, selectActiveId, selectAllEntities, setActiveId, updateEntities, withActiveId, withEntities } from '@ngneat/elf-entities';
-import { persistState } from '@ngneat/elf-persist-state';
-import { pick } from 'lodash';
-import { Observable } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
-import { ProjectStorageService } from '../services/project-storage.service';
+import { addEntities, deleteEntities, getAllEntities, getEntity, selectActiveEntity, selectActiveId, selectAllEntities, setActiveId, setEntities, updateEntities, withActiveId, withEntities } from '@ngneat/elf-entities';
+import { isNil, omit, sortBy } from 'lodash';
+import { Observable, skip, switchMap } from 'rxjs';
+import { readJsonFile, writeJsonFile } from '../helpers/tauri.helper';
+import { JsonValue } from 'type-fest';
+import { debug, filterNil } from '@dev-console/helpers';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()
-export class ChannelRepository implements OnDestroy {
+export class ChannelRepository {
 
   private store = createStore(
-    { name: 'channel' },
+    { name: 'channels' },
     withEntities<Channel>(),
     withActiveId(),
   );
 
-  private persist = persistState(this.store, {
-    key: 'channel',
-    storage: {
-      getItem: (key) => this.storageService.get('storage.' + key),
-      removeItem: (key: string) => this.storageService.delete('storage.' + key),
-      setItem: (key, value) => this.storageService.set('storage.' + key, pick(value, 'entities', 'ids')),
-    },
-  });
-  channels$ = this.persist.initialized$.pipe(
-    filter(init => init),
-    switchMap(() => this.store),
-    selectAllEntities(),
-  );
-  activeChannel$ = this.persist.initialized$.pipe(
-    filter(init => init),
-    switchMap(() => this.store),
-    selectActiveEntity(),
-  );
-  activeChannelId$: Observable<string> = this.persist.initialized$.pipe(
-    filter(init => init),
-    switchMap(() => this.store),
-    selectActiveId(),
-  );
-
-  constructor(
-    private readonly storageService: ProjectStorageService,
-  ) {
-  }
-
-  ngOnDestroy() {
-    this.persist?.unsubscribe();
-  }
+  channels$ = this.store.pipe(selectAllEntities());
+  activeChannel$ = this.store.pipe(selectActiveEntity());
+  activeChannelId$: Observable<string> = this.store.pipe(selectActiveId());
 
   addChannel(channel: Channel) {
     this.store.update(
@@ -80,6 +52,31 @@ export class ChannelRepository implements OnDestroy {
   setChannelActive(id: string) {
     this.store.update(
       setActiveId(id),
+    );
+  }
+
+  public async loadChannels(file: string) {
+    const projectContent = await readJsonFile(file);
+    let channels: Channel[];
+    if (!isNil(projectContent['storage'])) {
+      // legacy support
+      channels = Object
+        .values(projectContent['storage']['channel']['entities'])
+        .map((channel: Channel) => omit(channel, 'stopSignal'));
+    } else {
+      channels = projectContent['channels'];
+    }
+    this.store.update(setEntities(channels));
+  }
+
+  public persistChannels(file: string): Observable<void> {
+    return this.store.pipe(
+      selectAllEntities(),
+      skip(1),
+      filterNil(),
+      map(channels => sortBy(channels, 'index')),
+      debug('persistChannels: ' + file),
+      switchMap(channels => writeJsonFile(file, { channels } as unknown as JsonValue)),
     );
   }
 }

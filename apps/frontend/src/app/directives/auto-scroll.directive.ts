@@ -1,9 +1,9 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { AfterContentInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
 
 @Directive({
   selector: '[autoScroll]',
 })
-export class AutoScrollDirective {
+export class AutoScrollDirective implements AfterContentInit, OnDestroy {
 
   @Input('lock-y-offset') public lockYOffset: number = 10;
   @Input('observe-attributes') public observeAttributes: boolean = false;

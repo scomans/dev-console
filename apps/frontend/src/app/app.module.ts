@@ -1,5 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { registerLocaleData } from '@angular/common';
+import { NgOptimizedImage, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
@@ -8,9 +8,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ForModule } from '@rx-angular/template';
-import { LetModule } from '@rx-angular/template/let';
-import { PushModule } from '@rx-angular/template/push';
+import { RxFor } from '@rx-angular/template/for';
+import { RxLet } from '@rx-angular/template/let';
+import { RxPush } from '@rx-angular/template/push';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -30,7 +30,6 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ColorSliderModule } from 'ngx-color/slider';
 import { routes } from './app.routing';
-import { WINDOW } from './components/app.const';
 import { AppComponent } from './components/app/app.component';
 import { ChannelEditModalComponent } from './components/channel-edit-modal/channel-edit-modal.component';
 import { ChannelLogComponent } from './components/channel-log/channel-log.component';
@@ -45,9 +44,11 @@ import { ProjectComponent } from './components/project/project.component';
 import { AutoScrollDirective } from './directives/auto-scroll.directive';
 import { AnsiPipe } from './pipes/ansi.pipe';
 import { AutolinkPipe } from './pipes/autolink.pipe';
-import { CallFunctionPipe } from './pipes/call-function.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { SmartTrimPipe } from './pipes/smart-trim.pipe';
+import { RxIf } from '@rx-angular/template/if';
+import { UpdateNotificationComponent } from './components/update-notification/update-notification.component';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 
 registerLocaleData(en);
@@ -65,7 +66,6 @@ registerLocaleData(en);
     ProjectSelectionComponent,
     SmartTrimPipe,
     ColorSliderComponent,
-    CallFunctionPipe,
     AutoScrollDirective,
     LogViewerComponent,
     AutolinkPipe,
@@ -73,6 +73,8 @@ registerLocaleData(en);
     ChannelOrderModalComponent,
   ],
   imports: [
+    NzNotificationModule,
+
     BrowserModule,
     DragDropModule,
     FormsModule,
@@ -96,26 +98,23 @@ registerLocaleData(en);
     NzSwitchModule,
     NzToolTipModule,
     FontAwesomeModule,
-    ForModule,
-    LetModule,
-    PushModule,
+    RxFor,
+    RxLet,
+    RxPush,
+    RxIf,
     ColorSliderModule,
 
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
       useHash: true,
     }),
+    NgOptimizedImage,
+    UpdateNotificationComponent,
   ],
   providers: [
-    // storageProvider,
-
     {
       provide: NZ_I18N,
       useValue: en_US,
-    },
-    {
-      provide: WINDOW,
-      useValue: window,
     },
   ],
   bootstrap: [AppComponent],

@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { FormGroup as AngularFormGroup, Validators } from '@angular/forms';
 import { Project } from '@dev-console/types';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { BehaviorSubject } from 'rxjs';
-import { ElectronService } from '../../services/electron.service';
-
+import { open } from '@tauri-apps/api/dialog';
+import { isNil } from 'lodash';
 
 @Component({
   selector: 'dc-project-edit-modal',
@@ -16,58 +16,47 @@ export class ProjectEditModalComponent {
 
   readonly fasFolderOpen = faFolderOpen;
 
-  validateForm = new FormGroup({
+  form = new FormGroup({
+    id: new FormControl(null),
     name: new FormControl(null, Validators.required),
     file: new FormControl(null, Validators.required),
   });
-  form: AngularFormGroup = this.validateForm;
+  angularForm: AngularFormGroup = this.form;
 
-  project = new BehaviorSubject<Project>(undefined);
+  project = signal<undefined | string>(undefined);
   isVisible = new BehaviorSubject(false);
 
   @Output('dcResult') resultEmitter = new EventEmitter<Project>();
 
-  constructor(
-    private readonly electronService: ElectronService,
-  ) {
-  }
-
   done() {
-    const project: Project = {
-      id: this.project.getValue()?.id,
-      ...this.validateForm.getRawValue(),
-    };
-    this.resultEmitter.emit(project);
+    this.resultEmitter.emit(this.form.value);
     this.hide();
   }
 
   hide() {
     this.isVisible.next(false);
-    this.project.next(undefined);
-    this.validateForm.reset();
+    this.project.update(() => undefined);
+    this.form.reset();
   }
 
   async selectFile() {
-    const file = await this.electronService.showOpenDialog({
-      properties: ['openFile', 'promptToCreate', 'dontAddToRecent'],
-      filters: [
-        {
-          name: 'DevConsole project file',
-          extensions: ['json'],
-        },
-      ],
-    });
-    if (!file.canceled) {
-      this.validateForm.patchValue({
-        file: file.filePaths[0],
+    const file = await open({
+      filters: [{
+        name: 'DevConsole project file',
+        extensions: ['json'],
+      }],
+    }) as string;
+    if (!isNil(file)) {
+      this.form.patchValue({
+        file: file,
       });
     }
   }
 
   show(project?: Project) {
-    this.project.next(project);
     if (project) {
-      this.validateForm.patchValue({
+      this.form.patchValue({
+        id: project.id,
         file: project.file,
         name: project.name,
       });

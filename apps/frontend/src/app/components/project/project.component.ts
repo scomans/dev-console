@@ -1,23 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
-import { faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Observable, takeUntil } from 'rxjs';
+import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { DestroyService } from '../../services/destroy.service';
-import { ElectronService } from '../../services/electron.service';
-import { ExecuteService } from '../../services/execute.service';
-import { ProjectStorageService } from '../../services/project-storage.service';
+import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { UiRepository } from '../../stores/ui.repository';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
+import { listenAsObservable } from '../../helpers/tauri.helper';
+import { TauriEvent } from '@tauri-apps/api/event';
+import { exit } from '@tauri-apps/api/process';
 
+type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
 @Component({
   selector: 'dc-project',
@@ -25,16 +28,16 @@ import { UiRepository } from '../../stores/ui.repository';
   styleUrls: ['./project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    DestroyService,
-    ProjectStorageService,
+    ExecutionService,
     ChannelRepository,
     ChannelLogRepository,
     GlobalLogsRepository,
     UiRepository,
   ],
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent {
 
+  readonly fasAlignLeft = faAlignLeft;
   readonly fasCircle = fasCircle;
   readonly farCircle = farCircle;
   readonly farClock = faClock;
@@ -48,35 +51,34 @@ export class ProjectComponent implements OnInit {
 
   readonly ExecuteStatus = ExecuteStatus;
 
-  channels$: Observable<Channel[]>;
+  channels$: Observable<ChannelWithStatus[]>;
   selectedChannelId$: Observable<string>;
   project$: Observable<Project>;
   allLogs$: Observable<boolean>;
-  sidebarCollapsed$ = this.uiRepository.selectProp('sidebarCollapsed');
+  sidebarCollapsed = toSignal(this.uiRepository.selectProp('sidebarCollapsed'));
 
   constructor(
-    private readonly destroy$: DestroyService,
-    private readonly electronService: ElectronService,
     private readonly projectRepository: ProjectRepository,
-    private readonly route: ActivatedRoute,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly executeService: ExecuteService,
+    private readonly executeService: ExecutionService,
     private readonly router: Router,
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly uiRepository: UiRepository,
-    private readonly storageService: ProjectStorageService,
+    private readonly titleService: Title,
   ) {
-    this.project$ = this.projectRepository.activeProject$.pipe(
+    this.project$ = this.activatedRoute.queryParams.pipe(
+      switchMap(params => this.projectRepository.selectProject(params['projectId'])),
       tap(project => {
         if (!project) {
           return this.router.navigate(['/']);
         }
-        document.title = `${ project.name } - DevConsole`;
-        void this.storageService.open(project.file);
+        titleService.setTitle(`${project.name} - DevConsole`);
       }),
+      share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
     );
     this.selectedChannelId$ = this.channelRepository.activeChannelId$;
     this.allLogs$ = this.selectedChannelId$.pipe(
@@ -84,12 +86,30 @@ export class ProjectComponent implements OnInit {
     );
     this.channels$ = this.channelRepository.channels$.pipe(
       map(channels => sortBy(channels, 'index')),
+      map(channels => channels.map(channel => ({
+        ...channel,
+        status$: this.executeService.selectStatus(channel.id),
+      }))),
     );
-  }
-
-  ngOnInit() {
-    this.channelLogRepository.checkForUpdates().pipe(takeUntil(this.destroy$)).subscribe();
-    this.globalLogsRepository.checkForUpdates().pipe(takeUntil(this.destroy$)).subscribe();
+    this.project$.pipe(
+      takeUntilDestroyed(),
+      switchMap(project => concat(
+        this.channelRepository.loadChannels(project.file),
+        this.channelRepository.persistChannels(project.file),
+      )),
+    ).subscribe();
+    listenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap(() => this.checkRunning()),
+        switchMap(async close => {
+          if (close) {
+            await this.executeService.killAll();
+            return exit(0);
+          }
+        }),
+      )
+      .subscribe();
   }
 
   toggleSidebar() {
@@ -107,10 +127,6 @@ export class ProjectComponent implements OnInit {
       id: uuidV4(),
     });
   }
-
-  channelStatus = (channelId: string) => {
-    return this.executeService.selectStatus(channelId);
-  };
 
   async checkRunning() {
     let hasRunning = false;
@@ -139,14 +155,7 @@ export class ProjectComponent implements OnInit {
   async warnRunning() {
     const close = await this.checkRunning();
     if (close) {
-      const channels = this.channelRepository.getChannels().filter(channel => channel.active);
-
-      for (let channel of channels) {
-        const status = this.executeService.getStatus(channel.id);
-        if (status !== ExecuteStatus.STOPPED) {
-          await this.executeService.kill(channel);
-        }
-      }
+      await this.executeService.killAll();
       return this.router.navigate(['/']);
     }
   }

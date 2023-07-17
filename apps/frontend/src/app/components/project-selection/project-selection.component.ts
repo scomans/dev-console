@@ -4,9 +4,13 @@ import { uuidV4 } from '@dev-console/helpers';
 import { Project } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { ProjectRepository } from '../../stores/project.repository';
-
+import { Title } from '@angular/platform-browser';
+import { listenAsObservable } from '../../helpers/tauri.helper';
+import { TauriEvent } from '@tauri-apps/api/event';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { exit } from '@tauri-apps/api/process';
 
 @Component({
   selector: 'dc-project-selection',
@@ -16,27 +20,33 @@ import { ProjectRepository } from '../../stores/project.repository';
 })
 export class ProjectSelectionComponent implements OnInit {
 
-  readonly fasEdit = faEdit;
-  readonly fasTrash = faTrash;
-  readonly farQuestionCircle = faQuestionCircle;
+  protected readonly fasEdit = faEdit;
+  protected readonly fasTrash = faTrash;
+  protected readonly farQuestionCircle = faQuestionCircle;
 
   projects$: Observable<Project[]>;
 
   constructor(
+    private readonly titleService: Title,
     private readonly projectRepository: ProjectRepository,
     private readonly router: Router,
   ) {
     this.projects$ = this.projectRepository.projects$;
+    listenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
+      .pipe(
+        takeUntilDestroyed(),
+        switchMap(() => exit(0)),
+      )
+      .subscribe();
   }
 
   ngOnInit() {
-    this.projectRepository.setProjectActive(null);
-    document.title = 'DevConsole';
+    this.titleService.setTitle('DevConsole');
   }
 
-  openProject(project: Project) {
-    this.projectRepository.setProjectActive(project.id);
-    void this.router.navigate(['project']);
+  async openProject(project: Project) {
+    console.log('OPEN', project);
+    await this.router.navigate(['/project'], { queryParams: { projectId: project.id } });
   }
 
   upsertProject(project: Project) {

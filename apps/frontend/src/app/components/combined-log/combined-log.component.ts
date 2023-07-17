@@ -6,7 +6,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { trackById } from '../../helpers/angular.helper';
-import { ExecuteService } from '../../services/execute.service';
+import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
@@ -37,7 +37,7 @@ export class CombinedLogComponent {
   constructor(
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly executeService: ExecuteService,
+    private readonly executeService: ExecutionService,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
@@ -65,7 +65,7 @@ export class CombinedLogComponent {
 
     await Promise.all(channels
       .filter(channel => this.executeService.getStatus(channel.id) === ExecuteStatus.STOPPED)
-      .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
+      // .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
     );
   }
 
@@ -77,7 +77,7 @@ export class CombinedLogComponent {
       .map(channel => this.executeService.kill(channel)),
     );
     await Promise.all(channels
-      .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
+      // .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
     );
   }
 
