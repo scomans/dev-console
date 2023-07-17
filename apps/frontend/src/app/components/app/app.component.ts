@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
-import { ElectronService } from '../../services/electron.service';
+import { openDevtools } from '../../helpers/tauri.helper';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -9,19 +10,14 @@ import { ElectronService } from '../../services/electron.service';
 })
 export class AppComponent {
 
-  constructor(
-    private readonly electronService: ElectronService,
-  ) {
-    if (electronService.isElectron) {
-      console.log(process.env);
-      console.log('Run in electron');
-    } else {
-      console.log('Run in browser');
-    }
-  }
-
   @HostListener('document:keydown.control.alt.shift.i')
   openDevtools() {
-    void this.electronService.emit('open-devtools');
+    void openDevtools();
+  }
+
+  constructor() {
+    if (!environment.production) {
+      void openDevtools();
+    }
   }
 }

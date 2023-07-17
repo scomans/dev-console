@@ -5,12 +5,13 @@ import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { trackById } from '../../helpers/angular.helper';
-import { ExecuteService } from '../../services/execute.service';
+import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
+import { ActivatedRoute } from '@angular/router';
+import { sleep } from '@dev-console/helpers';
 
 
 @Component({
@@ -25,9 +26,6 @@ export class CombinedLogComponent {
   readonly fasStop = faStop;
   readonly fasBroom = faBroom;
 
-  readonly ExecuteStatus = ExecuteStatus;
-  readonly trackById = trackById;
-
   channels$: Observable<Channel[]>;
   channelColors$: Observable<Record<string, string>>;
   executingStatuses$: Observable<ExecuteStatus[]>;
@@ -35,9 +33,10 @@ export class CombinedLogComponent {
   anythingNotExecuting$: Observable<boolean>;
 
   constructor(
+    private readonly activatedRoute: ActivatedRoute,
     private readonly modal: NzModalService,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly executeService: ExecuteService,
+    private readonly executeService: ExecutionService,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
@@ -62,23 +61,19 @@ export class CombinedLogComponent {
 
   async runAll() {
     const channels = this.channelRepository.getChannels().filter(channel => channel.active);
+    const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
+    const projectFile = this.projectRepository.getProject(projectId)?.file;
 
     await Promise.all(channels
       .filter(channel => this.executeService.getStatus(channel.id) === ExecuteStatus.STOPPED)
-      .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
+      .map(channel => this.executeService.run(channel, projectFile)),
     );
   }
 
   async restartAll() {
-    const channels = this.channelRepository.getChannels().filter(channel => channel.active);
-
-    await Promise.all(channels
-      .filter(channel => this.executeService.getStatus(channel.id) !== ExecuteStatus.STOPPED)
-      .map(channel => this.executeService.kill(channel)),
-    );
-    await Promise.all(channels
-      .map(channel => this.executeService.run(channel, this.projectRepository.getActiveProject().file)),
-    );
+    await this.stopAll();
+    await sleep(1000);
+    await this.runAll();
   }
 
   async stopAll() {

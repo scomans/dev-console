@@ -37,18 +37,20 @@
           </ng-template>
           <ng-template #actionRemove>
             <ng-template #iconTpl>
-              <fa-icon [icon]="farQuestionCircle"
-                       style="color: red; position: absolute; top: 4px;"
+              <fa-icon
+                [icon]="farQuestionCircle"
+                style="color: red; position: absolute; top: 4px;"
               ></fa-icon>
             </ng-template>
-            <button nz-button
-                    nzType="text"
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure you want to delete this project? It will not remove the project file."
-                    nzPopconfirmPlacement="bottom"
-                    [nzIcon]="iconTpl"
-                    (click)="$event.stopPropagation()"
-                    (nzOnConfirm)="removeProject(project)"
+            <button
+              nz-button
+              nzType="text"
+              nz-popconfirm
+              nzPopconfirmTitle="Are you sure you want to delete this project? It will not remove the project file."
+              nzPopconfirmPlacement="bottom"
+              [nzIcon]="iconTpl"
+              (click)="$event.stopPropagation()"
+              (nzOnConfirm)="removeProject(project)"
             >
               <fa-icon [icon]="fasTrash"></fa-icon>
             </button>

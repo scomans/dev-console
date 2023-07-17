@@ -28,29 +28,52 @@ jobs:
       - name: Setup up PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
 
-      - name: Setup up Node 16
-        uses: actions/setup-node@v2
+      - name: Setup up Node 18
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: pnpm
-
-      - name: Shamefull hoist
-        shell: bash
-        run: |
-          echo "shamefully-hoist=true" >> .npmrc
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Update version
-        run: pnpm update-version ${{ github.event.inputs.type }}
+      - name: Increment Version
+        uses: scomans/increment-version-action@v1
+        id: version-increment
+        with:
+          releaseType: ${{ github.event.inputs.type }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🏗️ Build app
+      - name: Update version
+        run: pnpm update-version ${{ steps.version-increment.outputs.newVersion }}
+
+      - name: 🏗️ Build DevConsole
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: yarn run make
+        run: pnpm build frontend --configuration=production
 
-      - name: 🚀 Deploy
-        run: pnpm release
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            dist/apps/wrapper
+          key: rust-cache-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: 🏗️ Build Wrapper
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ""
+        run: pnpm build wrapper
+
+      - name: 🚀 Deploy Frontend
+        run: node ./tools/release/release.js

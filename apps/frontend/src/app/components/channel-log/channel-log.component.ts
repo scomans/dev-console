@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { filterNil } from '@dev-console/helpers';
+import { filterNil, sleep } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faBroom, faEdit, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { sleep } from '../../../../../../libs/helpers/src/lib/promise.helper';
-import { trackById } from '../../helpers/angular.helper';
-import { ExecuteService } from '../../services/execute.service';
+import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
+import { ActivatedRoute } from '@angular/router';
+import { isNil } from 'lodash';
 
 
 @Component({
@@ -30,16 +30,16 @@ export class ChannelLogComponent implements OnInit {
   readonly fasEdit = faEdit;
 
   ExecuteStatus = ExecuteStatus;
-  trackById = trackById;
 
   status$: Observable<ExecuteStatus>;
   channel$: Observable<Channel>;
   logs$: Observable<LogEntryWithSource[]>;
 
   constructor(
+    private readonly activatedRoute: ActivatedRoute,
     private readonly projectRepository: ProjectRepository,
     private readonly viewContainerRef: ViewContainerRef,
-    private readonly executeService: ExecuteService,
+    private readonly executeService: ExecutionService,
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
@@ -68,26 +68,24 @@ export class ChannelLogComponent implements OnInit {
     this.channelRepository.updateChannel(channel.id, channel);
   }
 
-  run(channel: Channel) {
-    void this.executeService.run(channel, this.projectRepository.getActiveProject().file);
+  async run(channel: Channel) {
+    const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
+    const projectFile = this.projectRepository.getProject(projectId)?.file;
+    if (!isNil(projectFile)) {
+      await this.executeService.run(channel, projectFile);
+    }
   }
 
   async restart(channel: Channel) {
-    const killed = await this.executeService.kill(channel);
+    const killed = await this.stop(channel);
     if (killed) {
       await sleep(1000);
-      await this.executeService.run(channel, this.projectRepository.getActiveProject().file);
+      await this.run(channel);
     }
   }
 
   stop(channel: Channel) {
     return this.executeService.kill(channel);
-  }
-
-  makeColor(channel: Channel) {
-    return {
-      [channel.id]: channel.color,
-    };
   }
 
   clearChannel(channel: Channel) {

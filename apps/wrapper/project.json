@@ -3,92 +3,25 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/wrapper/src",
   "projectType": "application",
-  "prefix": "wrapper",
-  "generators": {},
   "targets": {
     "build": {
-      "executor": "@dev-console/nx-electron:build",
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/apps/wrapper",
-        "main": "apps/wrapper/src/main.ts",
-        "tsConfig": "apps/wrapper/tsconfig.app.json",
-        "assets": [
-          "apps/wrapper/src/assets",
-          {
-            "input": ".",
-            "glob": "pnpm-lock.yaml",
-            "output": "."
-          }
-        ],
-        "webpackConfig": "apps/wrapper/webpack.config.js"
-      },
-      "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "obfuscate": true,
-          "fileReplacements": [
-            {
-              "replace": "apps/wrapper/src/environments/environment.ts",
-              "with": "apps/wrapper/src/environments/environment.prod.ts"
-            }
-          ]
-        }
+        "command": "tauri build",
+        "cwd": "apps/wrapper"
       }
     },
     "serve": {
-      "executor": "@dev-console/nx-electron:execute",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "wrapper:build"
-      }
-    },
-    "package": {
-      "executor": "@dev-console/nx-electron:package",
-      "options": {
-        "name": "wrapper",
-        "frontendProject": "dev-console",
-        "out": "dist/packages"
-      }
-    },
-    "make": {
-      "executor": "@dev-console/nx-electron:make",
-      "options": {
-        "name": "wrapper",
-        "frontendProject": "frontend",
-        "outputPath": "dist/executables",
-        "platform": "windows",
-        "arch": "x64",
-        "publishPolicy": "never"
-      }
-    },
-    "lint": {
-      "executor": "@nx/linter:lint",
-      "options": {
-        "linter": "eslint",
-        "tsConfig": [
-          "apps/wrapper/tsconfig.app.json",
-          "apps/wrapper/tsconfig.spec.json"
-        ],
-        "exclude": [
-          "**/node_modules/**",
-          "!apps/wrapper/**/*"
-        ]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "options": {
-        "jestConfig": "apps/wrapper/jest.config.ts",
-        "tsConfig": "apps/wrapper/tsconfig.spec.json",
-        "passWithNoTests": true
+        "command": "tauri dev"
       }
     }
   },
-  "tags": [
-    "electron"
-  ],
   "implicitDependencies": [
     "frontend"
+  ],
+  "tags": [
+    "tauri"
   ]
 }

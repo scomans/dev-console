@@ -6,6 +6,7 @@ import { ProjectComponent } from './components/project/project.component';
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
     component: ProjectSelectionComponent,
   },
   {

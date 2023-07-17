@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { combineLatestWith, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { trackById } from '../../helpers/angular.helper';
-import { ElectronService } from '../../services/electron.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
@@ -22,7 +21,6 @@ export class LogViewerComponent {
   log$: Observable<LogEntryWithSourceAndColor[]>;
 
   constructor(
-    private readonly electronService: ElectronService,
     private readonly channelRepository: ChannelRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelLogRepository: ChannelLogRepository,

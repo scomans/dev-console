@@ -1,37 +1,29 @@
-'use strict';
-
-let { request } = require('@octokit/request');
-const { inc } = require('semver');
 const { writeFile, readFile } = require('fs/promises');
 const { join } = require('path');
-const project = require('../../package.json');
+const version = require('../../package.json').version;
 const cliArgs = process.argv.slice(2);
-
-const version = project.version;
-const owner = project.author;
-const repo = project.name;
 
 
 async function updateVersion() {
-  const TOKEN = process.env.TOKEN;
-  request = request.defaults({
-    owner,
-    repo,
-    headers: {
-      authorization: `token ${ TOKEN }`,
-    },
-  });
-  const result = await request('GET /repos/{owner}/{repo}/releases');
-
-  const latestRelease = result.data.filter(release => !release.prerelease)[0];
-  const latestVersion = latestRelease.tag_name;
-  let newVersion = inc(latestVersion, cliArgs[0].toLowerCase());
+  let newVersion = cliArgs[0].toLowerCase();
 
   let packageJsonContent = await readFile(join(__dirname, '../../package.json'), 'utf-8');
-  packageJsonContent = packageJsonContent.replace(`"version": "${ version }",`, `"version": "${ newVersion }",`);
+  const packageJson = JSON.parse(packageJsonContent);
+  packageJson.version = newVersion;
+  packageJsonContent = JSON.stringify(packageJson);
   await writeFile(join(__dirname, '../../package.json'), packageJsonContent);
 
-  console.log(`Set version to ${ newVersion }`);
+  let tauriConfJsonContent = await readFile(join(__dirname, '../../apps/wrapper/tauri.conf.json'), 'utf-8');
+  const tauriConfJson = JSON.parse(tauriConfJsonContent);
+  tauriConfJson.package.version = newVersion;
+  tauriConfJsonContent = JSON.stringify(tauriConfJson);
+  await writeFile(join(__dirname, '../../apps/wrapper/tauri.conf.json'), tauriConfJsonContent);
+
+  let cargoTomlContent = await readFile(join(__dirname, '../../apps/wrapper/Cargo.toml'), 'utf-8');
+  cargoTomlContent = cargoTomlContent.replace(/version = "0\.0\.0"/gm, 'version = "' + version + '"');
+  await writeFile(join(__dirname, '../../apps/wrapper/Cargo.toml'), cargoTomlContent);
+
+  console.log(`Set version to ${newVersion}`);
 }
 
 void updateVersion();

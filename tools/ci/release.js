@@ -1,61 +1,59 @@
-let { request } = require('@octokit/request');
-const { gt, prerelease } = require('semver');
-const { createReadStream, statSync } = require('fs');
-const { join, resolve, dirname, basename } = require('path');
+const {Octokit} = require('@octokit/rest');
+const {gt, prerelease} = require('semver');
+const {join, resolve, dirname, basename} = require('path');
 const simpleGit = require('simple-git');
+const {readFile} = require('fs/promises');
 
-const project = require('../../package.json');
-const VERSION = project.version;
-const TOKEN = process.env.TOKEN;
+const VERSION = require('../../package.json').version;
+const TOKEN = process.env.GITHUB_TOKEN;
 
-const owner = project.author;
-const repo = project.name;
+const owner = 'scomans';
+const repo = 'dev-console';
 
-request = request.defaults({
-  owner,
-  repo,
-  headers: {
-    authorization: `token ${ TOKEN }`,
-  },
-});
 
-const assetPath = resolve(join(dirname(__filename), '../..', 'dist/executables'));
+const octokit = new Octokit({auth: TOKEN});
+
+
+const assetPath = resolve(join(dirname(__filename), '../..', 'dist/apps/wrapper/release/bundle'));
 
 async function main() {
   try {
-    const result = await request('GET /repos/{owner}/{repo}/releases');
+    const result = await octokit.repos.listReleases({owner, repo});
     const latestRelease = result.data[0];
     const releaseVersion = latestRelease.tag_name;
 
     if (gt(VERSION, releaseVersion)) {
       const pre = !!prerelease(VERSION);
-      const commits = await simpleGit().log({ from: 'HEAD', to: releaseVersion });
+      const commits = await simpleGit().log({from: 'HEAD', to: releaseVersion});
       let body = '## Changelog\n\n';
       body += commits.all
         .reverse()
-        .map(c => `* ${ c.message } ([${ c.hash.substring(0, 7) }](https://github.com/${ owner }/${ repo }/commit/${ c.hash }))`)
+        .map(c => `* ${c.message} ([${c.hash.substring(0, 7)}](https://github.com/${owner}/${repo}/commit/${c.hash}))`)
         .join('\n');
       body += '\n\n## Download\n\n';
-      body += `* [dev-console-setup-${ VERSION }.exe](https://github.com/${ owner }/${ repo }/releases/download/${ VERSION }/dev-console-setup-${ VERSION }.exe)`;
+      body += `* [DevConsole_${VERSION}_x64_de-DE.msi.zip](https://github.com/${owner}/${repo}/releases/download/${VERSION}/DevConsole_${VERSION}_x64_de-DE.msi.zip)`;
 
-      const newRelease = await request('POST /repos/{owner}/{repo}/releases', {
+      const newRelease = await octokit.repos.createRelease({
+        owner,
+        repo,
         tag_name: VERSION,
-        name: `v${ VERSION }`,
+        name: `v${VERSION}`,
         prerelease: pre,
         draft: true,
         body,
       });
 
-      await uploadAsset(newRelease, join(assetPath, `dev-console-setup-${ VERSION }.exe`));
-      await uploadAsset(newRelease, join(assetPath, `dev-console-setup-${ VERSION }.exe.blockmap`));
-      await uploadAsset(newRelease, join(assetPath, pre ? 'beta.yml' : 'latest.yml'));
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_de-DE.msi.zip`));
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_de-DE.msi.zip.sig`));
 
-      await request('PATCH /repos/{owner}/{repo}/releases/{release_id}', {
+      await octokit.repos.updateRelease({
+        owner,
+        repo,
         release_id: newRelease.data.id,
         draft: false,
       });
 
-      console.log(`DID ${ pre ? 'PRE' : '' }RELEASE`, VERSION);
+      console.log(`DID ${pre ? 'PRE' : ''}RELEASE`, VERSION);
     }
   } catch (err) {
     console.error(err);
@@ -63,16 +61,16 @@ async function main() {
 }
 
 async function uploadAsset(release, filePath) {
-  const releaseFileSize = statSync(filePath);
-  let fileStream = createReadStream(filePath);
-  return await request('POST ' + release.data.upload_url, {
-    headers: {
-      'content-length': releaseFileSize.size,
-      'Content-Type': 'application/octet-stream',
-    },
+  /**
+   * @type {Buffer}
+   */
+  const fileData = await readFile(filePath);
+  await octokit.rest.repos.uploadReleaseAsset({
+    owner,
+    repo,
     release_id: release.data.id,
     name: basename(filePath),
-    data: fileStream,
+    data: fileData,
   });
 }
 

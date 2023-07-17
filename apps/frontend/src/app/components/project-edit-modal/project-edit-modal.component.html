@@ -1,17 +1,17 @@
 <nz-modal
   [nzVisible]="isVisible | push"
-  [nzTitle]="((project | push) ? 'Edit' : 'Add') + ' project'"
-  [nzOkDisabled]="validateForm.invalid$ | push"
+  [nzTitle]="(form.controls.id.value ? 'Edit' : 'Add') + ' project'"
+  [nzOkDisabled]="form.invalid$ | push"
   (nzOnCancel)="hide()"
   (nzOnOk)="done()"
 >
 
   <ng-container *nzModalContent>
-    <form nz-form [formGroup]="form" (ngSubmit)="done()">
+    <form nz-form [formGroup]="angularForm" (ngSubmit)="done()">
       <nz-form-item>
         <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a name">
-          <input nz-input formControlName="name" id="name"/>
+          <input nz-input formControlName="name" id="name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>

@@ -1,0 +1,35 @@
+[package]
+name = "dev-console"
+version = "0.0.0"
+description = "DevConsole"
+authors = ["Keyle"]
+license = ""
+repository = ""
+default-run = "dev-console"
+edition = "2021"
+rust-version = "1.59"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.4.0", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.4.1", features = ["updater", "shell-sidecar", "http-all", "dialog-open", "fs-all", "window-hide", "dialog-confirm", "window-close", "shell-execute", "process-exit", "path-all", "window-create", "dialog-save", "devtools", "system-tray"] }
+tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri-plugin-positioner = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri-plugin-single-instance = { git = "https://github.com/tauri-apps/tauri-plugin-single-instance/", branch = "dev" }
+log = "0.4.19"
+sentry = "0.31.5"
+sysinfo = "0.29.2"
+
+[features]
+# by default Tauri runs in production mode
+# when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
+default = ["custom-protocol"]
+# this feature is used for production builds where `devPath` points to the filesystem
+# DO NOT remove this
+custom-protocol = ["tauri/custom-protocol"]
