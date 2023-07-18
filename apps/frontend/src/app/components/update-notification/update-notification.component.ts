@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -23,7 +24,9 @@ export class UpdateNotificationComponent implements OnInit {
   }
 
   ngOnInit() {
-    return this.checkForUpdate();
+    if (environment.production) {
+      void this.checkForUpdate();
+    }
   }
 
   async checkForUpdate() {
