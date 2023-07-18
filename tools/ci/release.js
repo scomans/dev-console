@@ -1,37 +1,38 @@
-const {Octokit} = require('@octokit/rest');
-const {gt, prerelease} = require('semver');
-const {join, resolve, dirname, basename} = require('path');
+const { Octokit } = require('@octokit/rest');
+const { gt, prerelease } = require('semver');
+const { join, resolve, dirname, basename } = require('path');
 const simpleGit = require('simple-git');
-const {readFile} = require('fs/promises');
+const { readFile } = require('fs/promises');
 
 const VERSION = require('../../package.json').version;
 const TOKEN = process.env.GITHUB_TOKEN;
+const LANGUAGE = 'en-US';
 
 const owner = 'scomans';
 const repo = 'dev-console';
 
 
-const octokit = new Octokit({auth: TOKEN});
+const octokit = new Octokit({ auth: TOKEN });
 
 
 const assetPath = resolve(join(dirname(__filename), '../..', 'dist/apps/wrapper/release/bundle'));
 
 async function main() {
   try {
-    const result = await octokit.repos.listReleases({owner, repo});
+    const result = await octokit.repos.listReleases({ owner, repo });
     const latestRelease = result.data[0];
     const releaseVersion = latestRelease.tag_name;
 
     if (gt(VERSION, releaseVersion)) {
       const pre = !!prerelease(VERSION);
-      const commits = await simpleGit().log({from: 'HEAD', to: releaseVersion});
+      const commits = await simpleGit().log({ from: 'HEAD', to: releaseVersion });
       let body = '## Changelog\n\n';
       body += commits.all
         .reverse()
         .map(c => `* ${c.message} ([${c.hash.substring(0, 7)}](https://github.com/${owner}/${repo}/commit/${c.hash}))`)
         .join('\n');
       body += '\n\n## Download\n\n';
-      body += `* [DevConsole_${VERSION}_x64_de-DE.msi.zip](https://github.com/${owner}/${repo}/releases/download/${VERSION}/DevConsole_${VERSION}_x64_de-DE.msi.zip)`;
+      body += `* [DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip](https://github.com/${owner}/${repo}/releases/download/${VERSION}/DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip)`;
 
       const newRelease = await octokit.repos.createRelease({
         owner,
@@ -43,8 +44,8 @@ async function main() {
         body,
       });
 
-      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_de-DE.msi.zip`));
-      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_de-DE.msi.zip.sig`));
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip`));
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip.sig`));
 
       await octokit.repos.updateRelease({
         owner,
