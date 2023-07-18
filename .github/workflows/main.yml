@@ -49,7 +49,7 @@ jobs:
       - name: Update version
         run: pnpm update-version ${{ steps.version-increment.outputs.newVersion }}
 
-      - name: 🏗️ Build DevConsole
+      - name: 🏗️ Build Frontend
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: pnpm build frontend --configuration=production
@@ -75,5 +75,5 @@ jobs:
           TAURI_KEY_PASSWORD: ""
         run: pnpm build wrapper
 
-      - name: 🚀 Deploy Frontend
-        run: node ./tools/release/release.js
+      - name: 🚀 Deploy DevConsole
+        run: pnpm release
