@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
-import { FormGroup as AngularFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from '@angular/core';
+import { FormGroup as AngularFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
 import { faCircle, faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -7,11 +7,34 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
 import { isNil } from 'lodash';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { RxPush } from '@rx-angular/template/push';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { ColorSliderComponent } from '../color-slider/color-slider.component';
 
 @Component({
   selector: 'dc-channel-edit-modal',
   templateUrl: './channel-edit-modal.component.html',
   styleUrls: ['./channel-edit-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ColorSliderComponent,
+    FontAwesomeModule,
+    NzButtonModule,
+    NzCheckboxModule,
+    NzFormModule,
+    NzInputModule,
+    NzModalModule,
+    NzPopoverModule,
+    ReactiveFormsModule,
+    RxPush,
+  ],
 })
 export class ChannelEditModalComponent {
 

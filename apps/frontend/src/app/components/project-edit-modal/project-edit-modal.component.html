@@ -1,5 +1,5 @@
 <nz-modal
-  [nzVisible]="isVisible | push"
+  [nzVisible]="isVisible()"
   [nzTitle]="(form.controls.id.value ? 'Edit' : 'Add') + ' project'"
   [nzOkDisabled]="form.invalid$ | push"
   (nzOnCancel)="hide()"

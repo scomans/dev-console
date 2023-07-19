@@ -5,6 +5,7 @@ import { default as Convert } from 'ansi-to-html';
 
 @Pipe({
   name: 'ansi',
+  standalone: true,
 })
 export class AnsiPipe implements PipeTransform {
 

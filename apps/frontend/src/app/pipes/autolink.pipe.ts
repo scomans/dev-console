@@ -10,6 +10,7 @@ export interface AutolinkOptions {
 
 @Pipe({
   name: 'autolink',
+  standalone: true,
 })
 export class AutolinkPipe implements PipeTransform {
 

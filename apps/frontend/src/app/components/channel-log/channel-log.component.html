@@ -1,4 +1,4 @@
-<ng-container *ngIf="channel$ | async as channel">
+<ng-container *rxIf="channel$; let channel">
   <div class="actions-bar">
     <div *rxLet="status$; let status;">
       <button nz-button class="start" (click)="run(channel)" [disabled]="status !== ExecuteStatus.STOPPED">

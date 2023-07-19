@@ -1,16 +1,17 @@
 <nz-modal
-  [nzVisible]="isVisible"
+  [nzVisible]="isVisible()"
   nzTitle="Change channel ordering"
   nzWidth="350px"
-  (nzOnCancel)="handleCancel()"
+  (nzOnCancel)="close()"
   (nzOnOk)="done()"
 >
   <ng-container *nzModalContent>
     <div class="channels" cdkDropList (cdkDropListDropped)="drop($event)">
-      <div *ngFor="let channel of channels"
-           class="channel"
-           cdkDrag
-           [cdkDragData]="channel"
+      <div
+        *rxFor="let channel of channels"
+        class="channel"
+        cdkDrag
+        [cdkDragData]="channel"
       >
         <div *cdkDragPlaceholder class="channel placeholder"></div>
         <fa-icon [icon]="fasGripLines"></fa-icon>
@@ -20,7 +21,7 @@
   </ng-container>
 
   <div *nzModalFooter>
-    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="default" (click)="close()">Cancel</button>
     <button nz-button nzType="primary" (click)="done()">Done</button>
   </div>
 </nz-modal>

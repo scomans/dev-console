@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment';
   selector: 'dc-update-notification',
   templateUrl: './update-notification.component.html',
   styleUrls: ['./update-notification.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     NzButtonModule,

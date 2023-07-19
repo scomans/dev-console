@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@angular/core';
 import { filterNil, sleep } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
@@ -12,12 +12,30 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'lodash';
+import { RxIf } from '@rx-angular/template/if';
+import { RxLet } from '@rx-angular/template/let';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
+import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 
 
 @Component({
   selector: 'dc-channel-log',
   templateUrl: './channel-log.component.html',
   styleUrls: ['./channel-log.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ChannelEditModalComponent,
+    FontAwesomeModule,
+    LogViewerComponent,
+    NzButtonModule,
+    NzPopconfirmModule,
+    RxIf,
+    RxLet,
+  ],
 })
 export class ChannelLogComponent implements OnInit {
 

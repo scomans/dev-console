@@ -1,16 +1,32 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
-import { FormGroup as AngularFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from '@angular/core';
+import { FormGroup as AngularFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Project } from '@dev-console/types';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { BehaviorSubject } from 'rxjs';
 import { open } from '@tauri-apps/api/dialog';
 import { isNil } from 'lodash';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { RxPush } from '@rx-angular/template/push';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'dc-project-edit-modal',
   templateUrl: './project-edit-modal.component.html',
   styleUrls: ['./project-edit-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FontAwesomeModule,
+    NzButtonModule,
+    NzFormModule,
+    NzInputModule,
+    NzModalModule,
+    ReactiveFormsModule,
+    RxPush,
+  ],
 })
 export class ProjectEditModalComponent {
 
@@ -24,17 +40,17 @@ export class ProjectEditModalComponent {
   angularForm: AngularFormGroup = this.form;
 
   project = signal<undefined | string>(undefined);
-  isVisible = new BehaviorSubject(false);
+  isVisible = signal(false);
 
-  @Output('dcResult') resultEmitter = new EventEmitter<Project>();
+  @Output() dcResult = new EventEmitter<Project>();
 
   done() {
-    this.resultEmitter.emit(this.form.value);
+    this.dcResult.emit(this.form.value);
     this.hide();
   }
 
   hide() {
-    this.isVisible.next(false);
+    this.isVisible.update(() => false);
     this.project.update(() => undefined);
     this.form.reset();
   }
@@ -61,7 +77,7 @@ export class ProjectEditModalComponent {
         name: project.name,
       });
     }
-    this.isVisible.next(true);
+    this.isVisible.update(() => true);
   }
 
 }

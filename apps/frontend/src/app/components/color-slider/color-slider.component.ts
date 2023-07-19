@@ -1,12 +1,15 @@
-import { Component, forwardRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SliderComponent } from 'ngx-color/slider';
+import { ColorSliderModule, SliderComponent } from 'ngx-color/slider';
+import { SafeAny } from '@dev-console/types';
 
 
 @Component({
   selector: 'dc-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -14,11 +17,14 @@ import { SliderComponent } from 'ngx-color/slider';
       multi: true,
     },
   ],
+  imports: [
+    ColorSliderModule,
+  ],
 })
 export class ColorSliderComponent implements ControlValueAccessor {
 
-  onChange: any = () => undefined;
-  onTouched: any = () => undefined;
+  onChange: SafeAny = () => undefined;
+  onTouched: SafeAny = () => undefined;
   disabled = false;
 
   @ViewChild(SliderComponent, { static: true }) slider: SliderComponent;
@@ -31,11 +37,11 @@ export class ColorSliderComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: SafeAny): void {
     this.onTouched = fn;
   }
 

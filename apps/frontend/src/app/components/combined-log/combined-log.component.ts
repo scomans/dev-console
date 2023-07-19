@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faBroom, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
 import { keyBy, mapValues } from 'lodash';
@@ -12,12 +12,24 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { sleep } from '@dev-console/helpers';
+import { RxLet } from '@rx-angular/template/let';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 
 
 @Component({
   selector: 'dc-combined-log',
   templateUrl: './combined-log.component.html',
   styleUrls: ['./combined-log.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FontAwesomeModule,
+    LogViewerComponent,
+    NzButtonModule,
+    RxLet,
+  ],
 })
 export class CombinedLogComponent {
 

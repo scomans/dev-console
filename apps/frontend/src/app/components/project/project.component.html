@@ -27,13 +27,13 @@
             <fa-icon
               [icon]="fasLayerGroup" class="anticon"
             ></fa-icon>
-            <span *ngIf="!sidebarCollapsed()">All Channels</span>
+            <span *rxIf="!sidebarCollapsed()">All Channels</span>
           </a>
         </li>
         <li nz-submenu [nzOpen]="true">
           <span title>
             <fa-icon [icon]="fasAlignLeft" class="anticon"></fa-icon>
-            <span *ngIf="!sidebarCollapsed()">Channels</span>
+            <span *rxIf="!sidebarCollapsed()">Channels</span>
           </span>
           <ul>
             <li
@@ -43,7 +43,7 @@
             >
               <ng-container *rxLet="channel.status$; let status">
                 <a (click)="openChannel(channel.id)">
-                  <ng-container *ngIf="channel.active" [ngSwitch]="status">
+                  <ng-container *rxIf="channel.active" [ngSwitch]="status">
                     <fa-icon
                       *ngSwitchCase="ExecuteStatus.RUNNING"
                       [icon]="fasDotCircle"
@@ -62,7 +62,7 @@
                       [style.color]="channel.color"
                     ></fa-icon>
                   </ng-container>
-                  <ng-container *ngIf="!channel.active" [ngSwitch]="status">
+                  <ng-container *rxIf="!channel.active" [ngSwitch]="status">
                     <fa-icon
                       *ngSwitchCase="ExecuteStatus.RUNNING"
                       [icon]="farDotCircle"
@@ -99,7 +99,7 @@
             class="anticon"
             [nz-tooltip]="sidebarCollapsed() ? 'Change channel ordering' : null"
           ></fa-icon>
-          <span *ngIf="!sidebarCollapsed()">Change channel ordering</span>
+          <span *rxIf="!sidebarCollapsed()">Change channel ordering</span>
         </li>
         <li nz-menu-item nzMatchRouter (click)="channelEditModal.show()">
           <fa-icon
@@ -107,7 +107,7 @@
             class="anticon"
             [nz-tooltip]="sidebarCollapsed() ? 'Add new channel' : null"
           ></fa-icon>
-          <span *ngIf="!sidebarCollapsed()">Add new channel</span>
+          <span *rxIf="!sidebarCollapsed()">Add new channel</span>
         </li>
       </ul>
     </nz-sider>
@@ -128,7 +128,7 @@
       </nz-header>
       <nz-content>
         <div class="inner-content" *rxLet="allLogs$; let all">
-          <dc-channel-log *ngIf="!all; else elseTpl"></dc-channel-log>
+          <dc-channel-log *rxIf="!all; else elseTpl"></dc-channel-log>
           <ng-template #elseTpl>
             <dc-combined-log></dc-combined-log>
           </ng-template>
@@ -138,5 +138,5 @@
   </ng-container>
 </nz-layout>
 
-<dc-channel-order-modal #channelOrderModal (result)="changeOrder($event)"></dc-channel-order-modal>
+<dc-channel-order-modal #channelOrderModal (dcResult)="changeOrder($event)"></dc-channel-order-modal>
 <dc-channel-edit-modal #channelEditModal (dcResult)="addChannel($event)"></dc-channel-edit-modal>

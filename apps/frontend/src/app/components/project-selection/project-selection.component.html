@@ -14,7 +14,7 @@
         <button nz-button nzType="primary" (click)="projectEditModal.show()">Add project</button>
       </div>
       <div class="flex flex-wrap gap-4">
-        <ng-container *ngFor="let project of projects$ | async">
+        <ng-container *rxFor="let project of projects$">
           <nz-card
             class="project-card"
             [nzCover]="coverTemplate"

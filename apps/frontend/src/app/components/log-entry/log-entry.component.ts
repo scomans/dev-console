@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
+import { AnsiPipe } from '../../pipes/ansi.pipe';
+import { AutolinkPipe } from '../../pipes/autolink.pipe';
+import { SafePipe } from '../../pipes/safe.pipe';
 
 
 export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
@@ -9,6 +12,12 @@ export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
   templateUrl: './log-entry.component.html',
   styleUrls: ['./log-entry.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    AnsiPipe,
+    AutolinkPipe,
+    SafePipe,
+  ],
 })
 export class LogEntryComponent {
 

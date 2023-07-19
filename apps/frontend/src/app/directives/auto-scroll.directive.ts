@@ -2,6 +2,7 @@ import { AfterContentInit, Directive, ElementRef, HostListener, Input, OnDestroy
 
 @Directive({
   selector: '[autoScroll]',
+  standalone: true,
 })
 export class AutoScrollDirective implements AfterContentInit, OnDestroy {
 

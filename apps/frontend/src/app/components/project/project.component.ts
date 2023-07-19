@@ -19,6 +19,19 @@ import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { exit } from '@tauri-apps/api/process';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { RxIf } from '@rx-angular/template/if';
+import { NgOptimizedImage, NgSwitch, NgSwitchCase } from '@angular/common';
+import { RxLet } from '@rx-angular/template/let';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RxFor } from '@rx-angular/template/for';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ChannelLogComponent } from '../channel-log/channel-log.component';
+import { CombinedLogComponent } from '../combined-log/combined-log.component';
+import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order-modal.component';
+import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 
 type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
@@ -27,12 +40,30 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
   providers: [
     ExecutionService,
     ChannelRepository,
     ChannelLogRepository,
     GlobalLogsRepository,
     UiRepository,
+  ],
+  imports: [
+    ChannelEditModalComponent,
+    ChannelLogComponent,
+    ChannelOrderModalComponent,
+    CombinedLogComponent,
+    FontAwesomeModule,
+    NgOptimizedImage,
+    NgSwitch,
+    NgSwitchCase,
+    NzButtonModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzToolTipModule,
+    RxFor,
+    RxIf,
+    RxLet,
   ],
 })
 export class ProjectComponent {

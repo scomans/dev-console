@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'smartTrim',
+  standalone: true,
 })
 export class SmartTrimPipe implements PipeTransform {
 

@@ -11,12 +11,33 @@ import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { exit } from '@tauri-apps/api/process';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
+import { RxFor } from '@rx-angular/template/for';
 
 @Component({
   selector: 'dc-project-selection',
   templateUrl: './project-selection.component.html',
   styleUrls: ['./project-selection.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FontAwesomeModule,
+    NzButtonModule,
+    NzCardModule,
+    NzLayoutModule,
+    NzPopconfirmModule,
+    NzToolTipModule,
+    ProjectEditModalComponent,
+    RxFor,
+    SmartTrimPipe,
+  ],
 })
 export class ProjectSelectionComponent implements OnInit {
 

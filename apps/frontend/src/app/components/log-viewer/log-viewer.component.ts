@@ -5,7 +5,9 @@ import { trackById } from '../../helpers/angular.helper';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
-import { LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
+import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
+import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
+import { RxFor } from '@rx-angular/template/for';
 
 
 @Component({
@@ -13,6 +15,12 @@ import { LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
   templateUrl: './log-viewer.component.html',
   styleUrls: ['./log-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    AutoScrollDirective,
+    LogEntryComponent,
+    RxFor,
+  ],
 })
 export class LogViewerComponent {
 
