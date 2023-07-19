@@ -16,7 +16,7 @@ import { ProjectRepository } from '../../stores/project.repository';
 import { UiRepository } from '../../stores/ui.repository';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { listenAsObservable } from '../../helpers/tauri.helper';
+import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { exit } from '@tauri-apps/api/process';
 
@@ -98,7 +98,7 @@ export class ProjectComponent {
         this.channelRepository.persistChannels(project.file),
       )),
     ).subscribe();
-    listenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
+    windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
         takeUntilDestroyed(),
         switchMap(() => this.checkRunning()),
@@ -131,7 +131,7 @@ export class ProjectComponent {
   async checkRunning() {
     let hasRunning = false;
     const channels = this.channelRepository.getChannels();
-    for (let channel of channels) {
+    for (const channel of channels) {
       const status = this.executeService.getStatus(channel.id);
       if (status !== ExecuteStatus.STOPPED) {
         hasRunning = true;
@@ -140,7 +140,7 @@ export class ProjectComponent {
     }
 
     if (hasRunning) {
-      return new Promise<boolean>(resolve => {
+      return await new Promise<boolean>(resolve => {
         this.modal.confirm({
           nzTitle: 'Do you want to close this project?',
           nzContent: 'When clicked the OK button, all running channels will be stopped!',
@@ -161,7 +161,7 @@ export class ProjectComponent {
   }
 
   changeOrder(updates: { id: string; index: number }[]) {
-    for (let update of updates) {
+    for (const update of updates) {
       this.channelRepository.updateChannel(update.id, { index: update.index });
     }
   }

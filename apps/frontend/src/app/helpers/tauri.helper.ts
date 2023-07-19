@@ -1,19 +1,11 @@
 import { listen, TauriEvent } from '@tauri-apps/api/event';
-import {
-  exists,
-  FsDirOptions,
-  FsOptions,
-  readDir,
-  readTextFile,
-  removeDir,
-  removeFile,
-  writeTextFile,
-} from '@tauri-apps/api/fs';
+import { exists, FsDirOptions, FsOptions, readDir, readTextFile, removeDir, removeFile, writeTextFile } from '@tauri-apps/api/fs';
 import { Command } from '@tauri-apps/api/shell';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Observable } from 'rxjs';
 import { JsonValue } from 'type-fest';
 import { SafeAny } from '@dev-console/types';
+import { appWindow } from '@tauri-apps/api/window';
 
 export async function readJsonFile(path: string): Promise<JsonValue> {
   const content = await readTextFile(path);
@@ -55,6 +47,17 @@ export async function openDevtools(): Promise<void> {
 export function listenAsObservable<T extends SafeAny>(event: TauriEvent | string): Observable<T> {
   return new Observable(subscriber => {
     const unlisten = listen<T>(event, (event) => {
+      subscriber.next(event.payload);
+    });
+    return async () => {
+      (await unlisten)();
+    };
+  });
+}
+
+export function windowListenAsObservable<T extends SafeAny>(event: TauriEvent | string): Observable<T> {
+  return new Observable(subscriber => {
+    const unlisten = appWindow.listen<T>(event, (event) => {
       subscriber.next(event.payload);
     });
     return async () => {

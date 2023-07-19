@@ -7,7 +7,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable, switchMap } from 'rxjs';
 import { ProjectRepository } from '../../stores/project.repository';
 import { Title } from '@angular/platform-browser';
-import { listenAsObservable } from '../../helpers/tauri.helper';
+import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { exit } from '@tauri-apps/api/process';
@@ -32,7 +32,7 @@ export class ProjectSelectionComponent implements OnInit {
     private readonly router: Router,
   ) {
     this.projects$ = this.projectRepository.projects$;
-    listenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
+    windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
         takeUntilDestroyed(),
         switchMap(() => exit(0)),
