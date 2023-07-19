@@ -1,17 +1,15 @@
 import { Routes } from '@angular/router';
-import { ProjectSelectionComponent } from './components/project-selection/project-selection.component';
-import { ProjectComponent } from './components/project/project.component';
 
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: ProjectSelectionComponent,
+    loadComponent: () => import('./components/project-selection/project-selection.component').then(m => m.ProjectSelectionComponent),
   },
   {
     path: 'project',
-    component: ProjectComponent,
+    loadComponent: () => import('./components/project/project.component').then(m => m.ProjectComponent),
   },
   {
     path: '**',
