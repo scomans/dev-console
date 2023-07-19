@@ -41,6 +41,7 @@
         ]
       },
       "shell": {
+        "open": true,
         "execute": true,
         "sidecar": true,
         "scope": [

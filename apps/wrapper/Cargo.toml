@@ -17,7 +17,7 @@ tauri-build = { version = "1.4.0", features = [] }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.4.1", features = ["updater", "shell-sidecar", "http-all", "dialog-open", "fs-all", "dialog-confirm", "window-close", "shell-execute", "process-exit", "path-all", "dialog-save", "devtools"] }
+tauri = { version = "1.4.1", features = ["shell-open", "updater", "shell-sidecar", "http-all", "dialog-open", "fs-all", "dialog-confirm", "window-close", "shell-execute", "process-exit", "path-all", "dialog-save", "devtools"] }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-positioner = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }

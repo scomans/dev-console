@@ -1,9 +1,9 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { enableElfProdMode } from '@ngneat/elf';
+import { open } from '@tauri-apps/api/shell';
 
 if (environment.production) {
   enableProdMode();
@@ -46,6 +46,13 @@ if (environment.production) {
     }
   };
 }
+
+navigation.addEventListener('navigate', (event) => {
+  if (!event.destination.url.startsWith(environment.baseUrl)) {
+    event.preventDefault();
+    void open(event.destination.url);
+  }
+});
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
