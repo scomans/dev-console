@@ -21,9 +21,7 @@
         ]
       },
       "window": {
-        "create": true,
-        "close": true,
-        "hide": true
+        "close": true
       },
       "process": {
         "exit": true
@@ -58,10 +56,6 @@
           }
         ]
       }
-    },
-    "systemTray": {
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
     },
     "bundle": {
       "active": true,
