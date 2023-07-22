@@ -63,6 +63,12 @@ export class ExecutionService {
     if (!isNil(executable?.replacer)) {
       line = executable.replacer(line);
     }
+    line = line
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
 
     const logEntry: LogEntryWithSource = {
       id: index++,
