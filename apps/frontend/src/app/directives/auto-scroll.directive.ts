@@ -1,4 +1,5 @@
-import { AfterContentInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
+import { AfterContentInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { delay, fromEvent, of, Subscription } from 'rxjs';
 
 @Directive({
   selector: '[autoScroll]',
@@ -7,11 +8,13 @@ import { AfterContentInit, Directive, ElementRef, HostListener, Input, OnDestroy
 export class AutoScrollDirective implements AfterContentInit, OnDestroy {
 
   @Input('lock-y-offset') public lockYOffset: number = 10;
-  @Input('observe-attributes') public observeAttributes: boolean = false;
+
+  @Output() lockChanges = new EventEmitter<boolean>();
 
   private readonly nativeElement: HTMLElement;
   private _isLocked: boolean = false;
   private mutationObserver: MutationObserver;
+  private scrollSubscription: Subscription;
 
   constructor(element: ElementRef) {
     this.nativeElement = element.nativeElement;
@@ -23,33 +26,36 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
         this.scrollDown();
       }
     });
-    this.mutationObserver.observe(this.nativeElement, {
-      childList: true,
-      subtree: true,
-      attributes: this.observeAttributes,
+    this.mutationObserver.observe(this.nativeElement.firstChild.firstChild, {
+      attributes: true,
     });
+    this.scrollSubscription = fromEvent(this.nativeElement.firstChild, 'scroll', { passive: true })
+      .subscribe(() => this.scrollHandler());
+    of(null).pipe(delay(0)).subscribe(() => this.scrollDown());
   }
 
   public ngOnDestroy(): void {
     this.mutationObserver.disconnect();
-  }
-
-  public forceScrollDown(): void {
-    this.scrollDown();
+    this.scrollSubscription.unsubscribe();
   }
 
   public isLocked(): boolean {
     return this._isLocked;
   }
 
-  private scrollDown(): void {
-    this.nativeElement.scrollTop = this.nativeElement.scrollHeight;
+  public scrollDown(): void {
+    const el = (this.nativeElement.firstChild as HTMLDivElement);
+    el.scrollTop = el.scrollHeight;
   }
 
-  @HostListener('scroll')
   private scrollHandler(): void {
-    const scrollFromBottom = this.nativeElement.scrollHeight - this.nativeElement.scrollTop - this.nativeElement.clientHeight;
+    const el = (this.nativeElement.firstChild as HTMLDivElement);
+    const scrollFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    const oldLock = this._isLocked;
     this._isLocked = scrollFromBottom > this.lockYOffset;
+    if (oldLock !== this._isLocked) {
+      this.lockChanges.emit(this._isLocked);
+    }
   }
 
 }

@@ -1,13 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { combineLatestWith, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { trackById } from '../../helpers/angular.helper';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
 import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
 import { RxFor } from '@rx-angular/template/for';
+import {
+  AutoSizeVirtualScrollStrategy,
+  RxVirtualFor,
+  RxVirtualScrollViewportComponent,
+} from '@rx-angular/template/experimental/virtual-scrolling';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { RxIf } from '@rx-angular/template/if';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faDownLong } from '@fortawesome/free-solid-svg-icons';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 
 @Component({
@@ -20,22 +29,31 @@ import { RxFor } from '@rx-angular/template/for';
     AutoScrollDirective,
     LogEntryComponent,
     RxFor,
+    RxVirtualFor,
+    AutoSizeVirtualScrollStrategy,
+    RxVirtualScrollViewportComponent,
+    NzButtonModule,
+    RxIf,
+    FontAwesomeModule,
+    NzToolTipModule,
   ],
 })
 export class LogViewerComponent {
 
-  readonly trackById = trackById;
+  /* ### ICONS ### */
+  protected readonly fasDownLong = faDownLong;
 
-  log$: Observable<LogEntryWithSourceAndColor[]>;
+  protected readonly showScrollDownButton = signal(false);
+  protected readonly log$: Observable<LogEntryWithSourceAndColor[]>;
+
+  @ViewChild(RxVirtualScrollViewportComponent) viewport: RxVirtualScrollViewportComponent;
+  @ViewChild(AutoScrollDirective) autoScroll: AutoScrollDirective;
 
   constructor(
     private readonly channelRepository: ChannelRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelLogRepository: ChannelLogRepository,
   ) {
-  }
-
-  ngOnInit(): void {
     const colors$: Observable<Record<string, string>> = this.channelRepository.channels$.pipe(
       map(channels => channels
         .map(c => ({ id: c.id, color: c.color }))
@@ -50,4 +68,11 @@ export class LogViewerComponent {
       );
   }
 
+  updateScrollButtonVisibility(show: boolean) {
+    this.showScrollDownButton.update(() => show);
+  }
+
+  scrollDown() {
+    this.autoScroll.scrollDown();
+  }
 }

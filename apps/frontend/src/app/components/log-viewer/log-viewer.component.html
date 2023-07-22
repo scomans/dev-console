@@ -1,7 +1,26 @@
 <div
   class="log-viewer"
-  autoScroll
-  [lock-y-offset]="100"
 >
-  <dc-log-entry *rxFor="let entry of log$; trackBy: trackById;" [entry]="entry"></dc-log-entry>
+  <rx-virtual-scroll-viewport
+    autosize
+    class="w-full h-full block"
+    [tombstoneSize]="19"
+    autoScroll
+    [lock-y-offset]="100"
+    (lockChanges)="updateScrollButtonVisibility($event)"
+  >
+    <dc-log-entry *rxVirtualFor="let entry of log$; trackBy: 'id'" [entry]="entry" class="w-full"></dc-log-entry>
+  </rx-virtual-scroll-viewport>
+
+  <button
+    *rxIf="showScrollDownButton()"
+    nz-button
+    nzShape="circle"
+    class="scroll-down-button"
+    nz-tooltip="Scroll down"
+    nzTooltipPlacement="left"
+    (click)="scrollDown()"
+  >
+    <fa-icon [icon]="fasDownLong"></fa-icon>
+  </button>
 </div>
