@@ -1,9 +1,5 @@
 @tailwind utilities;
-
-@font-face {
-  font-family: console-font;
-  src: url(../assets/fonts/CascadiaCodePL-Light.ttf);
-}
+@import "font";
 
 ::-webkit-scrollbar-track {
   // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
