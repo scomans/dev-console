@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle, faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAlignLeft,
+  faCircle as fasCircle,
+  faDotCircle as fasDotCircle,
+  faGripHorizontal,
+  faLayerGroup,
+  faPlusCircle,
+  faSquareCaretLeft,
+  faSquareCaretRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
@@ -32,6 +41,7 @@ import { ChannelLogComponent } from '../channel-log/channel-log.component';
 import { CombinedLogComponent } from '../combined-log/combined-log.component';
 import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order-modal.component';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
+import { ExitModalComponent } from '../exit-modal/exit-modal.component';
 
 type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
@@ -53,6 +63,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     ChannelLogComponent,
     ChannelOrderModalComponent,
     CombinedLogComponent,
+    ExitModalComponent,
     FontAwesomeModule,
     NgOptimizedImage,
     NgSwitch,
@@ -88,6 +99,8 @@ export class ProjectComponent {
   allLogs$: Observable<boolean>;
   sidebarCollapsed = toSignal(this.uiRepository.selectProp('sidebarCollapsed'));
 
+  @ViewChild(ExitModalComponent, { static: true }) exitModal: ExitModalComponent;
+
   constructor(
     private readonly projectRepository: ProjectRepository,
     private readonly activatedRoute: ActivatedRoute,
@@ -107,7 +120,7 @@ export class ProjectComponent {
         if (!project) {
           return this.router.navigate(['/']);
         }
-        titleService.setTitle(`${project.name} - DevConsole`);
+        titleService.setTitle(`${ project.name } - DevConsole`);
       }),
       share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
     );
@@ -135,6 +148,7 @@ export class ProjectComponent {
         switchMap(() => this.checkRunning()),
         switchMap(async close => {
           if (close) {
+            this.exitModal.show();
             await this.executeService.killAll();
             return exit(0);
           }
@@ -175,6 +189,7 @@ export class ProjectComponent {
         this.modal.confirm({
           nzTitle: 'Do you want to close this project?',
           nzContent: 'When clicked the OK button, all running channels will be stopped!',
+          nzCentered: true,
           nzOnOk: () => resolve(true),
           nzOnCancel: () => resolve(false),
         });
