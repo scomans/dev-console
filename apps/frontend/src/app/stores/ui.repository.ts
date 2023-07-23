@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 
 
 export interface UiProps {
-  sidebarCollapsed: boolean;
 }
 
 @Injectable()
@@ -12,9 +11,7 @@ export class UiRepository {
 
   private store = createStore(
     { name: 'ui' },
-    withProps<UiProps>({
-      sidebarCollapsed: false,
-    }),
+    withProps<UiProps>({}),
   );
 
   selectProp<T extends keyof UiProps>(prop: T): Observable<UiProps[T]> {
@@ -29,9 +26,5 @@ export class UiRepository {
 
   getUiProp<T extends keyof UiProps>(prop: T): UiProps[T] {
     return this.store.getValue()[prop];
-  }
-
-  toggleSidebar() {
-    this.updateUiProp('sidebarCollapsed', !this.getUiProp('sidebarCollapsed'));
   }
 }

@@ -5,7 +5,7 @@
       nzCollapsible
       nzWidth="256px"
       nzBreakpoint="md"
-      [nzCollapsed]="sidebarCollapsed()"
+      [nzCollapsed]="false"
       [nzTrigger]="null"
     >
       <div class="sidebar-logo">
@@ -19,21 +19,21 @@
         nz-menu
         nzTheme="dark"
         nzMode="inline"
-        [nzInlineCollapsed]="sidebarCollapsed()"
+        [nzInlineCollapsed]="false"
         class="log-menu"
       >
         <li nz-menu-item [nzSelected]="!selectedChannelId">
-          <a title (click)="openChannel(null)" [nz-tooltip]="sidebarCollapsed() ? 'All Channels' : null">
+          <a title (click)="openChannel(null)">
             <fa-icon
               [icon]="fasLayerGroup" class="anticon"
             ></fa-icon>
-            <span *rxIf="!sidebarCollapsed()">All Channels</span>
+            All Channels
           </a>
         </li>
         <li nz-submenu [nzOpen]="true">
           <span title>
-            <fa-icon [icon]="fasAlignLeft" class="anticon"></fa-icon>
-            <span *rxIf="!sidebarCollapsed()">Channels</span>
+            <fa-icon [icon]="fasAlignLeft" class="anticon" transform="up-2"></fa-icon>
+            Channels
           </span>
           <ul>
             <li
@@ -91,41 +91,25 @@
         nz-menu
         nzTheme="dark"
         nzMode="inline"
-        [nzInlineCollapsed]="sidebarCollapsed()"
+        [nzInlineCollapsed]="false"
       >
         <li *rxLet="channels$; let channels" nz-menu-item nzMatchRouter (click)="channelOrderModal.show(channels)">
           <fa-icon
             [icon]="fasGripHorizontal"
             class="anticon"
-            [nz-tooltip]="sidebarCollapsed() ? 'Change channel ordering' : null"
           ></fa-icon>
-          <span *rxIf="!sidebarCollapsed()">Change channel ordering</span>
+          Change channel ordering
         </li>
         <li nz-menu-item nzMatchRouter (click)="channelEditModal.show()">
           <fa-icon
             [icon]="fasPlusCircle"
             class="anticon"
-            [nz-tooltip]="sidebarCollapsed() ? 'Add new channel' : null"
           ></fa-icon>
-          <span *rxIf="!sidebarCollapsed()">Add new channel</span>
+          Add new channel
         </li>
       </ul>
     </nz-sider>
     <nz-layout>
-      <nz-header>
-        <div class="app-header">
-          <div>
-            <button
-              nz-button
-              nzType="text"
-              nzSize="large"
-              (click)="toggleSidebar()"
-            >
-              <fa-icon class="trigger" [icon]="sidebarCollapsed() ? fasSquareCaretRight : fasSquareCaretLeft"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </nz-header>
       <nz-content>
         <div class="inner-content" *rxLet="allLogs$; let all">
           <dc-channel-log *rxIf="!all; else elseTpl"></dc-channel-log>

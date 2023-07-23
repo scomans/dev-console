@@ -10,8 +10,6 @@ import {
   faGripHorizontal,
   faLayerGroup,
   faPlusCircle,
-  faSquareCaretLeft,
-  faSquareCaretRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -23,7 +21,7 @@ import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { UiRepository } from '../../stores/ui.repository';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
@@ -88,8 +86,6 @@ export class ProjectComponent {
   readonly fasLayerGroup = faLayerGroup;
   readonly fasPlusCircle = faPlusCircle;
   readonly fasGripHorizontal = faGripHorizontal;
-  readonly fasSquareCaretRight = faSquareCaretRight;
-  readonly fasSquareCaretLeft = faSquareCaretLeft;
 
   readonly ExecuteStatus = ExecuteStatus;
 
@@ -97,7 +93,6 @@ export class ProjectComponent {
   selectedChannelId$: Observable<string>;
   project$: Observable<Project>;
   allLogs$: Observable<boolean>;
-  sidebarCollapsed = toSignal(this.uiRepository.selectProp('sidebarCollapsed'));
 
   @ViewChild(ExitModalComponent, { static: true }) exitModal: ExitModalComponent;
 
@@ -111,7 +106,6 @@ export class ProjectComponent {
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
-    private readonly uiRepository: UiRepository,
     private readonly titleService: Title,
   ) {
     this.project$ = this.activatedRoute.queryParams.pipe(
@@ -155,10 +149,6 @@ export class ProjectComponent {
         }),
       )
       .subscribe();
-  }
-
-  toggleSidebar() {
-    this.uiRepository.toggleSidebar();
   }
 
   openChannel(id: string) {
