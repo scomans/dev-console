@@ -110,7 +110,7 @@
       "active": true,
       "dialog": false,
       "endpoints": [
-        "https://update-dev-console.keyle.de/update/check"
+        "https://github.com/scomans/dev-console/releases/latest/download/latest.json"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU1ODFCNkQwQTdFQTFBQUMKUldTc0d1cW4wTGFCNWZtSkFmTXFZNDNXQUNIL1hVTlVQRTJNR1p6ZGpyVkhPRGFLbFBtNE9MU2cK"
     },
