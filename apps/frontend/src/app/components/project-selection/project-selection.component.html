@@ -6,6 +6,9 @@
         <img ngSrc="assets/logo.png" [width]="40" [height]="40" alt="DevConsole" class="logo">
         <h1>DevConsole</h1>
       </div>
+      <button nz-button nzType="text" nzShape="circle" class="mr-4" (click)="aboutModal.show()">
+        <fa-icon [icon]="farQuestionCircle"></fa-icon>
+      </button>
     </div>
   </nz-header>
   <nz-content>
@@ -62,3 +65,4 @@
 </nz-layout>
 
 <dc-project-edit-modal #projectEditModal (dcResult)="upsertProject($event)"></dc-project-edit-modal>
+<dc-about-modal #aboutModal></dc-about-modal>

@@ -1,0 +1,15 @@
+<nz-modal
+  [nzVisible]="isVisible()"
+  nzTitle="3rd-Party Licenses"
+  [nzCentered]="true"
+  nzWidth="80%"
+  (nzOnCancel)="close()"
+>
+  <ng-container *nzModalContent>
+    <div *rxLet="licenses$; let licenses" [innerHTML]="licenses"></div>
+  </ng-container>
+
+  <div *nzModalFooter>
+    <button nz-button (click)="close()">Close</button>
+  </div>
+</nz-modal>

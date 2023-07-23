@@ -21,6 +21,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { RxFor } from '@rx-angular/template/for';
 import { NgOptimizedImage } from '@angular/common';
+import { AboutModalComponent } from '../about-modal/about-modal.component';
 
 @Component({
   selector: 'dc-project-selection',
@@ -29,7 +30,9 @@ import { NgOptimizedImage } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AboutModalComponent,
     FontAwesomeModule,
+    NgOptimizedImage,
     NzButtonModule,
     NzCardModule,
     NzLayoutModule,
@@ -38,7 +41,6 @@ import { NgOptimizedImage } from '@angular/common';
     ProjectEditModalComponent,
     RxFor,
     SmartTrimPipe,
-    NgOptimizedImage,
   ],
 })
 export class ProjectSelectionComponent implements OnInit {

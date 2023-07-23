@@ -5,8 +5,11 @@
       <div class="ant-notification-notice-description">
         Version {{ notification.options.nzData.update.manifest?.version }} available. Click "Install" button to update.
       </div>
-      <span class="ant-notification-notice-btn">
-        <button nz-button nzType="primary" nzSize="small" (click)="installUpdate(); notification.close()">
+      <span class="ant-notification-notice-btn flex gap-2">
+        <a href="https://github.com/scomans/dev-console/releases" nz-button nzSize="small" class="w-32">
+          Changelog
+        </a>
+        <button nz-button nzType="primary" nzSize="small" class="w-32" (click)="installUpdate(); notification.close()">
           Install
         </button>
       </span>
