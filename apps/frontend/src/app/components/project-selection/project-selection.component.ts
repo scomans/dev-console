@@ -20,6 +20,7 @@ import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { RxFor } from '@rx-angular/template/for';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'dc-project-selection',
@@ -37,6 +38,7 @@ import { RxFor } from '@rx-angular/template/for';
     ProjectEditModalComponent,
     RxFor,
     SmartTrimPipe,
+    NgOptimizedImage,
   ],
 })
 export class ProjectSelectionComponent implements OnInit {
