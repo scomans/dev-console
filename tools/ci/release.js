@@ -28,8 +28,8 @@ async function main() {
       const commits = await simpleGit().log({ from: 'HEAD', to: releaseVersion });
       let body = '## Changelog\n\n';
       body += commits.all
-        .reverse()
         .map(c => `* ${c.message} ([${c.hash.substring(0, 7)}](https://github.com/${owner}/${repo}/commit/${c.hash}))`)
+        .reverse()
         .join('\n');
       body += '\n\n## Download\n\n';
       body += `* [DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip](https://github.com/${owner}/${repo}/releases/download/${VERSION}/DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip)`;
@@ -46,6 +46,7 @@ async function main() {
 
       await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip`));
       await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip.sig`));
+      await generateLatestJson(join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip.sig`), VERSION, newRelease);
 
       await octokit.repos.updateRelease({
         owner,
@@ -59,6 +60,36 @@ async function main() {
   } catch (err) {
     console.error(err);
   }
+}
+
+/**
+ *
+ * @param path string
+ * @param version string
+ * @param release
+ * @returns {Promise<void>}
+ */
+async function generateLatestJson(path, version, release) {
+  const signature = await readFile(path, 'utf-8');
+  const content = {
+    version,
+    notes: `DevConsole v${version}`,
+    pub_date: new Date().toISOString(),
+    platforms: {
+      'windows-x86_64': {
+        signature,
+        'url': `https://github.com/${owner}/${repo}/releases/download/${version}/DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip`,
+      },
+    },
+  };
+
+  await octokit.rest.repos.uploadReleaseAsset({
+    owner,
+    repo,
+    release_id: release.data.id,
+    name: 'latest.json',
+    data: Buffer.from(JSON.stringify(content)),
+  });
 }
 
 async function uploadAsset(release, filePath) {
