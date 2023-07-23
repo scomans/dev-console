@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Increment Version
+      - name: Increment version
         uses: scomans/increment-version-action@v1
         id: version-increment
         with:
@@ -49,7 +49,7 @@ jobs:
       - name: Update version
         run: pnpm update-version ${{ steps.version-increment.outputs.newVersion }}
 
-      - name: 🏗️ Build Frontend
+      - name: 🏗️ Build frontend
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: pnpm build frontend --configuration=production
@@ -57,7 +57,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Rust Cache
+      - name: Rust cache
         id: rust-cache
         uses: actions/cache@v3
         with:
