@@ -1,16 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
-import {
-  faAlignLeft,
-  faCircle as fasCircle,
-  faDotCircle as fasDotCircle,
-  faGripHorizontal,
-  faLayerGroup,
-  faPlusCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
@@ -77,17 +70,19 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 })
 export class ProjectComponent {
 
-  readonly fasAlignLeft = faAlignLeft;
-  readonly fasCircle = fasCircle;
-  readonly farCircle = farCircle;
-  readonly farClock = faClock;
-  readonly fasDotCircle = fasDotCircle;
-  readonly farDotCircle = farDotCircle;
-  readonly fasLayerGroup = faLayerGroup;
-  readonly fasPlusCircle = faPlusCircle;
-  readonly fasGripHorizontal = faGripHorizontal;
+  /* ### ICONS ### */
+  protected readonly fasAlignLeft = faAlignLeft;
+  protected readonly fasCircle = fasCircle;
+  protected readonly farCircle = farCircle;
+  protected readonly farClock = faClock;
+  protected readonly fasDotCircle = fasDotCircle;
+  protected readonly farDotCircle = farDotCircle;
+  protected readonly fasLayerGroup = faLayerGroup;
+  protected readonly fasPlusCircle = faPlusCircle;
+  protected readonly fasGripHorizontal = faGripHorizontal;
 
-  readonly ExecuteStatus = ExecuteStatus;
+  /* ### ENUMS ### */
+  protected readonly ExecuteStatus = ExecuteStatus;
 
   channels$: Observable<ChannelWithStatus[]>;
   selectedChannelId$: Observable<string>;
@@ -97,6 +92,7 @@ export class ProjectComponent {
   @ViewChild(ExitModalComponent, { static: true }) exitModal: ExitModalComponent;
 
   constructor(
+    private readonly cdr: ChangeDetectorRef,
     private readonly projectRepository: ProjectRepository,
     private readonly activatedRoute: ActivatedRoute,
     private readonly modal: NzModalService,
@@ -176,13 +172,15 @@ export class ProjectComponent {
 
     if (hasRunning) {
       return await new Promise<boolean>(resolve => {
-        this.modal.confirm({
+        const modalRef = this.modal.confirm({
           nzTitle: 'Do you want to close this project?',
           nzContent: 'When clicked the OK button, all running channels will be stopped!',
           nzCentered: true,
           nzOnOk: () => resolve(true),
           nzOnCancel: () => resolve(false),
         });
+        modalRef.afterOpen.subscribe(() => this.cdr.detectChanges());
+        this.cdr.detectChanges();
       });
     }
     return true;
