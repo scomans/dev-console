@@ -172,15 +172,15 @@ export class ProjectComponent {
 
     if (hasRunning) {
       return await new Promise<boolean>(resolve => {
-        const modalRef = this.modal.confirm({
+        this.modal.confirm({
           nzTitle: 'Do you want to close this project?',
-          nzContent: 'When clicked the OK button, all running channels will be stopped!',
+          nzContent: 'Closing the project will stop all running channels!',
           nzCentered: true,
+          nzMaskClosable: false,
+          nzClosable: false,
           nzOnOk: () => resolve(true),
           nzOnCancel: () => resolve(false),
         });
-        modalRef.afterOpen.subscribe(() => this.cdr.detectChanges());
-        this.cdr.detectChanges();
       });
     }
     return true;
