@@ -15,12 +15,6 @@ use tauri_plugin_window_state::{StateFlags, WindowExt};
 // use window_vibrancy::apply_acrylic;
 
 #[derive(Clone, serde::Serialize)]
-struct SingleInstancePayload {
-  args: Vec<String>,
-  cwd: String,
-}
-
-#[derive(Clone, serde::Serialize)]
 struct ProcessOutput {
   channel_id: String,
   line: String,
@@ -163,10 +157,6 @@ fn main() {
     .plugin(tauri_plugin_positioner::init())
     .plugin(tauri_plugin_window_state::Builder::default().build())
     .plugin(tauri_plugin_log::Builder::default().targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview]).build())
-    .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-      println!("{}, {argv:?}, {cwd}", app.package_info().name);
-      app.emit_all("single-instance", SingleInstancePayload { args: argv, cwd }).unwrap();
-    }))
     .setup(|_app| {
       // let release = sentry::release_name!().unwrap();
       // println!("Release: {}", release);

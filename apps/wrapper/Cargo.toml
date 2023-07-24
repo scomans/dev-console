@@ -21,7 +21,6 @@ tauri = { version = "1.4.1", features = ["os-all", "shell-open", "updater", "she
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-positioner = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
-tauri-plugin-single-instance = { git = "https://github.com/tauri-apps/tauri-plugin-single-instance/", branch = "dev" }
 log = "0.4.19"
 sentry = "0.31.5"
 sysinfo = "0.29.2"
