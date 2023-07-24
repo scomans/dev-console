@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { JsonValue } from 'type-fest';
 import { SafeAny } from '@dev-console/types';
 import { appWindow } from '@tauri-apps/api/window';
+import { inject, NgZone } from '@angular/core';
 
 export async function readJsonFile(path: string): Promise<JsonValue> {
   const content = await readTextFile(path);
@@ -45,9 +46,12 @@ export async function openDevtools(): Promise<void> {
 }
 
 export function listenAsObservable<T extends SafeAny>(event: TauriEvent | string): Observable<T> {
+  const zone = inject(NgZone);
   return new Observable(subscriber => {
     const unlisten = listen<T>(event, (event) => {
-      subscriber.next(event.payload);
+      zone.run(() => {
+        subscriber.next(event.payload);
+      });
     });
     return async () => {
       (await unlisten)();
@@ -56,9 +60,12 @@ export function listenAsObservable<T extends SafeAny>(event: TauriEvent | string
 }
 
 export function windowListenAsObservable<T extends SafeAny>(event: TauriEvent | string): Observable<T> {
+  const zone = inject(NgZone);
   return new Observable(subscriber => {
     const unlisten = appWindow.listen<T>(event, (event) => {
-      subscriber.next(event.payload);
+      zone.run(() => {
+        subscriber.next(event.payload);
+      });
     });
     return async () => {
       (await unlisten)();
