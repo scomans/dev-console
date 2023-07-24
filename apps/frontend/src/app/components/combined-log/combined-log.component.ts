@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
-import { faBroom, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
+import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
 import { keyBy, mapValues } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
@@ -36,7 +36,7 @@ export class CombinedLogComponent {
   readonly fasPlay = faPlay;
   readonly fasRedo = faRedo;
   readonly fasStop = faStop;
-  readonly fasBroom = faBroom;
+  readonly fasEraser = faEraser;
 
   channels$: Observable<Channel[]>;
   channelColors$: Observable<Record<string, string>>;

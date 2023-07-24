@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@a
 import { filterNil, sleep } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { faBroom, faEdit, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEraser, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
@@ -44,7 +44,7 @@ export class ChannelLogComponent implements OnInit {
   readonly fasPlay = faPlay;
   readonly fasRedo = faRedo;
   readonly fasStop = faStop;
-  readonly fasBroom = faBroom;
+  readonly fasEraser = faEraser;
   readonly fasEdit = faEdit;
 
   ExecuteStatus = ExecuteStatus;
