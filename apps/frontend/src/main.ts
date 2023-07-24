@@ -24,7 +24,6 @@ if (environment.production) {
         case 'keyi':
         case 'keyj':
         case 'keyc':
-          console.log('PREVENT');
           return false;
       }
     } else if (e.ctrlKey) {
