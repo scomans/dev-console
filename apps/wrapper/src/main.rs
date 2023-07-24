@@ -10,9 +10,6 @@ use sysinfo::{Pid, PidExt, ProcessExt, Signal, System, SystemExt};
 use tauri::{AppHandle, Manager, Window, Wry};
 use tauri::api::process::{Command, CommandEvent, Encoding};
 use tauri_plugin_log::LogTarget;
-use tauri_plugin_window_state::{StateFlags, WindowExt};
-
-// use window_vibrancy::apply_acrylic;
 
 #[derive(Clone, serde::Serialize)]
 struct ProcessOutput {
@@ -29,19 +26,6 @@ struct ProcessExit {
 #[tauri::command]
 fn open_devtools(window: Window<Wry>) {
   window.open_devtools();
-}
-
-#[tauri::command]
-async fn init_window(app: AppHandle<Wry>, label: String) {
-  let window = app.get_window(&label);
-  if window.is_some() {
-    let unwrapped_window = window.unwrap();
-    unwrapped_window.restore_state(StateFlags::SIZE | StateFlags::POSITION | StateFlags::MAXIMIZED).unwrap();
-
-    // #[cfg(target_os = "windows")]
-    // apply_acrylic(&unwrapped_window, Some((61, 71, 106, 200)))
-    //     .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
-  }
 }
 
 #[tauri::command]
@@ -111,11 +95,6 @@ fn spawn_process(
 
   let pid = child.pid() as i32;
 
-  // let arc_child = Arc::new(child);
-  // commands().lock().unwrap().insert(pid, Mutex::new(arc_child.clone()));
-
-  // state.0.insert(pid, child);
-
   tauri::async_runtime::spawn(async move {
     while let Some(event) = rx.recv().await {
       match event {
@@ -154,7 +133,6 @@ fn main() {
 //  }));
 
   tauri::Builder::default()
-    .plugin(tauri_plugin_positioner::init())
     .plugin(tauri_plugin_window_state::Builder::default().build())
     .plugin(tauri_plugin_log::Builder::default().targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview]).build())
     .setup(|_app| {
@@ -164,7 +142,6 @@ fn main() {
     })
     .invoke_handler(tauri::generate_handler![
             open_devtools,
-            init_window,
             kill_process,
             spawn_process,
         ])
