@@ -22,6 +22,7 @@ import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-mo
 import { RxFor } from '@rx-angular/template/for';
 import { NgOptimizedImage } from '@angular/common';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
+import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
 
 @Component({
   selector: 'dc-project-selection',
@@ -60,7 +61,10 @@ export class ProjectSelectionComponent implements OnInit {
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
         takeUntilDestroyed(),
-        switchMap(() => exit(0)),
+        switchMap(async () => {
+          await saveWindowState(StateFlags.SIZE + StateFlags.POSITION + StateFlags.MAXIMIZED);
+          await exit(0);
+        }),
       )
       .subscribe();
   }

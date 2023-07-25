@@ -94,7 +94,10 @@ dependencies:
     version: 7.8.1
   tauri-plugin-log-api:
     specifier: github:tauri-apps/tauri-plugin-log
-    version: github.com/tauri-apps/tauri-plugin-log/fbbb126e6d7fba7a7e6772d33f99c0fb689f32b6
+    version: github.com/tauri-apps/tauri-plugin-log/65b7ee991a0e7b6255053b5b1336fd84908cc904
+  tauri-plugin-window-state-api:
+    specifier: github:tauri-apps/tauri-plugin-window-state#v1
+    version: github.com/tauri-apps/tauri-plugin-window-state/255d8cd6c966e38d323aed6029fcc2e391408685
   tslib:
     specifier: ^2.6.0
     version: 2.6.0
@@ -8955,6 +8958,7 @@ packages:
   /pify@4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -9500,6 +9504,7 @@ packages:
 
   /prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -9894,6 +9899,7 @@ packages:
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
     hasBin: true
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -11376,9 +11382,17 @@ packages:
     dependencies:
       tslib: 2.6.0
 
-  github.com/tauri-apps/tauri-plugin-log/fbbb126e6d7fba7a7e6772d33f99c0fb689f32b6:
-    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-log/tar.gz/fbbb126e6d7fba7a7e6772d33f99c0fb689f32b6}
+  github.com/tauri-apps/tauri-plugin-log/65b7ee991a0e7b6255053b5b1336fd84908cc904:
+    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-log/tar.gz/65b7ee991a0e7b6255053b5b1336fd84908cc904}
     name: tauri-plugin-log-api
+    version: 0.0.0
+    dependencies:
+      '@tauri-apps/api': 1.4.0
+    dev: false
+
+  github.com/tauri-apps/tauri-plugin-window-state/255d8cd6c966e38d323aed6029fcc2e391408685:
+    resolution: {tarball: https://codeload.github.com/tauri-apps/tauri-plugin-window-state/tar.gz/255d8cd6c966e38d323aed6029fcc2e391408685}
+    name: tauri-plugin-window-state-api
     version: 0.0.0
     dependencies:
       '@tauri-apps/api': 1.4.0

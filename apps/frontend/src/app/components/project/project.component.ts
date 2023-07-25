@@ -33,6 +33,7 @@ import { CombinedLogComponent } from '../combined-log/combined-log.component';
 import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order-modal.component';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { ExitModalComponent } from '../exit-modal/exit-modal.component';
+import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
 
 type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
@@ -140,7 +141,8 @@ export class ProjectComponent {
           if (close) {
             this.exitModal.show();
             await this.executeService.killAll();
-            return exit(0);
+            await saveWindowState(StateFlags.SIZE + StateFlags.POSITION + StateFlags.MAXIMIZED);
+            await exit(0);
           }
         }),
       )
