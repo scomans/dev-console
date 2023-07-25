@@ -5,6 +5,8 @@
   min-height: 19px;
   line-height: 19px;
   font-family: "MesloLGM Nerd Font Mono", monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 
   span {
     word-wrap: break-word;
