@@ -1,17 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { combineLatestWith, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { auditTime, map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
 import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
 import { RxFor } from '@rx-angular/template/for';
-import {
-  AutoSizeVirtualScrollStrategy,
-  RxVirtualFor,
-  RxVirtualScrollViewportComponent,
-} from '@rx-angular/template/experimental/virtual-scrolling';
+import { AutoSizeVirtualScrollStrategy, RxVirtualFor, RxVirtualScrollViewportComponent } from '@rx-angular/template/experimental/virtual-scrolling';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { RxIf } from '@rx-angular/template/if';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -65,6 +61,7 @@ export class LogViewerComponent {
         switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
         combineLatestWith(colors$),
         map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
+        auditTime(150),
       );
   }
 
