@@ -26,6 +26,7 @@ export class ExitModalComponent {
 
   /* ### COMPONENT ### */
   protected readonly isVisible = signal(false);
+  public readonly visible = this.isVisible.asReadonly();
 
   /* ### METHODS ### */
 

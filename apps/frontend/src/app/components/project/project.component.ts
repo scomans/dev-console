@@ -3,7 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
-import { faAlignLeft, faCircle as fasCircle, faDotCircle as fasDotCircle, faGripHorizontal, faLayerGroup, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAlignLeft,
+  faCircle as fasCircle,
+  faDotCircle as fasDotCircle,
+  faGripHorizontal,
+  faLayerGroup,
+  faPlusCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { sortBy } from 'lodash';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
@@ -138,7 +145,7 @@ export class ProjectComponent {
         takeUntilDestroyed(),
         switchMap(() => this.checkRunning()),
         switchMap(async close => {
-          if (close) {
+          if (close && !this.exitModal.visible()) {
             this.exitModal.show();
             await this.executeService.killAll();
             await saveWindowState(StateFlags.SIZE + StateFlags.POSITION + StateFlags.MAXIMIZED);
