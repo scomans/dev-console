@@ -4,6 +4,7 @@ import { createStore } from '@ngneat/elf';
 import { addEntities, deleteAllEntities, selectAllEntities, withEntities } from '@ngneat/elf-entities';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { filterNil } from '@dev-console/helpers';
 
 
 @Injectable()
@@ -52,9 +53,11 @@ export class ChannelLogRepository {
         if (stores[id]) {
           return stores[id];
         } else {
-          return this.createStore(id);
+          this.createStore(id);
+          return null;
         }
       }),
+      filterNil(),
       switchMap(store => store),
       selectAllEntities(),
     );
