@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
-import { combineLatestWith, Observable } from 'rxjs';
-import { auditTime, map, switchMap } from 'rxjs/operators';
+import { combineLatestWith, debounceTime, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
@@ -65,7 +65,7 @@ export class LogViewerComponent {
         switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
         combineLatestWith(colors$),
         map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
-        auditTime(100),
+        debounceTime(100),
       );
   }
 
