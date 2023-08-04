@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.

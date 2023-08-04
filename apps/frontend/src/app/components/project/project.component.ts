@@ -11,7 +11,7 @@ import {
   faLayerGroup,
   faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';

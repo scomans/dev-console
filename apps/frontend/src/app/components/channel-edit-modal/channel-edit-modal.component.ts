@@ -6,7 +6,7 @@ import { faCircle, faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-sv
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { RxPush } from '@rx-angular/template/push';
 import { NzFormModule } from 'ng-zorro-antd/form';

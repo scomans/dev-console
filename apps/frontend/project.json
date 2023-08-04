@@ -24,7 +24,9 @@
           "includePaths": ["apps/frontend/src/styles"]
         },
         "scripts": [],
-        "allowedCommonJsDependencies": ["ansi-to-html", "lodash"]
+        "allowedCommonJsDependencies": [
+          "ansi-to-html"
+        ]
       },
       "configurations": {
         "development": {

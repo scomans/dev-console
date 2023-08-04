@@ -11,7 +11,7 @@ import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { RxIf } from '@rx-angular/template/if';
 import { RxLet } from '@rx-angular/template/let';
 import { NzButtonModule } from 'ng-zorro-antd/button';

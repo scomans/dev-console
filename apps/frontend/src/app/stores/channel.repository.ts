@@ -15,7 +15,7 @@ import {
   withActiveId,
   withEntities,
 } from '@ngneat/elf-entities';
-import { isNil, omit, sortBy } from 'lodash';
+import { isNil, omit, sortBy } from 'lodash-es';
 import { Observable, skip, switchMap } from 'rxjs';
 import { readJsonFile, writeJsonFile } from '../helpers/tauri.helper';
 import { JsonValue } from 'type-fest';

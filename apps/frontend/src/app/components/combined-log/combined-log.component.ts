@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
-import { keyBy, mapValues } from 'lodash';
+import { keyBy, mapValues } from 'lodash-es';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
