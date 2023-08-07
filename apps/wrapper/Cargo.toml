@@ -23,6 +23,8 @@ tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", br
 log = "0.4.19"
 sentry = "0.31.5"
 sysinfo = "0.29.2"
+specta = "1.0.5"
+tauri-specta = { version = "1.0.2", features = ["typescript"] }
 
 [features]
 # by default Tauri runs in production mode

@@ -6,39 +6,43 @@ windows_subsystem = "windows"
 
 use std::collections::{HashMap, HashSet};
 
+use specta::{collect_types, Type};
 use sysinfo::{Pid, PidExt, ProcessExt, Signal, System, SystemExt};
 use tauri::{AppHandle, Manager, Window, Wry};
 use tauri::api::process::{Command, CommandEvent, Encoding};
 use tauri_plugin_log::LogTarget;
+use tauri_specta::ts;
 
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, serde::Serialize, Type)]
 struct ProcessOutput {
   channel_id: String,
   line: String,
 }
 
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, serde::Serialize, Type)]
 struct ProcessExit {
   channel_id: String,
   code: i32,
 }
 
 #[tauri::command]
+#[specta::specta]
 fn open_devtools(window: Window<Wry>) {
   window.open_devtools();
 }
 
 #[tauri::command]
-async fn kill_process(pid: usize) -> Vec<u32> {
+#[specta::specta]
+async fn kill_process(pid: u32) -> Vec<u32> {
   let mut system = System::new();
   system.refresh_all();
 
-  let p = Pid::from(pid);
+  let p = Pid::from(pid as usize);
 
   if let Some(process) = system.process(p) {
     let processes = system.processes();
 
-    let mut parent_set = HashSet::from([pid as u32]);
+    let mut parent_set = HashSet::from([pid]);
     let mut child_set: HashSet<u32> = HashSet::new();
     let mut children = Vec::from([process]);
 
@@ -70,6 +74,7 @@ async fn kill_process(pid: usize) -> Vec<u32> {
 }
 
 #[tauri::command]
+#[specta::specta]
 fn spawn_process(
   app: AppHandle<Wry>,
   channel_id: String,
@@ -123,6 +128,12 @@ fn spawn_process(
 }
 
 fn main() {
+  #[cfg(debug_assertions)]
+  ts::export(
+    collect_types![open_devtools, kill_process, spawn_process],
+    "../frontend/src/app/types/tauri.ts",
+  ).unwrap();
+
 //  #[cfg(not(debug_assertions))]
 //    let _guard = sentry::init(("", sentry::ClientOptions {
 //    release: sentry::release_name!(),

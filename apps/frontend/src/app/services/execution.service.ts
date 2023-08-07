@@ -4,7 +4,6 @@ import { BehaviorSubject, from, lastValueFrom, merge, Observable, takeWhile } fr
 import { ChannelLogRepository } from '../stores/channel-log.repository';
 import { GlobalLogsRepository } from '../stores/global-log.repository';
 import { isNil } from 'lodash-es';
-import { invoke } from '@tauri-apps/api/tauri';
 import { listenAsObservable } from '../helpers/tauri.helper';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { dirname, isAbsolute, join } from '@tauri-apps/api/path';
@@ -14,6 +13,7 @@ import { CancelToken } from '../helpers/cancel.helper';
 import { map } from 'rxjs/operators';
 import { exists, readTextFile } from '@tauri-apps/api/fs';
 import { parse as parseEnv } from 'envfile';
+import { killProcess, spawnProcess } from '../types/tauri';
 
 let index = 0;
 
@@ -172,13 +172,12 @@ export class ExecutionService {
       }
     }
 
-    const pid = await invoke<number>('spawn_process', {
-      channelId: channel.id,
-      programm: channel.executable,
-      args: channel.arguments,
+    const pid = await spawnProcess(channel.id,
+      channel.executable,
+      channel.arguments,
       cwd,
       env,
-    });
+    );
 
     if (pid === -1) {
       return;
@@ -197,7 +196,7 @@ export class ExecutionService {
   async kill(channel: Channel) {
     const pid = this.executables.get(channel.id)?.pid;
     if (!isNil(pid)) {
-      const result = await invoke<number[]>('kill_process', { pid });
+      const result = await killProcess(pid);
       this.addLogLine(
         channel.id,
         `Killed ${ result.length - 1 } child processes of ${ channel.name }`,
@@ -216,7 +215,7 @@ export class ExecutionService {
     const executables = this.executables.values();
     for (const executable of executables) {
       if (!isNil(executable.pid)) {
-        await invoke('kill_process', { pid: executable.pid });
+        await killProcess(executable.pid);
       }
     }
   }

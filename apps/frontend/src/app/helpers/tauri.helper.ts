@@ -1,7 +1,6 @@
 import { listen, TauriEvent } from '@tauri-apps/api/event';
 import { exists, FsDirOptions, FsOptions, readDir, readTextFile, removeDir, removeFile, writeTextFile } from '@tauri-apps/api/fs';
 import { Command } from '@tauri-apps/api/shell';
-import { invoke } from '@tauri-apps/api/tauri';
 import { Observable } from 'rxjs';
 import { JsonValue } from 'type-fest';
 import { SafeAny } from '@dev-console/types';
@@ -39,10 +38,6 @@ export async function removeDirIfExist(dir: string, options?: FsDirOptions): Pro
 
 export async function openDirectory(folder: string): Promise<void> {
   await new Command('open-folder', folder).execute();
-}
-
-export async function openDevtools(): Promise<void> {
-  await invoke('open_devtools');
 }
 
 export function listenAsObservable<T extends SafeAny>(event: TauriEvent | string): Observable<T> {

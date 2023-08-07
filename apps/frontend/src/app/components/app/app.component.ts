@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, HostListener } from '@angular/core';
-import { openDevtools } from '../../helpers/tauri.helper';
 import { environment } from '../../../environments/environment';
 import { RouterOutlet } from '@angular/router';
 import { UpdateNotificationComponent } from '../update-notification/update-notification.component';
+import { openDevtools } from '../../types/tauri';
 
 
 @Component({
