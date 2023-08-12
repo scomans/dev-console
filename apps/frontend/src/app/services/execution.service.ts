@@ -213,11 +213,13 @@ export class ExecutionService {
 
   async killAll() {
     const executables = this.executables.values();
-    for (const executable of executables) {
-      if (!isNil(executable.pid)) {
-        await killProcess(executable.pid);
-      }
-    }
+    await Promise.all(
+      [...executables].map(async (executable) => {
+        if (!isNil(executable.pid)) {
+          await killProcess(executable.pid);
+        }
+      }),
+    );
   }
 
 }
