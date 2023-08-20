@@ -14,8 +14,12 @@ import { map } from 'rxjs/operators';
 import { exists, readTextFile } from '@tauri-apps/api/fs';
 import { parse as parseEnv } from 'envfile';
 import { killProcess, spawnProcess } from '../types/tauri';
+import { default as Convert } from 'ansi-to-html';
+import { autoLink } from '../helpers/autolink.helper';
+import { DomSanitizer } from '@angular/platform-browser';
 
 let index = 0;
+const ansiToHtmlConverter = new Convert();
 
 export interface Executable {
   status: BehaviorSubject<ExecuteStatus>;
@@ -33,6 +37,7 @@ export class ExecutionService {
     private readonly channelLogRepository: ChannelLogRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelRepository: ChannelRepository,
+    private readonly sanitizer: DomSanitizer,
   ) {
     listenAsObservable('process-stdout')
       .pipe(takeUntilDestroyed())
@@ -57,7 +62,7 @@ export class ExecutionService {
       });
   }
 
-  private addLogLine(channelId, line: string, type: 'data' | 'error' | 'info') {
+  private addLogLine(channelId: string, line: string, type: 'data' | 'error' | 'info') {
     const executable = this.executables.get(channelId);
 
     if (!isNil(executable?.replacer)) {
@@ -69,11 +74,13 @@ export class ExecutionService {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+    line = ansiToHtmlConverter.toHtml(line);
+    line = autoLink(line, { target: '_blank' });
 
     const logEntry: LogEntryWithSource = {
       id: index++,
       timestamp: new Date().getTime(),
-      data: line,
+      data: this.sanitizer.bypassSecurityTrustHtml(line),
       type,
       source: channelId,
     };

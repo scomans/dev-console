@@ -4,8 +4,5 @@
   [class]="entry.type"
   class="log-entry"
 >
-  <div
-    [innerHTML]="entry.data | ansi | autolink:{ target:'_blank' } | safe:'html'"
-    [class]="entry.type"
-  ></div>
+  <div [innerHTML]="entry.data" [class]="entry.type"></div>
 </div>
