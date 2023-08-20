@@ -1,5 +1,5 @@
-import { fetch } from '@tauri-apps/api/http';
-import { concat, Observable, of, retry, switchMap } from 'rxjs';
+import { fetch, ResponseType } from '@tauri-apps/api/http';
+import { concat, Observable, of, retry, skip, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Command } from '@tauri-apps/api/shell';
 import { isNil } from 'lodash-es';
@@ -18,7 +18,7 @@ export function waitFor(conditions: string[]) {
     }
   }
 
-  return concat(...conditionWaiters);
+  return concat(...conditionWaiters).pipe(skip(conditionWaiters.length - 1));
 }
 
 function waitForHttp(url: string) {
@@ -38,7 +38,7 @@ function waitForHttpGet(url: string) {
     .replace('http-get:', 'http:')
     .replace('https-get:', 'https:');
   return of(1).pipe(
-    switchMap(() => fetch(url, { method: 'GET', timeout: 1 })),
+    switchMap(() => fetch(url, { method: 'GET', timeout: 1, responseType: ResponseType.Binary })),
     map(response => {
       if (!response.ok) {
         throw new Error(`HTTP request failed with status code ${ response.status }`);
