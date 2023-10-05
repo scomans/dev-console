@@ -155,7 +155,7 @@ export class ExecutionService {
     }
     this.addLogLine(
       channel.id,
-      `Starting ${ channel.name }...`,
+      `Starting ${ channel.name } >>> ${ channel.executable } ${ channel.arguments.join(' ') }`,
       'info',
     );
 
