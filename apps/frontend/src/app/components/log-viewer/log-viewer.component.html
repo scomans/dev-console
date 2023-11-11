@@ -1,6 +1,4 @@
-<div
-  class="log-viewer"
->
+<div class="log-viewer">
   <rx-virtual-scroll-viewport
     autosize
     class="w-full h-full block"
@@ -9,7 +7,11 @@
     [lock-y-offset]="100"
     (lockChanges)="updateScrollButtonVisibility($event)"
   >
-    <dc-log-entry *rxVirtualFor="let entry of log$; trackBy: 'id'" [entry]="entry" class="w-full"></dc-log-entry>
+    <dc-log-entry
+      *rxVirtualFor="let entry of log$; trackBy: 'id'; strategy: 'local'"
+      [entry]="entry"
+      class="w-full"
+    ></dc-log-entry>
   </rx-virtual-scroll-viewport>
 
   <button
