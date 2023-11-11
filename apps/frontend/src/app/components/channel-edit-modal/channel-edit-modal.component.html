@@ -1,6 +1,7 @@
 <nz-modal
   [nzVisible]="isVisible()"
   [nzTitle]="channel()  ? 'Edit Channel' : 'Add Channel'"
+  [nzMaskClosable]="false"
   [nzOkDisabled]="form.invalid$ | push"
   (nzOnOk)="done()"
   (nzOnCancel)="hide()"
