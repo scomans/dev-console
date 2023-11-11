@@ -10,52 +10,60 @@
   <ng-container *nzModalContent>
     <form nz-form [formGroup]="angularForm">
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Name</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a name">
-          <input nz-input formControlName="name" id="name" />
+          <input nz-input formControlName="name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="color">Color</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Color</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter or select a color">
-          <div class="flex justify-start items-center gap-8">
-            <dc-color-slider id="color" formControlName="color" class="flex-1"></dc-color-slider>
-            <fa-icon [icon]="fasCircle" [style.color]="form.get('color')?.value" transform="grow-15"></fa-icon>
-          </div>
+          <nz-color-picker nzShowText formControlName="color"></nz-color-picker>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executable" nzRequired>Executable</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired>Executable</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a command">
           <nz-input-group [nzSuffix]="inputExecutableTpl">
-            <input nz-input id="executable" formControlName="executable"/>
+            <input nz-input formControlName="executable" />
           </nz-input-group>
           <ng-template #inputExecutableTpl>
-            <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectExecutable(); $event.preventDefault()">
+            <button
+              nz-button
+              nzType="dashed"
+              nzShape="circle"
+              nzSize="small"
+              (click)="selectExecutable(); $event.preventDefault()"
+            >
               <fa-icon [icon]="fasFolderOpen" transform="right-1"></fa-icon>
             </button>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executeIn">Working directory</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24">Working directory</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
           <nz-input-group [nzSuffix]="inputCwdTpl">
-            <input nz-input id="executeIn" formControlName="executeIn"/>
+            <input nz-input formControlName="executeIn" />
           </nz-input-group>
           <ng-template #inputCwdTpl>
-            <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectCwd(); $event.preventDefault()">
+            <button
+              nz-button
+              nzType="dashed"
+              nzShape="circle"
+              nzSize="small"
+              (click)="selectCwd(); $event.preventDefault()"
+            >
               <fa-icon [icon]="fasFolderOpen" transform="right-1"></fa-icon>
             </button>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="arguments">Arguments</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24">Arguments</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
       <textarea
         nz-input
-        id="arguments"
         formControlName="arguments"
         placeholder="One argument per line"
         [nzAutosize]="{ minRows: 3 }"
@@ -63,56 +71,60 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envFile">.env File</nz-form-label>
+        <nz-form-label [nzSm]="8" [nzXs]="24">.env File</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
           <nz-input-group [nzSuffix]="inputEnvFileTpl">
-            <input nz-input id="envFile" formControlName="envFile"/>
+            <input nz-input formControlName="envFile" />
           </nz-input-group>
           <ng-template #inputEnvFileTpl>
-            <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectEnvFile(); $event.preventDefault()">
+            <button
+              nz-button
+              nzType="dashed"
+              nzShape="circle"
+              nzSize="small"
+              (click)="selectEnvFile(); $event.preventDefault()"
+            >
               <fa-icon [icon]="fasFolderOpen" transform="right-1"></fa-icon>
             </button>
           </ng-template>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="envVars">
+        <nz-form-label [nzSm]="8" [nzXs]="24">
           <fa-icon
             [icon]="fasInfoCircle"
             nz-popover
             [nzPopoverTitle]="'Format'"
             [nzPopoverContent]="envVarsHelpTpl"
             nzPopoverPlacement="right"
+            class="mr-2"
           ></fa-icon>
-          &nbsp;
           env Variables
         </nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
-      <textarea
-        nz-input
-        id="envVars"
-        formControlName="envVars"
-        placeholder="One key/value pair per line (key=value)"
-        [nzAutosize]="{ minRows: 3 }"
-      ></textarea>
+          <textarea
+            nz-input
+            formControlName="envVars"
+            placeholder="One key/value pair per line (key=value)"
+            [nzAutosize]="{ minRows: 3 }"
+          ></textarea>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
-        <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="waitOn">
+        <nz-form-label [nzSm]="8" [nzXs]="24">
           <fa-icon
             [icon]="fasInfoCircle"
             nz-popover
             [nzPopoverTitle]="'Examples:'"
             [nzPopoverContent]="waitOnHelpTpl"
             nzPopoverPlacement="right"
+            class="mr-2"
           ></fa-icon>
-          &nbsp;
           Wait on
         </nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24">
       <textarea
         nz-input
-        id="waitOn"
         formControlName="waitOn"
         placeholder="One url per line"
         [nzAutosize]="{ minRows: 3 }"
@@ -121,15 +133,15 @@
       </nz-form-item>
       <ng-container formGroupName="regex">
         <nz-form-item>
-          <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="prefix">Regex: Search</nz-form-label>
+          <nz-form-label [nzSm]="8" [nzXs]="24">Regex: Search</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
-            <input nz-input id="search" formControlName="search"/>
+            <input nz-input formControlName="search" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="suffix">Regex: Replace</nz-form-label>
+          <nz-form-label [nzSm]="8" [nzXs]="24">Regex: Replace</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a path">
-            <input nz-input id="replace" formControlName="replace"/>
+            <input nz-input formControlName="replace" />
           </nz-form-control>
         </nz-form-item>
       </ng-container>

@@ -83,12 +83,12 @@ dependencies:
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
+  ng-antd-color-picker:
+    specifier: 0.0.2
+    version: 0.0.2(@angular/common@16.2.8)(@angular/core@16.2.8)(@ctrl/tinycolor@3.6.1)
   ng-zorro-antd:
     specifier: 16.2.0
     version: 16.2.0(@angular/animations@16.2.8)(@angular/common@16.2.8)(@angular/core@16.2.8)(@angular/forms@16.2.8)(@angular/platform-browser@16.2.8)(@angular/router@16.2.8)(rxjs@7.8.1)
-  ngx-color:
-    specifier: 9.0.0
-    version: 9.0.0(@angular/common@16.2.8)(@angular/core@16.2.8)
   rxjs:
     specifier: 7.8.1
     version: 7.8.1
@@ -3048,11 +3048,6 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
-
-  /@ctrl/tinycolor@3.6.0:
-    resolution: {integrity: sha512-/Z3l6pXthq0JvMYdUFyX9j0MaCltlIn6mfh9jLyQwg5aPKxkyNa0PTHtU1AlFXLNk55ZuAeJRcpvq+tmLfKmaQ==}
-    engines: {node: '>=10'}
-    dev: false
 
   /@ctrl/tinycolor@3.6.1:
     resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
@@ -9613,10 +9608,6 @@ packages:
       tmpl: 1.0.5
     dev: true
 
-  /material-colors@1.2.6:
-    resolution: {integrity: sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==}
-    dev: false
-
   /mdn-data@2.0.28:
     resolution: {integrity: sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g==}
     dev: true
@@ -9919,6 +9910,19 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
+  /ng-antd-color-picker@0.0.2(@angular/common@16.2.8)(@angular/core@16.2.8)(@ctrl/tinycolor@3.6.1):
+    resolution: {integrity: sha512-jM7ekWdT32HP9Nhc/ob8Ly9fEvTwk0Idpnp7daUN/jwaMGahuVbBoQk3+8YOz6nnX+l/s1CLFHO3lLTRdbQg3Q==}
+    peerDependencies:
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
+      '@ctrl/tinycolor': ^3.6.0
+    dependencies:
+      '@angular/common': 16.2.8(@angular/core@16.2.8)(rxjs@7.8.1)
+      '@angular/core': 16.2.8(rxjs@7.8.1)(zone.js@0.13.1)
+      '@ctrl/tinycolor': 3.6.1
+      tslib: 2.6.2
+    dev: false
+
   /ng-morph@2.2.5(@angular-devkit/core@16.2.0)(@angular-devkit/schematics@16.2.0):
     resolution: {integrity: sha512-plxrHfcz7aNRcTCxS9tUxI1F5Vfx5CZAAw8NAnJCyCb41Js6S+EyPDvn2v7H2QyfZzXU1H0BAqtiRQv/rE2zTA==}
     peerDependencies:
@@ -9972,19 +9976,6 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - rxjs
-    dev: false
-
-  /ngx-color@9.0.0(@angular/common@16.2.8)(@angular/core@16.2.8):
-    resolution: {integrity: sha512-zyAFux+FRI4cACZ7g8DQQsBbNMhqmFkhtUPaxhkiVHhPzWU1iqXP8MqWH6By3guNOCch5oYrYNBWlHToklbdDg==}
-    peerDependencies:
-      '@angular/common': '>=16.0.0-0'
-      '@angular/core': '>=16.0.0-0'
-    dependencies:
-      '@angular/common': 16.2.8(@angular/core@16.2.8)(rxjs@7.8.1)
-      '@angular/core': 16.2.8(rxjs@7.8.1)(zone.js@0.13.1)
-      '@ctrl/tinycolor': 3.6.0
-      material-colors: 1.2.6
-      tslib: 2.6.2
     dev: false
 
   /nice-napi@1.0.2:

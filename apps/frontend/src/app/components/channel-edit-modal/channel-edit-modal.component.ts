@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from
 import { FormGroup as AngularFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
-import { faCircle, faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
@@ -15,7 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { ColorSliderComponent } from '../color-slider/color-slider.component';
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 
 @Component({
   selector: 'dc-channel-edit-modal',
@@ -24,10 +24,10 @@ import { ColorSliderComponent } from '../color-slider/color-slider.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ColorSliderComponent,
     FontAwesomeModule,
     NzButtonModule,
     NzCheckboxModule,
+    NzColorPickerModule,
     NzFormModule,
     NzInputModule,
     NzModalModule,
@@ -38,7 +38,6 @@ import { ColorSliderComponent } from '../color-slider/color-slider.component';
 })
 export class ChannelEditModalComponent {
 
-  readonly fasCircle = faCircle;
   readonly fasFolderOpen = faFolderOpen;
   readonly fasInfoCircle = faInfoCircle;
 
