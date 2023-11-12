@@ -3,7 +3,7 @@ import { FormGroup as AngularFormGroup, ReactiveFormsModule, Validators } from '
 import { Project } from '@dev-console/types';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { open } from '@tauri-apps/api/dialog';
+import { save } from '@tauri-apps/api/dialog';
 import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { RxPush } from '@rx-angular/template/push';
@@ -56,7 +56,7 @@ export class ProjectEditModalComponent {
   }
 
   async selectFile() {
-    const file = await open({
+    const file = await save({
       filters: [{
         name: 'DevConsole project file',
         extensions: ['json'],
