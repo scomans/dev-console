@@ -1,5 +1,17 @@
-import { AfterContentInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { delay, fromEvent, of, Subscription } from 'rxjs';
+import {
+  AfterContentInit,
+  DestroyRef,
+  Directive,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
+import { fromEvent } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { waitForElement } from '../helpers/dom.helper';
+import { auditTime } from 'rxjs/operators';
 
 @Directive({
   selector: '[autoScroll]',
@@ -14,29 +26,40 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
   private readonly nativeElement: HTMLElement;
   private _isLocked: boolean = false;
   private mutationObserver: MutationObserver;
-  private scrollSubscription: Subscription;
 
-  constructor(element: ElementRef) {
+  constructor(
+    element: ElementRef,
+    private readonly destroyRef: DestroyRef,
+  ) {
     this.nativeElement = element.nativeElement;
-  }
-
-  public ngAfterContentInit(): void {
     this.mutationObserver = new MutationObserver(() => {
       if (!this._isLocked) {
         this.scrollDown();
       }
     });
-    this.mutationObserver.observe(this.nativeElement.firstChild.firstChild, {
-      attributes: true,
-    });
-    this.scrollSubscription = fromEvent(this.nativeElement.firstChild, 'scroll', { passive: true })
-      .subscribe(() => this.scrollHandler());
-    of(null).pipe(delay(0)).subscribe(() => this.scrollDown());
+
+  }
+
+  public async ngAfterContentInit() {
+    const scollElement = await waitForElement('.rx-virtual-scroll-element');
+    if (scollElement) {
+      fromEvent(scollElement, 'scroll', { passive: true })
+        .pipe(takeUntilDestroyed(this.destroyRef), auditTime(100))
+        .subscribe(() => this.scrollHandler());
+    } else {
+      console.warn('scollElement not found');
+    }
+
+    const sentinelElement = await waitForElement('.rx-virtual-scroll__sentinel');
+    if (sentinelElement) {
+      this.mutationObserver.observe(sentinelElement, { attributes: true });
+    } else {
+      console.warn('sentinelElement not found');
+    }
   }
 
   public ngOnDestroy(): void {
     this.mutationObserver.disconnect();
-    this.scrollSubscription.unsubscribe();
   }
 
   public isLocked(): boolean {

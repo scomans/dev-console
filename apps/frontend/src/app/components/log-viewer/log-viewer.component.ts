@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
-import { combineLatestWith, debounceTime, Observable } from 'rxjs';
+import { combineLatestWith, debounceTime, Observable, Subject, take } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
@@ -17,6 +17,7 @@ import { RxIf } from '@rx-angular/template/if';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class LogViewerComponent {
   protected readonly fasDownLong = faDownLong;
 
   protected readonly showScrollDownButton = signal(false);
+  protected readonly itemsRendered = new Subject<void>();
   protected readonly log$: Observable<LogEntryWithSourceAndColor[]>;
 
   @ViewChild(RxVirtualScrollViewportComponent) viewport: RxVirtualScrollViewportComponent;
@@ -54,6 +56,9 @@ export class LogViewerComponent {
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelLogRepository: ChannelLogRepository,
   ) {
+    this.itemsRendered
+      .pipe(takeUntilDestroyed(), take(1))
+      .subscribe(() => this.scrollDown());
     const colors$: Observable<Record<string, string>> = this.channelRepository.channels$.pipe(
       map(channels => channels
         .map(c => ({ id: c.id, color: c.color }))
