@@ -21,6 +21,7 @@ import { readJsonFile, writeJsonFile } from '../helpers/tauri.helper';
 import { JsonValue } from 'type-fest';
 import { filterNil } from '@dev-console/helpers';
 import { map } from 'rxjs/operators';
+import { exists } from '@tauri-apps/api/fs';
 
 
 const PROJECT_FILE_VERSION = 1;
@@ -71,6 +72,10 @@ export class ChannelRepository {
   }
 
   public async loadChannels(file: string) {
+    if (await exists(file) === false) {
+      this.store.update(setEntities([]));
+      return;
+    }
     const projectContent = await readJsonFile(file);
     let channels: Channel[];
     if (!isNil(projectContent['storage'])) {

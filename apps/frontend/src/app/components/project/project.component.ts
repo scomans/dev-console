@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
@@ -100,16 +100,12 @@ export class ProjectComponent {
   @ViewChild(ExitModalComponent, { static: true }) exitModal: ExitModalComponent;
 
   constructor(
-    private readonly cdr: ChangeDetectorRef,
     private readonly projectRepository: ProjectRepository,
     private readonly activatedRoute: ActivatedRoute,
     private readonly modal: NzModalService,
-    private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecutionService,
     private readonly router: Router,
     private readonly channelRepository: ChannelRepository,
-    private readonly channelLogRepository: ChannelLogRepository,
-    private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly titleService: Title,
   ) {
     this.project$ = this.activatedRoute.queryParams.pipe(
@@ -118,7 +114,7 @@ export class ProjectComponent {
         if (!project) {
           return this.router.navigate(['/']);
         }
-        titleService.setTitle(`${ project.name } - DevConsole`);
+        this.titleService.setTitle(`${ project.name } - DevConsole`);
       }),
       share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
     );

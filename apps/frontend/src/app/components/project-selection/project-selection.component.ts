@@ -74,7 +74,6 @@ export class ProjectSelectionComponent implements OnInit {
   }
 
   async openProject(project: Project) {
-    console.log('OPEN', project);
     await this.router.navigate(['/project'], { queryParams: { projectId: project.id } });
   }
 
