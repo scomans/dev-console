@@ -1,16 +1,10 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
 import { enableElfProdMode } from '@ngneat/elf';
 import { open } from '@tauri-apps/api/shell';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/components/app/app.component';
-import { APP_ROUTES } from './app/app.routing';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { NzNotificationModule } from 'ng-zorro-antd/notification';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { enableProdMode } from '@angular/core';
 
 if (environment.production) {
   enableProdMode();
@@ -60,13 +54,4 @@ navigation.addEventListener('navigate', (event) => {
   }
 });
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(APP_ROUTES),
-    provideHttpClient(),
-    provideAnimations(),
-    importProvidersFrom([NzNotificationModule]),
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: NZ_I18N, useValue: en_US },
-  ],
-}).catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
