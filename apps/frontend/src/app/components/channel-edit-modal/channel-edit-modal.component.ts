@@ -8,7 +8,6 @@ import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
 import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import { RxPush } from '@rx-angular/template/push';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -16,6 +15,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
+import { isFormInvalid } from '../../helpers/form.helper';
 
 @Component({
   selector: 'dc-channel-edit-modal',
@@ -33,18 +33,17 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
     NzModalModule,
     NzPopoverModule,
     ReactiveFormsModule,
-    RxPush,
   ],
 })
 export class ChannelEditModalComponent {
 
-  readonly fasFolderOpen = faFolderOpen;
-  readonly fasInfoCircle = faInfoCircle;
+  protected readonly fasFolderOpen = faFolderOpen;
+  protected readonly fasInfoCircle = faInfoCircle;
 
-  isVisible = signal(false);
-  channel = signal<Channel | null>(null);
+  protected readonly isVisible = signal(false);
+  protected readonly channel = signal<Channel | null>(null);
 
-  form = new FormGroup({
+  protected readonly form = new FormGroup({
     name: new FormControl<string>(null, Validators.required),
     color: new FormControl<string>('#ffffff', Validators.required),
     executeIn: new FormControl<string>(),
@@ -59,7 +58,8 @@ export class ChannelEditModalComponent {
     }),
     waitOn: new FormControl<string>(),
   });
-  angularForm: AngularFormGroup = this.form;
+  protected readonly angularForm: AngularFormGroup = this.form;
+  protected readonly isFormInvalid = isFormInvalid(this.form);
 
   @Output() dcResult = new EventEmitter<Omit<Channel, 'index'>>();
 
