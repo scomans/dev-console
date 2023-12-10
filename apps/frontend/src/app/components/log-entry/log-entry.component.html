@@ -1,8 +1,9 @@
 <div
-  [style.border-color]="borderColor"
-  [style.background-color]="backgroundColor"
-  [class]="entry.type"
+  *ngIf="logEntry() as logEntry"
+  [style.border-color]="borderColor()"
+  [style.background-color]="backgroundColor()"
+  [class]="logEntry.type"
   class="log-entry"
 >
-  <div [innerHTML]="entry.data" [class]="entry.type"></div>
+  <div [innerHTML]="logEntry.data" [class]="logEntry.type"></div>
 </div>
