@@ -1,23 +1,22 @@
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
-import { combineLatestWith, debounceTime, Observable, Subject, take } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Signal, signal, ViewChild } from '@angular/core';
+import { combineLatestWith, Observable, Subject, take } from 'rxjs';
+import { map, switchMap, throttleTime } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
 import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
-import { RxFor } from '@rx-angular/template/for';
 import {
   AutoSizeVirtualScrollStrategy,
   RxVirtualFor,
   RxVirtualScrollViewportComponent,
 } from '@rx-angular/template/experimental/virtual-scrolling';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { RxIf } from '@rx-angular/template/if';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { NgIf } from '@angular/common';
 
 
 @Component({
@@ -28,15 +27,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     AutoScrollDirective,
-    LogEntryComponent,
-    RxFor,
-    RxVirtualFor,
     AutoSizeVirtualScrollStrategy,
-    RxVirtualScrollViewportComponent,
-    NzButtonModule,
-    RxIf,
     FontAwesomeModule,
+    LogEntryComponent,
+    NgIf,
+    NzButtonModule,
     NzToolTipModule,
+    RxVirtualFor,
+    RxVirtualScrollViewportComponent,
   ],
 })
 export class LogViewerComponent {
@@ -45,8 +43,8 @@ export class LogViewerComponent {
   protected readonly fasDownLong = faDownLong;
 
   protected readonly showScrollDownButton = signal(false);
+  protected readonly logEntries: Signal<LogEntryWithSourceAndColor[]>;
   protected readonly itemsRendered = new Subject<void>();
-  protected readonly log$: Observable<LogEntryWithSourceAndColor[]>;
 
   @ViewChild(RxVirtualScrollViewportComponent) viewport: RxVirtualScrollViewportComponent;
   @ViewChild(AutoScrollDirective) autoScroll: AutoScrollDirective;
@@ -65,17 +63,20 @@ export class LogViewerComponent {
         .reduce((a, v) => ({ ...a, [v.id]: v.color }), {}),
       ),
     );
-    this.log$ = this.channelRepository.activeChannelId$
-      .pipe(
-        switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
-        combineLatestWith(colors$),
-        map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
-        debounceTime(100),
-      );
+    this.logEntries = toSignal(
+      this.channelRepository.activeChannelId$
+        .pipe(
+          switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
+          combineLatestWith(colors$),
+          map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
+          throttleTime(50),
+        ),
+      { initialValue: [] },
+    );
   }
 
   updateScrollButtonVisibility(show: boolean) {
-    this.showScrollDownButton.update(() => show);
+    this.showScrollDownButton.set(show);
   }
 
   scrollDown() {

@@ -8,14 +8,14 @@
     (lockChanges)="updateScrollButtonVisibility($event)"
   >
     <dc-log-entry
-      *rxVirtualFor="let entry of log$; trackBy: 'id'; strategy: 'local'; renderCallback: itemsRendered"
+      *rxVirtualFor="let entry of logEntries(); trackBy: 'id'; strategy: 'local'; renderCallback: itemsRendered"
       [entry]="entry"
       class="w-full"
     ></dc-log-entry>
   </rx-virtual-scroll-viewport>
 
   <button
-    *rxIf="showScrollDownButton()"
+    *ngIf="showScrollDownButton()"
     nz-button
     nzShape="circle"
     class="scroll-down-button"
