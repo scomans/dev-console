@@ -23,18 +23,20 @@
         class="log-menu"
       >
         <li nz-menu-item [nzSelected]="!selectedChannelId">
-          <a title (click)="openChannel(null)">
+          <a (click)="openChannel(null)">
             <fa-icon
               [icon]="fasLayerGroup" class="anticon"
             ></fa-icon>
             All Channels
           </a>
         </li>
-        <li nz-submenu [nzOpen]="true">
-          <span title>
-            <fa-icon [icon]="fasAlignLeft" class="anticon" transform="up-2"></fa-icon>
-            Channels
-          </span>
+        <li nz-submenu [nzOpen]="true" [nzTitle]="channelsTitleTpl">
+          <ng-template #channelsTitleTpl>
+            <div class="flex items-center gap-2">
+              <fa-icon [icon]="fasAlignLeft" class="anticon" transform="right-2"></fa-icon>
+              Channels
+            </div>
+          </ng-template>
           <ul>
             <li
               *rxFor="let channel of channels$"
