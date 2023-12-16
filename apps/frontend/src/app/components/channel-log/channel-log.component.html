@@ -1,15 +1,15 @@
-<ng-container *rxIf="channel$; let channel">
+@if (channel();as channel) {
   <div class="actions-bar">
-    <div *rxLet="status$; let status;">
-      <button nz-button class="start" (click)="run(channel)" [disabled]="status !== ExecuteStatus.STOPPED">
+    <div>
+      <button nz-button class="start" (click)="run(channel)" [disabled]="status() !== ExecuteStatus.STOPPED">
         <fa-icon [icon]="fasPlay"></fa-icon>
         Run
       </button>
-      <button nz-button class="restart" (click)="restart(channel)" [disabled]="status === ExecuteStatus.STOPPED">
+      <button nz-button class="restart" (click)="restart(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
         <fa-icon [icon]="fasRedo"></fa-icon>
         Restart
       </button>
-      <button nz-button nzDanger (click)="stop(channel)" [disabled]="status === ExecuteStatus.STOPPED">
+      <button nz-button nzDanger (click)="stop(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
         <fa-icon [icon]="fasStop"></fa-icon>
         Stop
       </button>
@@ -41,7 +41,6 @@
   </div>
 
   <dc-log-viewer></dc-log-viewer>
-
-</ng-container>
+}
 
 <dc-channel-edit-modal #channelEditModal (dcResult)="updateChannel($event)"></dc-channel-edit-modal>

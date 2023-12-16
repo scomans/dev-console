@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NgOptimizedImage } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { getTauriVersion, getVersion } from '@tauri-apps/api/app';
 import { arch, type } from '@tauri-apps/api/os';
 import { environment } from '../../../environments/environment';
-import { RxPush } from '@rx-angular/template/push';
 import { LicensesModalComponent } from '../licenses-modal/licenses-modal.component';
 
 @Component({
@@ -15,11 +14,10 @@ import { LicensesModalComponent } from '../licenses-modal/licenses-modal.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AsyncPipe,
     LicensesModalComponent,
-    NgOptimizedImage,
     NzButtonModule,
     NzModalModule,
-    RxPush,
   ],
 })
 export class AboutModalComponent {

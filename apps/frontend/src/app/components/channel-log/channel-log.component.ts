@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
 import { filterNil, sleep } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faEraser, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
@@ -12,13 +11,12 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'lodash-es';
-import { RxIf } from '@rx-angular/template/if';
-import { RxLet } from '@rx-angular/template/let';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -33,48 +31,48 @@ import { LogViewerComponent } from '../log-viewer/log-viewer.component';
     LogViewerComponent,
     NzButtonModule,
     NzPopconfirmModule,
-    RxIf,
-    RxLet,
   ],
 })
-export class ChannelLogComponent implements OnInit {
+export class ChannelLogComponent {
 
-  readonly farQuestionCircle = faQuestionCircle;
-  readonly fasTrash = faTrash;
-  readonly fasPlay = faPlay;
-  readonly fasRedo = faRedo;
-  readonly fasStop = faStop;
-  readonly fasEraser = faEraser;
-  readonly fasEdit = faEdit;
+  protected readonly farQuestionCircle = faQuestionCircle;
+  protected readonly fasTrash = faTrash;
+  protected readonly fasPlay = faPlay;
+  protected readonly fasRedo = faRedo;
+  protected readonly fasStop = faStop;
+  protected readonly fasEraser = faEraser;
+  protected readonly fasEdit = faEdit;
 
-  ExecuteStatus = ExecuteStatus;
+  protected readonly ExecuteStatus = ExecuteStatus;
 
-  status$: Observable<ExecuteStatus>;
-  channel$: Observable<Channel>;
-  logs$: Observable<LogEntryWithSource[]>;
+  protected readonly status: Signal<ExecuteStatus>;
+  protected readonly channel: Signal<Channel | undefined>;
+  protected readonly logs: Signal<LogEntryWithSource[]>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly projectRepository: ProjectRepository,
-    private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecutionService,
     private readonly channelRepository: ChannelRepository,
     private readonly channelLogRepository: ChannelLogRepository,
     private readonly globalLogsRepository: GlobalLogsRepository,
   ) {
-  }
-
-  ngOnInit() {
-    this.channel$ = this.channelRepository.activeChannel$;
-    this.status$ = this.channelRepository.activeChannelId$
-      .pipe(
-        filterNil(),
-        switchMap(id => this.executeService.selectStatus(id)),
-      );
-    this.logs$ = this.channelRepository.activeChannelId$
-      .pipe(
-        switchMap(id => this.channelLogRepository.selectLogsByChannelId(id)),
-      );
+    this.channel = toSignal(this.channelRepository.activeChannel$, { initialValue: undefined });
+    this.status = toSignal(
+      this.channelRepository.activeChannelId$
+        .pipe(
+          filterNil(),
+          switchMap(id => this.executeService.selectStatus(id)),
+        ),
+      { initialValue: ExecuteStatus.STOPPED },
+    );
+    this.logs = toSignal(
+      this.channelRepository.activeChannelId$
+        .pipe(
+          switchMap(id => this.channelLogRepository.selectLogsByChannelId(id)),
+        ),
+      { initialValue: [] },
+    );
   }
 
   deleteChannel(channel: Channel) {

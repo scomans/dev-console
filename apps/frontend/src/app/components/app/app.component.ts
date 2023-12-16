@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { ChangeDetectionStrategy, Component, HostListener, isDevMode } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UpdateNotificationComponent } from '../update-notification/update-notification.component';
 import { openDevtools } from '../../types/tauri';
@@ -24,7 +23,7 @@ export class AppComponent {
   }
 
   constructor() {
-    if (!environment.production) {
+    if (!isDevMode()) {
       void openDevtools();
     }
   }

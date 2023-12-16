@@ -1,33 +1,29 @@
-<ng-container *rxLet="anythingExecuting$; let anythingExecuting">
-  <div class="actions-bar">
-    <div>
-      <button
-        *rxLet="anythingNotExecuting$; let anythingNotExecuting"
-        nz-button
-        class="start"
-        [disabled]="!anythingNotExecuting"
-        (click)="runAll()"
-      >
-        <fa-icon [icon]="fasPlay"></fa-icon>
-        Run All
-      </button>
-      <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting">
-        <fa-icon [icon]="fasRedo"></fa-icon>
-        Restart All
-      </button>
-      <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting">
-        <fa-icon [icon]="fasStop"></fa-icon>
-        Stop All
-      </button>
-    </div>
-    <div>
-      <button nz-button (click)="clearAll()">
-        <fa-icon [icon]="fasEraser"></fa-icon>
-        Clear
-      </button>
-    </div>
+<div class="actions-bar">
+  <div>
+    <button
+      nz-button
+      class="start"
+      [disabled]="!anythingNotExecuting()"
+      (click)="runAll()"
+    >
+      <fa-icon [icon]="fasPlay"></fa-icon>
+      Run All
+    </button>
+    <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting()">
+      <fa-icon [icon]="fasRedo"></fa-icon>
+      Restart All
+    </button>
+    <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting()">
+      <fa-icon [icon]="fasStop"></fa-icon>
+      Stop All
+    </button>
   </div>
+  <div>
+    <button nz-button (click)="clearAll()">
+      <fa-icon [icon]="fasEraser"></fa-icon>
+      Clear
+    </button>
+  </div>
+</div>
 
-  <dc-log-viewer></dc-log-viewer>
-
-</ng-container>
+<dc-log-viewer></dc-log-viewer>

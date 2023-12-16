@@ -14,15 +14,16 @@
     ></dc-log-entry>
   </rx-virtual-scroll-viewport>
 
-  <button
-    *ngIf="showScrollDownButton()"
-    nz-button
-    nzShape="circle"
-    class="scroll-down-button"
-    nz-tooltip="Scroll down"
-    nzTooltipPlacement="left"
-    (click)="scrollDown()"
-  >
-    <fa-icon [icon]="fasDownLong"></fa-icon>
-  </button>
+  @if (showScrollDownButton()) {
+    <button
+      nz-button
+      nzShape="circle"
+      class="scroll-down-button"
+      nz-tooltip="Scroll down"
+      nzTooltipPlacement="left"
+      (click)="scrollDown()"
+    >
+      <fa-icon [icon]="fasDownLong"></fa-icon>
+    </button>
+  }
 </div>

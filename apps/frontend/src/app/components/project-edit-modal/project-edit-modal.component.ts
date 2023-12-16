@@ -6,11 +6,11 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { save } from '@tauri-apps/api/dialog';
 import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import { RxPush } from '@rx-angular/template/push';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { isFormInvalid } from '../../helpers/form.helper';
 
 @Component({
   selector: 'dc-project-edit-modal',
@@ -25,22 +25,22 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzInputModule,
     NzModalModule,
     ReactiveFormsModule,
-    RxPush,
   ],
 })
 export class ProjectEditModalComponent {
 
-  readonly fasFolderOpen = faFolderOpen;
+  protected readonly fasFolderOpen = faFolderOpen;
 
-  form = new FormGroup({
+  protected readonly project = signal<undefined | string>(undefined);
+  protected readonly isVisible = signal(false);
+
+  protected readonly form = new FormGroup({
     id: new FormControl(null),
     name: new FormControl(null, Validators.required),
     file: new FormControl(null, Validators.required),
   });
-  angularForm: AngularFormGroup = this.form;
-
-  project = signal<undefined | string>(undefined);
-  isVisible = signal(false);
+  protected readonly angularForm: AngularFormGroup = this.form;
+  protected readonly isFormInvalid = isFormInvalid(this.form);
 
   @Output() dcResult = new EventEmitter<Project>();
 

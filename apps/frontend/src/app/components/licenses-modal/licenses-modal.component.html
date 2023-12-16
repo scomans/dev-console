@@ -6,7 +6,7 @@
   (nzOnCancel)="close()"
 >
   <ng-container *nzModalContent>
-    <div *rxLet="licenses$; let licenses" [innerHTML]="licenses"></div>
+    <div [innerHTML]="licenses$ | async"></div>
   </ng-container>
 
   <div *nzModalFooter>

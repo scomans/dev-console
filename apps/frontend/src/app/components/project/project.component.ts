@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, Signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
@@ -21,19 +21,16 @@ import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { UiRepository } from '../../stores/ui.repository';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { exit } from '@tauri-apps/api/process';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { RxIf } from '@rx-angular/template/if';
-import { NgOptimizedImage, NgSwitch, NgSwitchCase } from '@angular/common';
-import { RxLet } from '@rx-angular/template/let';
+import { AsyncPipe, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RxFor } from '@rx-angular/template/for';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { ChannelLogComponent } from '../channel-log/channel-log.component';
 import { CombinedLogComponent } from '../combined-log/combined-log.component';
@@ -58,22 +55,19 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     UiRepository,
   ],
   imports: [
+    AsyncPipe,
     ChannelEditModalComponent,
     ChannelLogComponent,
     ChannelOrderModalComponent,
     CombinedLogComponent,
     ExitModalComponent,
     FontAwesomeModule,
-    NgOptimizedImage,
     NgSwitch,
     NgSwitchCase,
     NzButtonModule,
     NzLayoutModule,
     NzMenuModule,
     NzToolTipModule,
-    RxFor,
-    RxIf,
-    RxLet,
   ],
 })
 export class ProjectComponent {
@@ -92,10 +86,11 @@ export class ProjectComponent {
   /* ### ENUMS ### */
   protected readonly ExecuteStatus = ExecuteStatus;
 
-  channels$: Observable<ChannelWithStatus[]>;
-  selectedChannelId$: Observable<string>;
-  project$: Observable<Project>;
-  allLogs$: Observable<boolean>;
+  /* ### COMPONENT ### */
+  protected readonly channels: Signal<ChannelWithStatus[]>;
+  protected readonly selectedChannelId: Signal<string | undefined>;
+  protected readonly project: Signal<Project | undefined>;
+  protected readonly allLogs: Signal<boolean>;
 
   @ViewChild(ExitModalComponent, { static: true }) exitModal: ExitModalComponent;
 
@@ -108,33 +103,40 @@ export class ProjectComponent {
     private readonly channelRepository: ChannelRepository,
     private readonly titleService: Title,
   ) {
-    this.project$ = this.activatedRoute.queryParams.pipe(
-      switchMap(params => this.projectRepository.selectProject(params['projectId'])),
-      tap(project => {
-        if (!project) {
-          return this.router.navigate(['/']);
-        }
-        this.titleService.setTitle(`${ project.name } - DevConsole`);
-      }),
-      share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
+    this.project = toSignal(
+      this.activatedRoute.queryParams.pipe(
+        switchMap(params => this.projectRepository.selectProject(params['projectId'])),
+        tap(project => {
+          if (!project) {
+            return this.router.navigate(['/']);
+          }
+          this.titleService.setTitle(`${ project.name } - DevConsole`);
+        }),
+        share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
+      ),
+      { initialValue: undefined },
     );
-    this.selectedChannelId$ = this.channelRepository.activeChannelId$;
-    this.allLogs$ = this.selectedChannelId$.pipe(
-      map(activeId => !activeId),
+    this.selectedChannelId = toSignal(
+      this.channelRepository.activeChannelId$,
+      { initialValue: undefined },
     );
-    this.channels$ = this.channelRepository.channels$.pipe(
-      map(channels => sortBy(channels, 'index')),
-      map(channels => channels.map(channel => ({
-        ...channel,
-        status$: this.executeService.selectStatus(channel.id),
-      }))),
+    this.allLogs = computed(() => !this.selectedChannelId());
+    this.channels = toSignal(
+      this.channelRepository.channels$.pipe(
+        map(channels => sortBy(channels, 'index')),
+        map(channels => channels.map(channel => ({
+          ...channel,
+          status$: this.executeService.selectStatus(channel.id),
+        }))),
+      ),
+      { initialValue: [] },
     );
-    this.project$.pipe(
-      takeUntilDestroyed(),
+    toObservable(this.project).pipe(
       switchMap(project => concat(
         this.channelRepository.loadChannels(project.file),
         this.channelRepository.persistChannels(project.file),
       )),
+      takeUntilDestroyed(),
     ).subscribe();
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
@@ -204,5 +206,4 @@ export class ProjectComponent {
       this.channelRepository.updateChannel(update.id, { index: update.index });
     }
   }
-
 }

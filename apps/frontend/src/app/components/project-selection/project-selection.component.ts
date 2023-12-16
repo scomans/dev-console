@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { uuidV4 } from '@dev-console/helpers';
 import { Project } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Observable, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { ProjectRepository } from '../../stores/project.repository';
 import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { exit } from '@tauri-apps/api/process';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -19,7 +19,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
-import { RxFor } from '@rx-angular/template/for';
 import { NgOptimizedImage } from '@angular/common';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
 import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
@@ -40,7 +39,6 @@ import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
     NzPopconfirmModule,
     NzToolTipModule,
     ProjectEditModalComponent,
-    RxFor,
     SmartTrimPipe,
   ],
 })
@@ -50,21 +48,21 @@ export class ProjectSelectionComponent implements OnInit {
   protected readonly fasTrash = faTrash;
   protected readonly farQuestionCircle = faQuestionCircle;
 
-  projects$: Observable<Project[]>;
+  projects: Signal<Project[]>;
 
   constructor(
     private readonly titleService: Title,
     private readonly projectRepository: ProjectRepository,
     private readonly router: Router,
   ) {
-    this.projects$ = this.projectRepository.projects$;
+    this.projects = toSignal(this.projectRepository.projects$, { initialValue: [] });
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
-        takeUntilDestroyed(),
         switchMap(async () => {
           await saveWindowState(StateFlags.SIZE + StateFlags.POSITION + StateFlags.MAXIMIZED);
           await exit(0);
         }),
+        takeUntilDestroyed(),
       )
       .subscribe();
   }

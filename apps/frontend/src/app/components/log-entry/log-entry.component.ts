@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, Input, Signal, signal } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
-import { NgIf } from '@angular/common';
 import { isNil } from 'lodash-es';
 
 
@@ -12,14 +11,11 @@ export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
   styleUrls: ['./log-entry.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    NgIf,
-  ],
 })
 export class LogEntryComponent {
-  borderColor: Signal<string>;
-  backgroundColor: Signal<string>;
-  logEntry = signal<LogEntryWithSourceAndColor | undefined>(undefined);
+  protected readonly borderColor: Signal<string>;
+  protected readonly backgroundColor: Signal<string>;
+  protected readonly logEntry = signal<LogEntryWithSourceAndColor | undefined>(undefined);
 
   @Input() set entry(value: LogEntryWithSourceAndColor) {
     this.logEntry.set(value);

@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
 import { keyBy, mapValues } from 'lodash-es';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
@@ -12,10 +11,10 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { sleep } from '@dev-console/helpers';
-import { RxLet } from '@rx-angular/template/let';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -28,26 +27,23 @@ import { LogViewerComponent } from '../log-viewer/log-viewer.component';
     FontAwesomeModule,
     LogViewerComponent,
     NzButtonModule,
-    RxLet,
   ],
 })
 export class CombinedLogComponent {
 
-  readonly fasPlay = faPlay;
-  readonly fasRedo = faRedo;
-  readonly fasStop = faStop;
-  readonly fasEraser = faEraser;
+  protected readonly fasPlay = faPlay;
+  protected readonly fasRedo = faRedo;
+  protected readonly fasStop = faStop;
+  protected readonly fasEraser = faEraser;
 
-  channels$: Observable<Channel[]>;
-  channelColors$: Observable<Record<string, string>>;
-  executingStatuses$: Observable<ExecuteStatus[]>;
-  anythingExecuting$: Observable<boolean>;
-  anythingNotExecuting$: Observable<boolean>;
+  protected readonly channels$: Observable<Channel[]>;
+  protected readonly channelColors$: Observable<Record<string, string>>;
+  protected readonly executingStatuses$: Observable<ExecuteStatus[]>;
+  protected readonly anythingExecuting: Signal<boolean>;
+  protected readonly anythingNotExecuting: Signal<boolean>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
-    private readonly modal: NzModalService,
-    private readonly viewContainerRef: ViewContainerRef,
     private readonly executeService: ExecutionService,
     private readonly globalLogsRepository: GlobalLogsRepository,
     private readonly channelRepository: ChannelRepository,
@@ -63,11 +59,17 @@ export class CombinedLogComponent {
     this.executingStatuses$ = this.channels$.pipe(
       switchMap(channels => combineLatest(channels.map(channel => this.executeService.selectStatus(channel.id)))),
     );
-    this.anythingExecuting$ = this.executingStatuses$.pipe(
-      map(statuses => !!statuses.find(status => status === ExecuteStatus.RUNNING || status === ExecuteStatus.WAITING)),
+    this.anythingExecuting = toSignal(
+      this.executingStatuses$.pipe(
+        map(statuses => !!statuses.find(status => status === ExecuteStatus.RUNNING || status === ExecuteStatus.WAITING)),
+      ),
+      { initialValue: false },
     );
-    this.anythingNotExecuting$ = this.executingStatuses$.pipe(
-      map(statuses => statuses.includes(ExecuteStatus.STOPPED)),
+    this.anythingNotExecuting = toSignal(
+      this.executingStatuses$.pipe(
+        map(statuses => statuses.includes(ExecuteStatus.STOPPED)),
+      ),
+      { initialValue: false },
     );
   }
 

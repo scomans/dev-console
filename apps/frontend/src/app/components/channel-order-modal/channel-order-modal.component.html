@@ -8,16 +8,13 @@
 >
   <ng-container *nzModalContent>
     <div class="channels" cdkDropList (cdkDropListDropped)="drop($event)">
-      <div
-        *rxFor="let channel of channels"
-        class="channel"
-        cdkDrag
-        [cdkDragData]="channel"
-      >
-        <div *cdkDragPlaceholder class="channel placeholder"></div>
-        <fa-icon [icon]="fasGripLines"></fa-icon>
-        <span>{{ channel.name }}</span>
-      </div>
+      @for (channel of channels();track channel.id) {
+        <div class="channel" cdkDrag [cdkDragData]="channel">
+          <div *cdkDragPlaceholder class="channel placeholder"></div>
+          <fa-icon [icon]="fasGripLines"></fa-icon>
+          <span>{{ channel.name }}</span>
+        </div>
+      }
     </div>
   </ng-container>
 

@@ -16,7 +16,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NgIf } from '@angular/common';
 
 
 @Component({
@@ -30,7 +29,6 @@ import { NgIf } from '@angular/common';
     AutoSizeVirtualScrollStrategy,
     FontAwesomeModule,
     LogEntryComponent,
-    NgIf,
     NzButtonModule,
     NzToolTipModule,
     RxVirtualFor,

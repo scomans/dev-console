@@ -4,7 +4,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { catchError, Observable, of, startWith } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { RxLet } from '@rx-angular/template/let';
+import { AsyncPipe } from '@angular/common';
 
 
 const additionalLicenses = '' +
@@ -30,9 +30,9 @@ const additionalLicenses = '' +
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    AsyncPipe,
     NzButtonModule,
     NzModalModule,
-    RxLet,
   ],
 })
 export class LicensesModalComponent {
