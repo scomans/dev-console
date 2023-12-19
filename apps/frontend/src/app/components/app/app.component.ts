@@ -23,7 +23,7 @@ export class AppComponent {
   }
 
   constructor() {
-    if (!isDevMode()) {
+    if (isDevMode()) {
       void openDevtools();
     }
   }
