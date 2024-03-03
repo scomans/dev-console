@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, Input, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, Signal } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
 import { isNil } from 'lodash-es';
 
@@ -15,16 +15,13 @@ export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
 export class LogEntryComponent {
   protected readonly borderColor: Signal<string>;
   protected readonly backgroundColor: Signal<string>;
-  protected readonly logEntry = signal<LogEntryWithSourceAndColor | undefined>(undefined);
+  entry = input.required<LogEntryWithSourceAndColor>();
 
-  @Input() set entry(value: LogEntryWithSourceAndColor) {
-    this.logEntry.set(value);
-  }
 
   constructor() {
-    this.borderColor = computed(() => this.logEntry().color || 'transparent');
+    this.borderColor = computed(() => this.entry().color || 'transparent');
     this.backgroundColor = computed(() => {
-      const entry = this.logEntry();
+      const entry = this.entry();
       if (isNil(entry)) {
         return 'transparent';
       }
