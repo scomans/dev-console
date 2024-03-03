@@ -88,13 +88,6 @@
       ],
       "cache": true
     },
-    "lint": {
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json"
-      ],
-      "cache": true
-    },
     "test": {
       "inputs": [
         "default",
@@ -103,7 +96,11 @@
       ],
       "cache": true
     },
-    "e2e": {
+    "@nx/eslint:lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ],
       "cache": true
     }
   },
