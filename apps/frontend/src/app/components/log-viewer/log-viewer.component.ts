@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Signal, signal, ViewChild } from '@angular/core';
 import { combineLatestWith, Observable, Subject, take } from 'rxjs';
-import { map, switchMap, throttleTime } from 'rxjs/operators';
+import { auditTime, map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
@@ -69,7 +69,7 @@ export class LogViewerComponent {
           switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
           combineLatestWith(colors$),
           map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
-          throttleTime(50),
+          auditTime(50),
         ),
       { initialValue: [] },
     );
