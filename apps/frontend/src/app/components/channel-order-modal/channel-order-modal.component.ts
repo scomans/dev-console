@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from
 import { Channel } from '@dev-console/types';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 
@@ -17,7 +17,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     CdkDrag,
     CdkDragPlaceholder,
     CdkDropList,
-    FontAwesomeModule,
+    FaIconComponent,
     NzButtonModule,
     NzModalModule,
   ],

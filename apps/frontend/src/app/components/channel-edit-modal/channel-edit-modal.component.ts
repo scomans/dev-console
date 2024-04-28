@@ -10,7 +10,7 @@ import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -24,7 +24,7 @@ import { isFormInvalid } from '../../helpers/form.helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    FontAwesomeModule,
+    FaIconComponent,
     NzButtonModule,
     NzCheckboxModule,
     NzColorPickerModule,

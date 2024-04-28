@@ -12,7 +12,7 @@ import {
   RxVirtualScrollViewportComponent,
 } from '@rx-angular/template/experimental/virtual-scrolling';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -28,7 +28,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
   imports: [
     AutoScrollDirective,
     AutoSizeVirtualScrollStrategy,
-    FontAwesomeModule,
+    FaIconComponent,
     LogEntryComponent,
     NzButtonModule,
     NzEmptyModule,

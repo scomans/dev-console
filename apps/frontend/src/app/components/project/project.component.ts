@@ -30,7 +30,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { AsyncPipe, NgSwitch, NgSwitchCase } from '@angular/common';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { ChannelLogComponent } from '../channel-log/channel-log.component';
 import { CombinedLogComponent } from '../combined-log/combined-log.component';
@@ -61,7 +61,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     ChannelOrderModalComponent,
     CombinedLogComponent,
     ExitModalComponent,
-    FontAwesomeModule,
+    FaIconComponent,
     NgSwitch,
     NgSwitchCase,
     NzButtonModule,

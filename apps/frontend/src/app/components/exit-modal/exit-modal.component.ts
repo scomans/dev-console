@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -13,9 +13,9 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    FaIconComponent,
     NzButtonModule,
     NzModalModule,
-    FontAwesomeModule,
     NzResultModule,
   ],
 })

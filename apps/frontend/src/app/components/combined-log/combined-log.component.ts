@@ -12,7 +12,7 @@ import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { sleep } from '@dev-console/helpers';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -24,7 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    FontAwesomeModule,
+    FaIconComponent,
     LogViewerComponent,
     NzButtonModule,
   ],

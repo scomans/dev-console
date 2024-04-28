@@ -12,7 +12,7 @@ import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'lodash-es';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
@@ -27,7 +27,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     ChannelEditModalComponent,
-    FontAwesomeModule,
+    FaIconComponent,
     LogViewerComponent,
     NzButtonModule,
     NzPopconfirmModule,

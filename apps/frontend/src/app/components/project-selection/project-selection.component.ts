@@ -15,7 +15,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
@@ -31,7 +31,7 @@ import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
   standalone: true,
   imports: [
     AboutModalComponent,
-    FontAwesomeModule,
+    FaIconComponent,
     NgOptimizedImage,
     NzButtonModule,
     NzCardModule,

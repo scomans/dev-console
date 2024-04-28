@@ -8,7 +8,7 @@ import { isNil } from 'lodash-es';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { isFormInvalid } from '../../helpers/form.helper';
 
@@ -19,7 +19,7 @@ import { isFormInvalid } from '../../helpers/form.helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    FontAwesomeModule,
+    FaIconComponent,
     NzButtonModule,
     NzFormModule,
     NzInputModule,
