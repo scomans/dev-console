@@ -7,7 +7,7 @@ import { openDevtools } from '../../types/tauri';
 @Component({
   selector: 'dc-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

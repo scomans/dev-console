@@ -22,7 +22,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 @Component({
   selector: 'dc-log-viewer',
   templateUrl: './log-viewer.component.html',
-  styleUrls: ['./log-viewer.component.scss'],
+  styleUrl: './log-viewer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

@@ -15,7 +15,7 @@ import { isFormInvalid } from '../../helpers/form.helper';
 @Component({
   selector: 'dc-project-edit-modal',
   templateUrl: './project-edit-modal.component.html',
-  styleUrls: ['./project-edit-modal.component.scss'],
+  styleUrl: './project-edit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -50,8 +50,8 @@ export class ProjectEditModalComponent {
   }
 
   hide() {
-    this.isVisible.update(() => false);
-    this.project.update(() => undefined);
+    this.isVisible.set(false);
+    this.project.set(undefined);
     this.form.reset();
   }
 
@@ -77,7 +77,7 @@ export class ProjectEditModalComponent {
         name: project.name,
       });
     }
-    this.isVisible.update(() => true);
+    this.isVisible.set(true);
   }
 
 }

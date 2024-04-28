@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'dc-update-notification',
   templateUrl: './update-notification.component.html',
-  styleUrls: ['./update-notification.component.scss'],
+  styleUrl: './update-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

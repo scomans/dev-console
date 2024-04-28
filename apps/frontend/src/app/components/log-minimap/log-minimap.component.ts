@@ -23,7 +23,7 @@ export interface Rect {
 @Component({
   selector: 'dc-log-minimap',
   templateUrl: './log-minimap.component.html',
-  styleUrls: ['./log-minimap.component.scss'],
+  styleUrl: './log-minimap.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogMinimapComponent implements OnInit, OnDestroy {

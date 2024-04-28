@@ -27,7 +27,7 @@ import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { exit } from '@tauri-apps/api/process';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { AsyncPipe, NgSwitch, NgSwitchCase } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -44,7 +44,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 @Component({
   selector: 'dc-project',
   templateUrl: './project.component.html',
-  styleUrls: ['./project.component.scss'],
+  styleUrl: './project.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   providers: [
@@ -62,8 +62,6 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     CombinedLogComponent,
     ExitModalComponent,
     FaIconComponent,
-    NgSwitch,
-    NgSwitchCase,
     NzButtonModule,
     NzLayoutModule,
     NzMenuModule,

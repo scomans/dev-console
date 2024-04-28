@@ -20,7 +20,7 @@ import { isFormInvalid } from '../../helpers/form.helper';
 @Component({
   selector: 'dc-channel-edit-modal',
   templateUrl: './channel-edit-modal.component.html',
-  styleUrls: ['./channel-edit-modal.component.scss'],
+  styleUrl: './channel-edit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -36,7 +36,6 @@ import { isFormInvalid } from '../../helpers/form.helper';
   ],
 })
 export class ChannelEditModalComponent {
-
   protected readonly fasFolderOpen = faFolderOpen;
   protected readonly fasInfoCircle = faInfoCircle;
 
@@ -86,12 +85,12 @@ export class ChannelEditModalComponent {
     this.angularForm.reset({
       color: '#ffffff',
     });
-    this.channel.update(() => null);
-    this.isVisible.update(() => false);
+    this.channel.set(null);
+    this.isVisible.set(false);
   }
 
   show(channel?: Channel) {
-    this.channel.update(() => channel ?? null);
+    this.channel.set(channel ?? null);
     if (channel) {
       this.form.patchValue({
         ...channel,
@@ -101,7 +100,7 @@ export class ChannelEditModalComponent {
         envVars: channel.envVars ? stringifyEnv(channel.envVars) : null,
       });
     }
-    this.isVisible.update(() => true);
+    this.isVisible.set(true);
   }
 
   async selectCwd() {

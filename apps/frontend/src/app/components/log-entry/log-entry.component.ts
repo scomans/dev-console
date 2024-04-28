@@ -8,7 +8,7 @@ export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
 @Component({
   selector: 'dc-log-entry',
   templateUrl: './log-entry.component.html',
-  styleUrls: ['./log-entry.component.scss'],
+  styleUrl: './log-entry.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })

@@ -10,7 +10,7 @@ import { LicensesModalComponent } from '../licenses-modal/licenses-modal.compone
 @Component({
   selector: 'dc-about-modal',
   templateUrl: './about-modal.component.html',
-  styleUrls: ['./about-modal.component.scss'],
+  styleUrl: './about-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -29,10 +29,10 @@ export class AboutModalComponent {
   protected readonly arch = arch();
 
   close(): void {
-    this.isVisible.update(() => false);
+    this.isVisible.set(false);
   }
 
   show() {
-    this.isVisible.update(() => true);
+    this.isVisible.set(true);
   }
 }

@@ -26,7 +26,7 @@ const additionalLicenses = '' +
 @Component({
   selector: 'dc-licenses-modal',
   templateUrl: './licenses-modal.component.html',
-  styleUrls: ['./licenses-modal.component.scss'],
+  styleUrl: './licenses-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -54,10 +54,10 @@ export class LicensesModalComponent {
   }
 
   close(): void {
-    this.isVisible.update(() => false);
+    this.isVisible.set(false);
   }
 
   show() {
-    this.isVisible.update(() => true);
+    this.isVisible.set(true);
   }
 }

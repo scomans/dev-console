@@ -10,7 +10,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 @Component({
   selector: 'dc-channel-order-modal',
   templateUrl: './channel-order-modal.component.html',
-  styleUrls: ['./channel-order-modal.component.scss'],
+  styleUrl: './channel-order-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

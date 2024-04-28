@@ -9,7 +9,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 @Component({
   selector: 'dc-exit-modal',
   templateUrl: './exit-modal.component.html',
-  styleUrls: ['./exit-modal.component.scss'],
+  styleUrl: './exit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -31,7 +31,7 @@ export class ExitModalComponent {
   /* ### METHODS ### */
 
   show() {
-    this.isVisible.update(() => true);
+    this.isVisible.set(true);
   }
 
 }

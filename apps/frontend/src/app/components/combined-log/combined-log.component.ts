@@ -20,7 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'dc-combined-log',
   templateUrl: './combined-log.component.html',
-  styleUrls: ['./combined-log.component.scss'],
+  styleUrl: './combined-log.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

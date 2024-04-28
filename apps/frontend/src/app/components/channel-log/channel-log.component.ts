@@ -22,7 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'dc-channel-log',
   templateUrl: './channel-log.component.html',
-  styleUrls: ['./channel-log.component.scss'],
+  styleUrl: './channel-log.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

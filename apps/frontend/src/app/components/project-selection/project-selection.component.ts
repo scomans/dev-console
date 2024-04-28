@@ -26,7 +26,7 @@ import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
 @Component({
   selector: 'dc-project-selection',
   templateUrl: './project-selection.component.html',
-  styleUrls: ['./project-selection.component.scss'],
+  styleUrl: './project-selection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
