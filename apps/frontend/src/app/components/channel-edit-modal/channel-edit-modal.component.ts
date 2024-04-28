@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
 import { FormGroup as AngularFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
@@ -44,13 +44,13 @@ export class ChannelEditModalComponent {
 
   protected readonly form = new FormGroup({
     name: new FormControl<string>(null, Validators.required),
-    color: new FormControl<string>('#ffffff', Validators.required),
+    color: new FormControl<string>('#ffffff', { validators: [Validators.required], nonNullable: true }),
     executeIn: new FormControl<string>(),
     executable: new FormControl<string>(null, Validators.required),
     envFile: new FormControl<string>(),
     envVars: new FormControl<string>(),
     arguments: new FormControl<string>(),
-    active: new FormControl(true, Validators.required),
+    active: new FormControl(true, { validators: [Validators.required], nonNullable: true }),
     regex: new FormGroup({
       search: new FormControl<string>(),
       replace: new FormControl<string>(),
@@ -60,7 +60,7 @@ export class ChannelEditModalComponent {
   protected readonly angularForm: AngularFormGroup = this.form;
   protected readonly isFormInvalid = isFormInvalid(this.form);
 
-  @Output() dcResult = new EventEmitter<Omit<Channel, 'index'>>();
+  dcResult = output<Omit<Channel, 'index'>>();
 
   done() {
     const data = this.form.getRawValue();
@@ -127,5 +127,4 @@ export class ChannelEditModalComponent {
       });
     }
   }
-
 }
