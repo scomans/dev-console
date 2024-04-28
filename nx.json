@@ -1,7 +1,4 @@
 {
-  "affected": {
-    "defaultBase": "main"
-  },
   "cli": {
     "packageManager": "pnpm"
   },
@@ -104,5 +101,6 @@
       "cache": true
     }
   },
-  "parallel": 1
+  "parallel": 1,
+  "defaultBase": "main"
 }
