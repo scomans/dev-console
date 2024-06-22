@@ -1,10 +1,10 @@
-const { Octokit } = require('@octokit/rest');
-const { gt, prerelease } = require('semver');
-const { join, resolve, dirname, basename } = require('path');
-const simpleGit = require('simple-git');
-const { readFile } = require('fs/promises');
+import { Octokit } from '@octokit/rest';
+import { gt, prerelease } from 'semver';
+import { basename, join, resolve } from 'path';
+import simpleGit from 'simple-git';
+import { readFile } from 'fs/promises';
+import packageJson from '../../package.json' assert { type: 'json' };
 
-const VERSION = require('../../package.json').version;
 const TOKEN = process.env.GITHUB_TOKEN;
 const LANGUAGE = 'en-US';
 
@@ -14,8 +14,8 @@ const repo = 'dev-console';
 
 const octokit = new Octokit({ auth: TOKEN });
 
-
-const assetPath = resolve(join(dirname(__filename), '../..', 'dist/apps/wrapper/release/bundle'));
+const __dirname = import.meta.dirname;
+const assetPath = resolve(join(__dirname, '../..', 'dist/apps/wrapper/release/bundle'));
 
 async function main() {
   try {
@@ -23,8 +23,8 @@ async function main() {
     const latestRelease = result.data[0];
     const releaseVersion = latestRelease.tag_name;
 
-    if (gt(VERSION, releaseVersion)) {
-      const pre = !!prerelease(VERSION);
+    if (gt(packageJson.version, releaseVersion)) {
+      const pre = !!prerelease(packageJson.version);
       const commits = await simpleGit().log({ from: 'HEAD', to: releaseVersion });
       let body = '## Changelog\n\n';
       body += commits.all
@@ -32,21 +32,21 @@ async function main() {
         .reverse()
         .join('\n');
       body += '\n\n## Download\n\n';
-      body += `* [DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip](https://github.com/${owner}/${repo}/releases/download/${VERSION}/DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip)`;
+      body += `* [DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip](https://github.com/${owner}/${repo}/releases/download/${packageJson.version}/DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip)`;
 
       const newRelease = await octokit.repos.createRelease({
         owner,
         repo,
-        tag_name: VERSION,
-        name: `v${VERSION}`,
+        tag_name: packageJson.version,
+        name: `v${packageJson.version}`,
         prerelease: pre,
         draft: true,
         body,
       });
 
-      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip`));
-      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip.sig`));
-      await generateLatestJson(join(assetPath, 'msi', `DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip.sig`), VERSION, newRelease);
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip`));
+      await uploadAsset(newRelease, join(assetPath, 'msi', `DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip.sig`));
+      await generateLatestJson(join(assetPath, 'msi', `DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip.sig`), packageJson.version, newRelease);
 
       await octokit.repos.updateRelease({
         owner,
@@ -55,7 +55,7 @@ async function main() {
         draft: false,
       });
 
-      console.log(`DID ${pre ? 'PRE' : ''}RELEASE`, VERSION);
+      console.log(`DID ${pre ? 'PRE' : ''}RELEASE`, packageJson.version);
     }
   } catch (err) {
     console.error(err);
@@ -78,7 +78,7 @@ async function generateLatestJson(path, version, release) {
     platforms: {
       'windows-x86_64': {
         signature,
-        'url': `https://github.com/${owner}/${repo}/releases/download/${version}/DevConsole_${VERSION}_x64_${LANGUAGE}.msi.zip`,
+        'url': `https://github.com/${owner}/${repo}/releases/download/${version}/DevConsole_${packageJson.version}_x64_${LANGUAGE}.msi.zip`,
       },
     },
   };

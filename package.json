@@ -9,7 +9,7 @@
     "start": "nx serve",
     "build": "nx build",
     "update-version": "node tools/ci/update-version.js",
-    "release": "node tools/ci/release.js"
+    "release": "node tools/ci/release.mjs"
   },
   "pnpm": {
     "auto-install-peers": true,
