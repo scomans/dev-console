@@ -11,7 +11,6 @@ import {
   faLayerGroup,
   faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { sortBy } from 'lodash-es';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { concat, Observable, ReplaySubject, share, switchMap } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -121,7 +120,7 @@ export class ProjectComponent {
     this.allLogs = computed(() => !this.selectedChannelId());
     this.channels = toSignal(
       this.channelRepository.channels$.pipe(
-        map(channels => sortBy(channels, 'index')),
+        map(channels => channels.sort((a, b) => a.index - b.index)),
         map(channels => channels.map(channel => ({
           ...channel,
           status$: this.executeService.selectStatus(channel.id),

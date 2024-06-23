@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, Signal } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 
 
 export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }

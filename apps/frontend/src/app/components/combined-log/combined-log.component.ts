@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
-import { keyBy, mapValues } from 'lodash-es';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
@@ -10,7 +9,7 @@ import { ChannelRepository } from '../../stores/channel.repository';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
-import { sleep } from '@dev-console/helpers';
+import { mapBy, mapObjectValues, sleep } from '@dev-console/helpers';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
@@ -54,7 +53,7 @@ export class CombinedLogComponent {
       map(channels => channels.filter(channel => channel.active)),
     );
     this.channelColors$ = this.channels$.pipe(
-      map(channels => mapValues(keyBy(channels, 'id'), 'color')),
+      map(channels => mapObjectValues(mapBy(channels, 'id'), 'color')),
     );
     this.executingStatuses$ = this.channels$.pipe(
       switchMap(channels => combineLatest(channels.map(channel => this.executeService.selectStatus(channel.id)))),

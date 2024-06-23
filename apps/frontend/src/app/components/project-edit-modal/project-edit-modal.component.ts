@@ -4,7 +4,7 @@ import { Project } from '@dev-console/types';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { save } from '@tauri-apps/api/dialog';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';

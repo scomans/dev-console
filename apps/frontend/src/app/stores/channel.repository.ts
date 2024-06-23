@@ -15,7 +15,7 @@ import {
   withActiveId,
   withEntities,
 } from '@ngneat/elf-entities';
-import { isNil, omit, sortBy } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 import { Observable, skip, switchMap } from 'rxjs';
 import { readJsonFile, writeJsonFile } from '../helpers/tauri.helper';
 import { JsonValue } from 'type-fest';
@@ -80,9 +80,7 @@ export class ChannelRepository {
     let channels: Channel[];
     if (!isNil(projectContent['storage'])) {
       // legacy support
-      channels = Object
-        .values(projectContent['storage']['channel']['entities'])
-        .map((channel: Channel) => omit(channel, 'stopSignal'));
+      channels = Object.values(projectContent['storage']['channel']['entities']);
     } else {
       channels = projectContent['channels'];
     }
@@ -94,7 +92,7 @@ export class ChannelRepository {
       selectAllEntities(),
       skip(1),
       filterNil(),
-      map(channels => sortBy(channels, 'index')),
+      map(channels => channels.sort((a, b) => a.index - b.index)),
       switchMap(channels => writeJsonFile(file, { version: PROJECT_FILE_VERSION, channels } as unknown as JsonValue)),
     );
   }

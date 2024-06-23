@@ -2,7 +2,7 @@ import { fetch, ResponseType } from '@tauri-apps/api/http';
 import { concat, Observable, of, retry, skip, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Command } from '@tauri-apps/api/shell';
-import { isNil } from 'lodash-es';
+import { isNil } from 'es-toolkit';
 
 
 export function waitFor(conditions: string[]) {
