@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
-import { createStore } from '@ngneat/elf';
-import { addEntities, deleteAllEntities, selectAllEntities, withEntities } from '@ngneat/elf-entities';
+import { createStore, emitOnce } from '@ngneat/elf';
+import { addEntities, deleteAllEntities, deleteEntities, getEntitiesCount, getEntitiesIds, selectAllEntities, withEntities } from '@ngneat/elf-entities';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { filterNil } from '@dev-console/helpers';
@@ -68,8 +68,14 @@ export class ChannelLogRepository {
     if (!channelStore) {
       channelStore = this.createStore(line.source);
     }
-    channelStore.update(
-      addEntities(line),
-    );
+    emitOnce(() => {
+      channelStore.update(addEntities(line));
+      const lineCount = channelStore.query(getEntitiesCount());
+      if (lineCount > 1000) {
+        const entityIds = channelStore.query(getEntitiesIds());
+        const idsToDelete = entityIds.slice(0, entityIds.length - 1000);
+        channelStore.update(deleteEntities(idsToDelete));
+      }
+    });
   }
 }
