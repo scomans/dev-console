@@ -19,7 +19,7 @@ import { isNil } from 'es-toolkit';
 import { Observable, skip, switchMap } from 'rxjs';
 import { readJsonFile, writeJsonFile } from '../helpers/tauri.helper';
 import { JsonValue } from 'type-fest';
-import { filterNil } from '@dev-console/helpers';
+import { filterNil, mapBy } from '@dev-console/helpers';
 import { map } from 'rxjs/operators';
 import { exists } from '@tauri-apps/api/fs';
 
@@ -48,6 +48,16 @@ export class ChannelRepository {
   updateChannel(id: string, channel: Partial<Channel>) {
     this.store.update(
       updateEntities(id, channel),
+    );
+  }
+
+  updateChannels(channels: (Partial<Channel> & { id: string })[]) {
+    const mappedChannels = mapBy(channels, 'id');
+    this.store.update(
+      updateEntities(
+        Object.keys(mappedChannels),
+        channel => ({ ...channel, ...mappedChannels[channel.id] }),
+      ),
     );
   }
 

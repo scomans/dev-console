@@ -199,8 +199,6 @@ export class ProjectComponent {
   }
 
   changeOrder(updates: { id: string; index: number }[]) {
-    for (const update of updates) {
-      this.channelRepository.updateChannel(update.id, { index: update.index });
-    }
+    this.channelRepository.updateChannels(updates);
   }
 }

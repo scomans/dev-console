@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
 import { Channel } from '@dev-console/types';
 import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -23,13 +23,12 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   ],
 })
 export class ChannelOrderModalComponent {
+  protected readonly fasGripLines = faGripLines;
 
-  readonly fasGripLines = faGripLines;
+  protected readonly channels = signal<Channel[]>([]);
+  protected readonly isVisible = signal(false);
 
-  channels = signal<Channel[]>([]);
-  isVisible = signal(false);
-
-  @Output() dcResult = new EventEmitter<{ id: string, index: number }[]>();
+  public readonly dcResult = output<{ id: string, index: number }[]>();
 
   drop(event: CdkDragDrop<string[]>) {
     const channels = this.channels();
@@ -38,8 +37,8 @@ export class ChannelOrderModalComponent {
   }
 
   done() {
-    this.close();
     this.dcResult.emit(this.channels().map((value, index) => ({ id: value.id, index })));
+    this.close();
   }
 
   close(): void {
