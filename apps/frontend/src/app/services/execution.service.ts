@@ -55,7 +55,7 @@ export class ExecutionService {
         const channel = this.channelRepository.getChannel(channelId);
         this.addLogLine(
           channelId,
-          `${ channel.name } exited with exit code: ${ Number(code) }`,
+          `ℹ️ ${ channel.name } exited with exit code: ${ Number(code) }`,
           'info',
         );
         this.executables.get(channel.id)?.status.next(ExecuteStatus.STOPPED);
@@ -125,7 +125,7 @@ export class ExecutionService {
       this.executables.get(channel.id).status.next(ExecuteStatus.WAITING);
       this.addLogLine(
         channel.id,
-        `${ channel.name } is waiting to start...`,
+        `ℹ️ ${ channel.name } is waiting to start...`,
         'info',
       );
       const waiter = CancelToken.build();
@@ -144,7 +144,7 @@ export class ExecutionService {
         if (waiter.token.isCancelled()) {
           this.addLogLine(
             channel.id,
-            `Waiting stopped for ${ channel.name }`,
+            `ℹ️ Waiting stopped for ${ channel.name }`,
             'info',
           );
           this.executables.get(channel.id).status.next(ExecuteStatus.STOPPED);
@@ -155,7 +155,7 @@ export class ExecutionService {
     }
     this.addLogLine(
       channel.id,
-      `Starting ${ channel.name } >>> ${ channel.executable } ${ channel.arguments.join(' ') }`,
+      `ℹ️ Starting ${ channel.name } >>> ${ channel.executable } ${ channel.arguments.join(' ') }`,
       'info',
     );
 
@@ -195,7 +195,7 @@ export class ExecutionService {
     executable.pid = pid;
     this.addLogLine(
       channel.id,
-      `${ channel.name } started with PID: ${ pid }`,
+      `ℹ️ ${ channel.name } started with PID: ${ pid }`,
       'info',
     );
   }
@@ -206,7 +206,7 @@ export class ExecutionService {
       const result = await killProcess(pid);
       this.addLogLine(
         channel.id,
-        `Killed ${ result.length - 1 } child processes of ${ channel.name }`,
+        `ℹ️ Killed ${ result.length - 1 } child processes of ${ channel.name }`,
         'info',
       );
       return result; // TODO check result
@@ -228,5 +228,4 @@ export class ExecutionService {
       }),
     );
   }
-
 }
