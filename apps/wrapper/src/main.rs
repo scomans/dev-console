@@ -144,7 +144,6 @@ fn main() {
 //  }));
 
   tauri::Builder::default()
-    .plugin(tauri_plugin_window_state::Builder::default().build())
     .plugin(tauri_plugin_log::Builder::default().targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview]).build())
     .setup(|_app| {
       // let release = sentry::release_name!().unwrap();
