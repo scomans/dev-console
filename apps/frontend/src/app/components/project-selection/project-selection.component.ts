@@ -21,7 +21,6 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { NgOptimizedImage } from '@angular/common';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
-import { saveWindowState, StateFlags } from 'tauri-plugin-window-state-api';
 
 @Component({
   selector: 'dc-project-selection',
@@ -59,7 +58,6 @@ export class ProjectSelectionComponent implements OnInit {
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
         switchMap(async () => {
-          await saveWindowState(StateFlags.SIZE + StateFlags.POSITION + StateFlags.MAXIMIZED);
           await exit(0);
         }),
         takeUntilDestroyed(),

@@ -47,7 +47,6 @@
     "ng-zorro-antd": "18.1.1",
     "rxjs": "7.8.1",
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log",
-    "tauri-plugin-window-state-api": "github:tauri-apps/tauri-plugin-window-state#v1",
     "tslib": "^2.7.0",
     "uuid": "^10.0.0",
     "zone.js": "0.14.7"
