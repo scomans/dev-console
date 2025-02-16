@@ -178,6 +178,7 @@ export class ExecutionService {
         env = parseEnv(envFileContent);
       }
     }
+    env = { ...env, ...channel.envVars };
 
     const pid = await spawnProcess(channel.id,
       channel.executable,
