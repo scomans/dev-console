@@ -1,6 +1,5 @@
 import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
-import { enableElfProdMode } from '@ngneat/elf';
 import { open } from '@tauri-apps/api/shell';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/components/app/app.component';
@@ -8,7 +7,6 @@ import { enableProdMode } from '@angular/core';
 
 if (environment.production) {
   enableProdMode();
-  enableElfProdMode();
 
   document.addEventListener(
     'contextmenu',

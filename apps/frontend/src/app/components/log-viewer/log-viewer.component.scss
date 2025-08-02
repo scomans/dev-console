@@ -1,3 +1,7 @@
+.log-viewer-container {
+  @apply flex flex-col h-full w-full gap-2;
+}
+
 .log-viewer {
   @apply h-full overflow-auto relative;
 
@@ -6,5 +10,29 @@
 
   .scroll-down-button {
     @apply absolute bottom-4 right-4;
+  }
+
+  nz-spin ::ng-deep .ant-spin-container {
+    @apply h-full;
+  }
+}
+
+.actions-bar {
+  @apply flex justify-between items-center;
+
+  button {
+    &:not(:first-child) {
+      margin-left: 5px;
+    }
+
+    &.start:not([disabled]) {
+      color: #98c379;
+      border-color: #98c379;
+    }
+
+    &.restart:not([disabled]) {
+      color: #1890ff;
+      border-color: #1890ff;
+    }
   }
 }

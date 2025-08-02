@@ -25,13 +25,12 @@ import { NzContentComponent, NzLayoutComponent, NzSiderComponent } from 'ng-zorr
 import { AsyncPipe } from '@angular/common';
 import { NzMenuDirective, NzMenuItemComponent, NzSubMenuComponent } from 'ng-zorro-antd/menu';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { ChannelLogComponent } from '../channel-log/channel-log.component';
-import { CombinedLogComponent } from '../combined-log/combined-log.component';
 import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order-modal.component';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { ExitModalComponent } from '../exit-modal/exit-modal.component';
 import { v4 } from 'uuid';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
+import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 
 type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
@@ -48,11 +47,10 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   imports: [
     AsyncPipe,
     ChannelEditModalComponent,
-    ChannelLogComponent,
     ChannelOrderModalComponent,
-    CombinedLogComponent,
     ExitModalComponent,
     FaIconComponent,
+    LogViewerComponent,
     NzContentComponent,
     NzLayoutComponent,
     NzMenuDirective,

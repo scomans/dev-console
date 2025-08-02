@@ -1,7 +1,6 @@
 import { AfterContentInit, DestroyRef, Directive, ElementRef, input, OnDestroy, output } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { waitForElement } from '../helpers/dom.helper';
 import { auditTime } from 'rxjs/operators';
 
 @Directive({
@@ -10,6 +9,7 @@ import { auditTime } from 'rxjs/operators';
 })
 export class AutoScrollDirective implements AfterContentInit, OnDestroy {
   public readonly lockYOffset = input(10);
+  public readonly initialScroll = input(true);
   public readonly lockChanges = output<boolean>();
 
   private readonly nativeElement: HTMLElement;
@@ -26,24 +26,16 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
         this.scrollDown();
       }
     });
-
   }
 
   public async ngAfterContentInit() {
-    const scollElement = await waitForElement('.rx-virtual-scroll-element');
-    if (scollElement) {
-      fromEvent(scollElement, 'scroll', { passive: true })
-        .pipe(takeUntilDestroyed(this.destroyRef), auditTime(100))
-        .subscribe(() => this.scrollHandler());
-    } else {
-      console.warn('scollElement not found');
-    }
+    fromEvent(this.nativeElement, 'scroll', { passive: true })
+      .pipe(takeUntilDestroyed(this.destroyRef), auditTime(100))
+      .subscribe(() => this.scrollHandler());
 
-    const sentinelElement = await waitForElement('.rx-virtual-scroll__sentinel');
-    if (sentinelElement) {
-      this.mutationObserver.observe(sentinelElement, { attributes: true });
-    } else {
-      console.warn('sentinelElement not found');
+    this.mutationObserver.observe(this.nativeElement, { childList: true });
+    if (this.initialScroll()) {
+      this.scrollDown();
     }
   }
 
@@ -56,12 +48,12 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
   }
 
   public scrollDown(): void {
-    const el = (this.nativeElement.firstChild as HTMLDivElement);
+    const el = (this.nativeElement as HTMLDivElement);
     el.scrollTop = el.scrollHeight;
   }
 
   private scrollHandler(): void {
-    const el = (this.nativeElement.firstChild as HTMLDivElement);
+    const el = (this.nativeElement as HTMLDivElement);
     const scrollFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
     const oldLock = this._isLocked;
     this._isLocked = scrollFromBottom > this.lockYOffset();
@@ -69,5 +61,4 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
       this.lockChanges.emit(this._isLocked);
     }
   }
-
 }

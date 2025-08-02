@@ -86,9 +86,7 @@ nz-content {
 }
 
 .inner-content {
-  padding: 10px;
-  height: 100%;
-  overflow: hidden;
+  @apply h-full overflow-hidden;
 }
 
 .log-menu {

@@ -1,35 +1,108 @@
-<div class="log-viewer">
-  @if (logEntries().length > 0) {
-    <rx-virtual-scroll-viewport
-      autosize
-      class="w-full h-full block"
-      [tombstoneSize]="19"
-      autoScroll
-      [lockYOffset]="100"
-      (lockChanges)="updateScrollButtonVisibility($event)"
-    >
-      <dc-log-entry
-        *rxVirtualFor="let entry of logEntries(); trackBy: 'id'; strategy: 'local'; renderCallback: itemsRendered"
-        [entry]="entry"
-        class="w-full"
-      ></dc-log-entry>
-    </rx-virtual-scroll-viewport>
-  } @else {
-    <div class="w-full h-full flex items-center justify-center">
-      <nz-empty nzNotFoundContent="No log entries yet..." />
-    </div>
-  }
+<div class="log-viewer-container">
+  <div class="actions-bar">
+    @if (channel(); as channel) {
+      <div>
+        <button nz-button class="start" (click)="run(channel)" [disabled]="status() !== ExecuteStatus.STOPPED">
+          <fa-icon [icon]="fasPlay" class="pr-1" />
+          Run
+        </button>
+        <button nz-button class="restart" (click)="restart(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
+          <fa-icon [icon]="fasRedo" class="pr-1" />
+          Restart
+        </button>
+        <button nz-button nzDanger (click)="stop(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
+          <fa-icon [icon]="fasStop" class="pr-1" />
+          Stop
+        </button>
+      </div>
+      <div>
+        <button nz-button (click)="clearLogs(channel)">
+          <fa-icon [icon]="fasEraser" />
+          Clear
+        </button>
+        <button nz-button (click)="channelEditModal.show(channel)">
+          <fa-icon [icon]="fasEdit" />
+          Edit
+        </button>
+        <button
+          nz-button
+          nz-popconfirm
+          nzPopconfirmTitle="Are you sure delete this channel?"
+          nzPopconfirmPlacement="bottom"
+          [nzIcon]="iconTpl"
+          (nzOnConfirm)="deleteChannel(channel)"
+        >
+          <ng-template #iconTpl>
+            <fa-icon [icon]="farQuestionCircle" style="color: red; position: absolute; top: 4px;" />
+          </ng-template>
+          <fa-icon [icon]="fasTrash" />
+          Delete
+        </button>
+      </div>
+    } @else {
+      <div>
+        <button
+          nz-button
+          class="start"
+          [disabled]="!anythingNotExecuting()"
+          (click)="run()"
+        >
+          <fa-icon [icon]="fasPlay" class="pr-1" />
+          Run All
+        </button>
+        <button nz-button class="restart" (click)="restart()" [disabled]="!anythingExecuting()">
+          <fa-icon [icon]="fasRedo" class="pr-1" />
+          Restart All
+        </button>
+        <button nz-button nzDanger (click)="stop()" [disabled]="!anythingExecuting()">
+          <fa-icon [icon]="fasStop" class="pr-1" />
+          Stop All
+        </button>
+      </div>
+      <div>
+        <button nz-button (click)="clearLogs()">
+          <fa-icon [icon]="fasEraser" class="pr-1" />
+          Clear
+        </button>
+      </div>
+    }
+  </div>
 
-  @if (showScrollDownButton()) {
-    <button
-      nz-button
-      nzShape="circle"
-      class="scroll-down-button"
-      nz-tooltip="Scroll down"
-      nzTooltipPlacement="left"
-      (click)="scrollDown()"
-    >
-      <fa-icon [icon]="fasDownLong" />
-    </button>
-  }
+  <div class="log-viewer">
+    @let logEntries = logEntriesDebounce();
+    @if (logEntries.length > 0) {
+      <div
+        class="w-full h-full overflow-y-scroll"
+        autoScroll
+        [lockYOffset]="100"
+        (lockChanges)="updateScrollButtonVisibility($event)"
+      >
+        @for (entry of logEntries; track entry.id) {
+          <dc-log-entry
+            [entry]="entry"
+            class="w-full"
+          />
+        }
+      </div>
+    } @else {
+      <div class="w-full h-full flex items-center justify-center">
+        <nz-empty nzNotFoundContent="No log entries yet..." />
+      </div>
+    }
+
+    @if (showScrollDownButton()) {
+      <button
+        nz-button
+        nzShape="circle"
+        class="scroll-down-button"
+        nz-tooltip="Scroll down"
+        nzTooltipPlacement="left"
+        (click)="scrollDown()"
+      >
+        <fa-icon [icon]="fasDownLong" />
+      </button>
+    }
+  </div>
 </div>
+
+<dc-channel-edit-modal #channelEditModal (dcResult)="updateChannel($event)" />
