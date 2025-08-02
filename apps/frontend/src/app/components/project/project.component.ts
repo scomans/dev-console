@@ -28,7 +28,7 @@ import { exit } from '@tauri-apps/api/process';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { AsyncPipe } from '@angular/common';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { ChannelLogComponent } from '../channel-log/channel-log.component';
@@ -44,7 +44,6 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   providers: [
     ExecutionService,
     ChannelRepository,
@@ -63,7 +62,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     NzButtonModule,
     NzLayoutModule,
     NzMenuModule,
-    NzToolTipModule,
+    NzTooltipModule,
   ],
 })
 export class ProjectComponent {

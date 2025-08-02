@@ -12,18 +12,17 @@ rust-version = "1.59"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.4.0", features = [] }
+tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.4.1", features = ["os-all", "shell-open", "updater", "shell-sidecar", "http-all", "dialog-open", "fs-all", "dialog-confirm", "window-close", "shell-execute", "process-exit", "path-all", "dialog-save", "devtools"] }
-tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri = { version = "1.8", features = ["os-all", "shell-open", "updater", "shell-sidecar", "http-all", "dialog-open", "fs-all", "dialog-confirm", "window-close", "shell-execute", "process-exit", "path-all", "dialog-save", "devtools"] }
 log = "0.4.19"
-sentry = "0.31.5"
-sysinfo = "0.29.2"
+sentry = "0"
+sysinfo = "0.36"
 specta = "1.0.5"
-tauri-specta = { version = "1.0.2", features = ["typescript"] }
+tauri-specta = { version = "1", features = ["typescript"] }
 
 [features]
 # by default Tauri runs in production mode

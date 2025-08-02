@@ -28,7 +28,6 @@ const additionalLicenses = '' +
   templateUrl: './licenses-modal.component.html',
   styleUrl: './licenses-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AsyncPipe,
     NzButtonModule,

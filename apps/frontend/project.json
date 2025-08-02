@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "apps/frontend/src",
   "prefix": "dc",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/angular:browser-esbuild",
@@ -14,14 +15,19 @@
         "polyfills": "apps/frontend/src/polyfills.ts",
         "tsConfig": "apps/frontend/tsconfig.app.json",
         "aot": false,
-        "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
+        "assets": [
+          "apps/frontend/src/favicon.ico",
+          "apps/frontend/src/assets"
+        ],
         "styles": [
           "apps/frontend/src/styles/base.scss",
           "apps/frontend/src/styles/styles.less",
           "apps/frontend/src/styles/styles.scss"
         ],
         "stylePreprocessorOptions": {
-          "includePaths": ["apps/frontend/src/styles"]
+          "includePaths": [
+            "apps/frontend/src/styles"
+          ]
         },
         "scripts": [],
         "allowedCommonJsDependencies": [
@@ -80,16 +86,14 @@
           "buildTarget": "frontend:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "development",
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "frontend:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -101,6 +105,5 @@
         "passWithNoTests": true
       }
     }
-  },
-  "tags": []
+  }
 }

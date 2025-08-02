@@ -24,7 +24,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './channel-log.component.html',
   styleUrl: './channel-log.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ChannelEditModalComponent,
     FaIconComponent,

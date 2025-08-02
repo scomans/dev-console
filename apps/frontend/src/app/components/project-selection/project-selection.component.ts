@@ -14,7 +14,7 @@ import { exit } from '@tauri-apps/api/process';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
@@ -27,7 +27,6 @@ import { AboutModalComponent } from '../about-modal/about-modal.component';
   templateUrl: './project-selection.component.html',
   styleUrl: './project-selection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AboutModalComponent,
     FaIconComponent,
@@ -36,7 +35,7 @@ import { AboutModalComponent } from '../about-modal/about-modal.component';
     NzCardModule,
     NzLayoutModule,
     NzPopconfirmModule,
-    NzToolTipModule,
+    NzTooltipModule,
     ProjectEditModalComponent,
     SmartTrimPipe,
   ],

@@ -9,7 +9,6 @@ import { openDevtools } from '../../types/tauri';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     RouterOutlet,
     UpdateNotificationComponent,

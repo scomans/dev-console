@@ -17,7 +17,6 @@ import { isFormInvalid } from '../../helpers/form.helper';
   templateUrl: './project-edit-modal.component.html',
   styleUrl: './project-edit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     FaIconComponent,
     NzButtonModule,

@@ -12,6 +12,7 @@ import { waitFor } from '../helpers/wait-for.helper';
 import { CancelToken } from '../helpers/cancel.helper';
 import { map } from 'rxjs/operators';
 import { exists, readTextFile } from '@tauri-apps/api/fs';
+// @ts-ignore
 import { parse as parseEnv } from 'envfile';
 import { killProcess, spawnProcess } from '../types/tauri';
 import { default as Convert } from 'ansi-to-html';

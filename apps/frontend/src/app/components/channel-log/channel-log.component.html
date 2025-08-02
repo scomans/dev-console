@@ -1,4 +1,4 @@
-@if (channel();as channel) {
+@if (channel(); as channel) {
   <div class="actions-bar">
     <div>
       <button nz-button class="start" (click)="run(channel)" [disabled]="status() !== ExecuteStatus.STOPPED">

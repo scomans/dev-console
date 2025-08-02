@@ -14,7 +14,7 @@ import {
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
@@ -24,7 +24,6 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
   templateUrl: './log-viewer.component.html',
   styleUrl: './log-viewer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AutoScrollDirective,
     AutoSizeVirtualScrollStrategy,
@@ -32,7 +31,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     LogEntryComponent,
     NzButtonModule,
     NzEmptyModule,
-    NzToolTipModule,
+    NzTooltipModule,
     RxVirtualFor,
     RxVirtualScrollViewportComponent,
   ],

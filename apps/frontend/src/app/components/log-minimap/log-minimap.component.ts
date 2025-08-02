@@ -40,7 +40,7 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
   drag = false;
   drawThrottle = new BehaviorSubject<void>(undefined);
 
-  black = (pc) => `rgba(255,255,255,${pc / 100})`;
+  black = (pc) => `rgba(255,255,255,${ pc / 100 })`;
   settings = {
     styles: {
       '.log-entry > span.error': 'rgba(255, 0, 0, 0.4)',

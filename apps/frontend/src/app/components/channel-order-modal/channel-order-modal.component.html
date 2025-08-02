@@ -8,7 +8,7 @@
 >
   <ng-container *nzModalContent>
     <div class="channels" cdkDropList (cdkDropListDropped)="drop($event)">
-      @for (channel of channels();track channel.id) {
+      @for (channel of channels(); track channel.id) {
         <div class="channel" cdkDrag [cdkDragData]="channel">
           <div *cdkDragPlaceholder class="channel placeholder"></div>
           <fa-icon [icon]="fasGripLines"></fa-icon>

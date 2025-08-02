@@ -1,4 +1,4 @@
-@if (project();as project) {
+@if (project(); as project) {
   <nz-layout class="app-layout">
     <ng-container>
       <nz-sider
@@ -38,7 +38,7 @@
               </div>
             </ng-template>
             <ul>
-              @for (channel of channels();track channel.id) {
+              @for (channel of channels(); track channel.id) {
                 <li nz-menu-item [nzSelected]="channel.id === selectedChannelId()">
                   <a (click)="openChannel(channel.id)">
                     @switch (channel.status$ | async) {

@@ -12,7 +12,6 @@ import { LicensesModalComponent } from '../licenses-modal/licenses-modal.compone
   templateUrl: './about-modal.component.html',
   styleUrl: './about-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AsyncPipe,
     LicensesModalComponent,

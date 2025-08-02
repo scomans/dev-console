@@ -21,7 +21,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './combined-log.component.html',
   styleUrl: './combined-log.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     FaIconComponent,
     LogViewerComponent,

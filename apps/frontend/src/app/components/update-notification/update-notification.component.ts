@@ -10,14 +10,13 @@ import { environment } from '../../../environments/environment';
   templateUrl: './update-notification.component.html',
   styleUrl: './update-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NzButtonModule,
   ],
 })
 export class UpdateNotificationComponent implements OnInit {
 
-  @ViewChild('template', { static: true }) template: TemplateRef<unknown>;
+  @ViewChild('template', { static: true }) template: TemplateRef<any>;
 
   constructor(
     private readonly nzNotificationService: NzNotificationService,

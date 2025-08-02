@@ -4,6 +4,7 @@ import { isEmpty } from '@dev-console/helpers';
 import { Channel } from '@dev-console/types';
 import { faFolderOpen, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
+// @ts-ignore
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
 import { isNil } from 'es-toolkit';
@@ -22,7 +23,6 @@ import { isFormInvalid } from '../../helpers/form.helper';
   templateUrl: './channel-edit-modal.component.html',
   styleUrl: './channel-edit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     FaIconComponent,
     NzButtonModule,

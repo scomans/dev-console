@@ -12,7 +12,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   templateUrl: './channel-order-modal.component.html',
   styleUrl: './channel-order-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CdkDrag,
     CdkDragPlaceholder,

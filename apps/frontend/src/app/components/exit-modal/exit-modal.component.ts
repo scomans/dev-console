@@ -11,7 +11,6 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   templateUrl: './exit-modal.component.html',
   styleUrl: './exit-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     FaIconComponent,
     NzButtonModule,

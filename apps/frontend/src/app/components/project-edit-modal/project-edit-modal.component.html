@@ -18,10 +18,16 @@
         <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="executable" nzRequired>Project file</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please select a file">
           <nz-input-group [nzSuffix]="inputFileTpl">
-            <input nz-input id="file" formControlName="file"/>
+            <input nz-input id="file" formControlName="file" />
           </nz-input-group>
           <ng-template #inputFileTpl>
-            <button nz-button nzType="dashed" nzShape="circle" nzSize="small" (click)="selectFile(); $event.preventDefault()">
+            <button
+              nz-button
+              nzType="dashed"
+              nzShape="circle"
+              nzSize="small"
+              (click)="selectFile(); $event.preventDefault()"
+            >
               <fa-icon [icon]="fasFolderOpen" transform="right-1"></fa-icon>
             </button>
           </ng-template>

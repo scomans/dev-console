@@ -14,34 +14,42 @@
       "unitTestRunner": "jest"
     },
     "@nx/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "type": "component"
     },
     "@schematics/angular:component": {
       "style": "scss",
       "skipTests": true,
-      "prefix": "cl"
+      "prefix": "cl",
+      "type": "component"
     },
     "@schematics/angular:class": {
       "skipTests": true
     },
     "@schematics/angular:directive": {
       "skipTests": true,
-      "prefix": ""
+      "prefix": "",
+      "type": "directive"
     },
     "@schematics/angular:guard": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:interceptor": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:module": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:pipe": {
-      "skipTests": true
+      "skipTests": true,
+      "typeSeparator": "."
     },
     "@schematics/angular:service": {
-      "skipTests": true
+      "skipTests": true,
+      "type": "service"
     },
     "@nx/angular": {
       "application": {
@@ -52,7 +60,37 @@
       },
       "storybook-configuration": {
         "linter": "eslint"
+      },
+      "directive": {
+        "type": "directive"
+      },
+      "service": {
+        "type": "service"
+      },
+      "scam": {
+        "type": "component"
+      },
+      "scam-directive": {
+        "type": "directive"
+      },
+      "guard": {
+        "typeSeparator": "."
+      },
+      "interceptor": {
+        "typeSeparator": "."
+      },
+      "module": {
+        "typeSeparator": "."
+      },
+      "pipe": {
+        "typeSeparator": "."
+      },
+      "resolver": {
+        "typeSeparator": "."
       }
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   },
   "defaultProject": "frontend",
@@ -74,7 +112,8 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s"
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/eslint.config.mjs"
     ]
   },
   "targetDefaults": {
@@ -96,11 +135,20 @@
     "@nx/eslint:lint": {
       "inputs": [
         "default",
-        "{workspaceRoot}/.eslintrc.json"
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/eslint.config.mjs"
       ],
       "cache": true
     }
   },
   "parallel": 1,
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    }
+  ]
 }

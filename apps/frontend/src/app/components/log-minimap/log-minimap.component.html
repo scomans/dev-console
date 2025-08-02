@@ -1,19 +1,21 @@
 <div class="log-minimap">
-  <canvas #map
-          [style.cursor]="cursor"
-          [style.width.px]="width"
-          [style.height.px]="height"
-          [width]="width"
-          [height]="height"
-          (mousedown)="onDragStart($event)"
+  <canvas
+    #map
+    [style.cursor]="cursor"
+    [style.width.px]="width"
+    [style.height.px]="height"
+    [width]="width"
+    [height]="height"
+    (mousedown)="onDragStart($event)"
   ></canvas>
 </div>
-<div #content
-     class="log-content"
-     autoScroll
-     [lock-y-offset]="100"
-     (scroll)="requestDraw()"
-     (window:resize)="requestDraw()"
+<div
+  #content
+  class="log-content"
+  autoScroll
+  [lock-y-offset]="100"
+  (scroll)="requestDraw()"
+  (window:resize)="requestDraw()"
 >
   <div>
     <ng-content></ng-content>

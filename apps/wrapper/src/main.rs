@@ -7,10 +7,9 @@ windows_subsystem = "windows"
 use std::collections::{HashMap, HashSet};
 
 use specta::{collect_types, Type};
-use sysinfo::{Pid, PidExt, ProcessExt, Signal, System, SystemExt};
+use sysinfo::{Pid, Signal, System};
 use tauri::{AppHandle, Manager, Window, Wry};
 use tauri::api::process::{Command, CommandEvent, Encoding};
-use tauri_plugin_log::LogTarget;
 use tauri_specta::ts;
 
 #[derive(Clone, serde::Serialize, Type)]
@@ -144,7 +143,6 @@ fn main() {
 //  }));
 
   tauri::Builder::default()
-    .plugin(tauri_plugin_log::Builder::default().targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview]).build())
     .setup(|_app| {
       // let release = sentry::release_name!().unwrap();
       // println!("Release: {}", release);
