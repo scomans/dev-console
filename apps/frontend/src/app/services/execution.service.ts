@@ -31,8 +31,7 @@ export interface Executable {
 
 @Injectable()
 export class ExecutionService {
-
-  executables = new Map<string, Executable>();
+  private readonly executables = new Map<string, Executable>();
 
   constructor(
     private readonly channelLogRepository: ChannelLogRepository,

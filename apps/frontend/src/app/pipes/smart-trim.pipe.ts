@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class SmartTrimPipe implements PipeTransform {
-
   transform(value: string, maxLength: number): string {
     if (!value) {
       return value;
@@ -26,5 +25,4 @@ export class SmartTrimPipe implements PipeTransform {
     const rstrip = toremove - lstrip;
     return value.substring(0, midpoint - lstrip) + '…' + value.substring(midpoint + rstrip);
   }
-
 }

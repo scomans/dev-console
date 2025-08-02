@@ -5,7 +5,7 @@
       class="w-full h-full block"
       [tombstoneSize]="19"
       autoScroll
-      [lock-y-offset]="100"
+      [lockYOffset]="100"
       (lockChanges)="updateScrollButtonVisibility($event)"
     >
       <dc-log-entry
@@ -16,7 +16,7 @@
     </rx-virtual-scroll-viewport>
   } @else {
     <div class="w-full h-full flex items-center justify-center">
-      <nz-empty nzNotFoundContent="No log entries yet..."></nz-empty>
+      <nz-empty nzNotFoundContent="No log entries yet..." />
     </div>
   }
 
@@ -29,7 +29,7 @@
       nzTooltipPlacement="left"
       (click)="scrollDown()"
     >
-      <fa-icon [icon]="fasDownLong"></fa-icon>
+      <fa-icon [icon]="fasDownLong" />
     </button>
   }
 </div>

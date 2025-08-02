@@ -26,14 +26,14 @@
             <a (click)="openChannel(null)">
               <fa-icon
                 [icon]="fasLayerGroup" class="anticon"
-              ></fa-icon>
+              />
               All Channels
             </a>
           </li>
           <li nz-submenu [nzOpen]="true" [nzTitle]="channelsTitleTpl">
             <ng-template #channelsTitleTpl>
               <div class="flex items-center gap-2">
-                <fa-icon [icon]="fasAlignLeft" class="anticon" transform="right-2"></fa-icon>
+                <fa-icon [icon]="fasAlignLeft" class="anticon" transform="right-2" />
                 Channels
               </div>
             </ng-template>
@@ -46,7 +46,7 @@
                         <fa-icon
                           [icon]="channel.active ? fasDotCircle : farDotCircle"
                           [style.color]="channel.color"
-                        ></fa-icon>
+                        />
                       }
                       @case (ExecuteStatus.WAITING) {
                         <fa-icon
@@ -54,13 +54,13 @@
                           [transform]="channel.active ? 'shrink-4' : undefined"
                           [mask]="channel.active ? fasCircle : undefined"
                           [style.color]="channel.color"
-                        ></fa-icon>
+                        />
                       }
                       @case (ExecuteStatus.STOPPED) {
                         <fa-icon
                           [icon]="channel.active ? fasCircle : farCircle"
                           [style.color]="channel.color"
-                        ></fa-icon>
+                        />
                       }
                     }
                     {{ channel.name }}
@@ -81,14 +81,14 @@
             <fa-icon
               [icon]="fasGripHorizontal"
               class="anticon"
-            ></fa-icon>
+            />
             Change channel ordering
           </li>
           <li nz-menu-item nzMatchRouter (click)="channelEditModal.show()">
             <fa-icon
               [icon]="fasPlusCircle"
               class="anticon"
-            ></fa-icon>
+            />
             Add new channel
           </li>
         </ul>
@@ -97,9 +97,9 @@
         <nz-content>
           <div class="inner-content">
             @if (allLogs()) {
-              <dc-combined-log></dc-combined-log>
+              <dc-combined-log />
             } @else {
-              <dc-channel-log></dc-channel-log>
+              <dc-channel-log />
             }
           </div>
         </nz-content>
@@ -108,6 +108,6 @@
   </nz-layout>
 }
 
-<dc-channel-order-modal #channelOrderModal (dcResult)="changeOrder($event)"></dc-channel-order-modal>
-<dc-channel-edit-modal #channelEditModal (dcResult)="addChannel($event)"></dc-channel-edit-modal>
-<dc-exit-modal></dc-exit-modal>
+<dc-channel-order-modal #channelOrderModal (dcResult)="changeOrder($event)" />
+<dc-channel-edit-modal #channelEditModal (dcResult)="addChannel($event)" />
+<dc-exit-modal />

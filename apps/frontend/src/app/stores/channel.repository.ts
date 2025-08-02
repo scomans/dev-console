@@ -28,7 +28,6 @@ const PROJECT_FILE_VERSION = 1;
 
 @Injectable()
 export class ChannelRepository {
-
   private store = createStore(
     { name: 'channels' },
     withEntities<Channel>(),

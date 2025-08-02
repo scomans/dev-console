@@ -6,24 +6,24 @@
       [disabled]="!anythingNotExecuting()"
       (click)="runAll()"
     >
-      <fa-icon [icon]="fasPlay"></fa-icon>
+      <fa-icon [icon]="fasPlay" />
       Run All
     </button>
     <button nz-button class="restart" (click)="restartAll()" [disabled]="!anythingExecuting()">
-      <fa-icon [icon]="fasRedo"></fa-icon>
+      <fa-icon [icon]="fasRedo" />
       Restart All
     </button>
     <button nz-button nzDanger (click)="stopAll()" [disabled]="!anythingExecuting()">
-      <fa-icon [icon]="fasStop"></fa-icon>
+      <fa-icon [icon]="fasStop" />
       Stop All
     </button>
   </div>
   <div>
     <button nz-button (click)="clearAll()">
-      <fa-icon [icon]="fasEraser"></fa-icon>
+      <fa-icon [icon]="fasEraser" />
       Clear
     </button>
   </div>
 </div>
 
-<dc-log-viewer></dc-log-viewer>
+<dc-log-viewer />

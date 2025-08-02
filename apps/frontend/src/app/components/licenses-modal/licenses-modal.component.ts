@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalComponent, NzModalContentDirective, NzModalFooterDirective } from 'ng-zorro-antd/modal';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { catchError, Observable, of, startWith } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -30,12 +30,13 @@ const additionalLicenses = '' +
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
-    NzButtonModule,
-    NzModalModule,
+    NzButtonComponent,
+    NzModalComponent,
+    NzModalContentDirective,
+    NzModalFooterDirective,
   ],
 })
 export class LicensesModalComponent {
-
   protected readonly isVisible = signal(false);
   licenses$: Observable<string>;
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Signal, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, signal, viewChild } from '@angular/core';
 import { combineLatestWith, Observable, Subject, take } from 'rxjs';
 import { auditTime, map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
@@ -11,12 +11,12 @@ import {
   RxVirtualFor,
   RxVirtualScrollViewportComponent,
 } from '@rx-angular/template/experimental/virtual-scrolling';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzEmptyComponent } from 'ng-zorro-antd/empty';
 
 
 @Component({
@@ -29,24 +29,22 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     AutoSizeVirtualScrollStrategy,
     FaIconComponent,
     LogEntryComponent,
-    NzButtonModule,
-    NzEmptyModule,
-    NzTooltipModule,
+    NzButtonComponent,
+    NzEmptyComponent,
+    NzTooltipDirective,
     RxVirtualFor,
     RxVirtualScrollViewportComponent,
   ],
 })
 export class LogViewerComponent {
-
   /* ### ICONS ### */
   protected readonly fasDownLong = faDownLong;
 
   protected readonly showScrollDownButton = signal(false);
   protected readonly logEntries: Signal<LogEntryWithSourceAndColor[]>;
-  protected readonly itemsRendered = new Subject<void>();
+  protected readonly itemsRendered = new Subject<any>();
 
-  @ViewChild(RxVirtualScrollViewportComponent) viewport: RxVirtualScrollViewportComponent;
-  @ViewChild(AutoScrollDirective) autoScroll: AutoScrollDirective;
+  protected readonly autoScroll = viewChild(AutoScrollDirective);
 
   constructor(
     private readonly channelRepository: ChannelRepository,
@@ -79,6 +77,6 @@ export class LogViewerComponent {
   }
 
   scrollDown() {
-    this.autoScroll.scrollDown();
+    this.autoScroll()?.scrollDown();
   }
 }

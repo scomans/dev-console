@@ -15,8 +15,8 @@ export type LogEntryWithSourceAndColor = LogEntryWithSource & { color: string }
 export class LogEntryComponent {
   protected readonly borderColor: Signal<string>;
   protected readonly backgroundColor: Signal<string>;
-  entry = input.required<LogEntryWithSourceAndColor>();
 
+  public readonly entry = input.required<LogEntryWithSourceAndColor>();
 
   constructor() {
     this.borderColor = computed(() => this.entry().color || 'transparent');

@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { LogEntryWithSource } from '@dev-console/types';
 import { createStore, emitOnce } from '@ngneat/elf';
-import { addEntities, deleteAllEntities, deleteEntities, getEntitiesCount, getEntitiesIds, selectAllEntities, withEntities } from '@ngneat/elf-entities';
+import {
+  addEntities,
+  deleteAllEntities,
+  deleteEntities,
+  getEntitiesCount,
+  getEntitiesIds,
+  selectAllEntities,
+  withEntities,
+} from '@ngneat/elf-entities';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { filterNil } from '@dev-console/helpers';
@@ -9,7 +17,6 @@ import { filterNil } from '@dev-console/helpers';
 
 @Injectable()
 export class ChannelLogRepository {
-
   channelLogStores = new BehaviorSubject<Record<string, ReturnType<ChannelLogRepository['createStore']>>>({});
 
   clearChannelLogs(channelId: string) {

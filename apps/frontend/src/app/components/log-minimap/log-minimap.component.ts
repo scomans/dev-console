@@ -9,8 +9,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
-import { SubSink } from 'subsink';
 
 
 export interface Rect {
@@ -27,9 +25,6 @@ export interface Rect {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogMinimapComponent implements OnInit, OnDestroy {
-
-  subs = new SubSink();
-
   contentRect: Rect;
   viewportRect: Rect;
   drag_ry: number;
@@ -63,15 +58,15 @@ export class LogMinimapComponent implements OnInit, OnDestroy {
     this.viewport = this.contentEl.nativeElement;
     this.init();
 
-    this.subs.sink = this.drawThrottle
-      .pipe(
-        auditTime(10),
-      )
-      .subscribe(() => this.draw());
+    // this.subs.sink = this.drawThrottle
+    //   .pipe(
+    //     auditTime(10),
+    //   )
+    //   .subscribe(() => this.draw());
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    // this.subs.unsubscribe();
   }
 
   toRect(x, y, w, h): Rect {

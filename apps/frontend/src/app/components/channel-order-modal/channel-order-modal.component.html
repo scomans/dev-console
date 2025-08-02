@@ -11,7 +11,7 @@
       @for (channel of channels(); track channel.id) {
         <div class="channel" cdkDrag [cdkDragData]="channel">
           <div *cdkDragPlaceholder class="channel placeholder"></div>
-          <fa-icon [icon]="fasGripLines"></fa-icon>
+          <fa-icon [icon]="fasGripLines" />
           <span>{{ channel.name }}</span>
         </div>
       }

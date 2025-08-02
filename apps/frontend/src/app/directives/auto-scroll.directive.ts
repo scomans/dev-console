@@ -1,13 +1,4 @@
-import {
-  AfterContentInit,
-  DestroyRef,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { AfterContentInit, DestroyRef, Directive, ElementRef, input, OnDestroy, output } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { waitForElement } from '../helpers/dom.helper';
@@ -18,10 +9,8 @@ import { auditTime } from 'rxjs/operators';
   standalone: true,
 })
 export class AutoScrollDirective implements AfterContentInit, OnDestroy {
-
-  @Input('lock-y-offset') public lockYOffset: number = 10;
-
-  @Output() lockChanges = new EventEmitter<boolean>();
+  public readonly lockYOffset = input(10);
+  public readonly lockChanges = output<boolean>();
 
   private readonly nativeElement: HTMLElement;
   private _isLocked: boolean = false;
@@ -75,7 +64,7 @@ export class AutoScrollDirective implements AfterContentInit, OnDestroy {
     const el = (this.nativeElement.firstChild as HTMLDivElement);
     const scrollFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
     const oldLock = this._isLocked;
-    this._isLocked = scrollFromBottom > this.lockYOffset;
+    this._isLocked = scrollFromBottom > this.lockYOffset();
     if (oldLock !== this._isLocked) {
       this.lockChanges.emit(this._isLocked);
     }

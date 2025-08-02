@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalComponent, NzModalContentDirective, NzModalFooterDirective } from 'ng-zorro-antd/modal';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { AsyncPipe } from '@angular/common';
 import { getTauriVersion, getVersion } from '@tauri-apps/api/app';
 import { arch, type } from '@tauri-apps/api/os';
@@ -15,12 +15,13 @@ import { LicensesModalComponent } from '../licenses-modal/licenses-modal.compone
   imports: [
     AsyncPipe,
     LicensesModalComponent,
-    NzButtonModule,
-    NzModalModule,
+    NzButtonComponent,
+    NzModalComponent,
+    NzModalContentDirective,
+    NzModalFooterDirective,
   ],
 })
 export class AboutModalComponent {
-
   protected readonly isVisible = signal(false);
   protected readonly version = environment.production ? getVersion() : 'DEV';
   protected readonly tauriVersion = getTauriVersion();

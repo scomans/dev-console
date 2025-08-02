@@ -8,7 +8,6 @@ export interface UiProps {
 
 @Injectable()
 export class UiRepository {
-
   private store = createStore(
     { name: 'ui' },
     withProps<UiProps>({}),

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, viewChild } from '@angular/core';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { environment } from '../../../environments/environment';
@@ -11,12 +11,11 @@ import { environment } from '../../../environments/environment';
   styleUrl: './update-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NzButtonModule,
+    NzButtonComponent,
   ],
 })
 export class UpdateNotificationComponent implements OnInit {
-
-  @ViewChild('template', { static: true }) template: TemplateRef<any>;
+  protected readonly template = viewChild<TemplateRef<any>>('template');
 
   constructor(
     private readonly nzNotificationService: NzNotificationService,
@@ -33,7 +32,7 @@ export class UpdateNotificationComponent implements OnInit {
     const update = await checkUpdate();
     if (update.shouldUpdate) {
       console.log(`Installing update ${ update.manifest?.version }, ${ update.manifest?.date }, ${ update.manifest.body }`);
-      this.nzNotificationService.template(this.template, {
+      this.nzNotificationService.template(this.template(), {
         nzDuration: 0,
         nzPlacement: 'bottomRight',
         nzData: {

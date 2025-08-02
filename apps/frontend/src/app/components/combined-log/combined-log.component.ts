@@ -10,7 +10,7 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { mapBy, mapObjectValues, sleep } from '@dev-console/helpers';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,11 +24,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [
     FaIconComponent,
     LogViewerComponent,
-    NzButtonModule,
+    NzButtonComponent,
   ],
 })
 export class CombinedLogComponent {
-
   protected readonly fasPlay = faPlay;
   protected readonly fasRedo = faRedo;
   protected readonly fasStop = faStop;

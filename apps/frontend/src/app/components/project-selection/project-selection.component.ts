@@ -11,13 +11,13 @@ import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { exit } from '@tauri-apps/api/process';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzContentComponent, NzHeaderComponent, NzLayoutComponent } from 'ng-zorro-antd/layout';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzCardComponent, NzCardMetaComponent } from 'ng-zorro-antd/card';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { SmartTrimPipe } from '../../pipes/smart-trim.pipe';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { NgOptimizedImage } from '@angular/common';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
@@ -31,11 +31,14 @@ import { AboutModalComponent } from '../about-modal/about-modal.component';
     AboutModalComponent,
     FaIconComponent,
     NgOptimizedImage,
-    NzButtonModule,
-    NzCardModule,
-    NzLayoutModule,
-    NzPopconfirmModule,
-    NzTooltipModule,
+    NzButtonComponent,
+    NzCardComponent,
+    NzCardMetaComponent,
+    NzContentComponent,
+    NzHeaderComponent,
+    NzLayoutComponent,
+    NzPopconfirmDirective,
+    NzTooltipDirective,
     ProjectEditModalComponent,
     SmartTrimPipe,
   ],

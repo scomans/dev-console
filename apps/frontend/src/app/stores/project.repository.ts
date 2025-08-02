@@ -18,7 +18,6 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectRepository implements OnDestroy {
-
   private store = createStore(
     { name: 'project' },
     withEntities<Project>(),

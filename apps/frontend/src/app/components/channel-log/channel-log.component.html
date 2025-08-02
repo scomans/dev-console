@@ -2,25 +2,25 @@
   <div class="actions-bar">
     <div>
       <button nz-button class="start" (click)="run(channel)" [disabled]="status() !== ExecuteStatus.STOPPED">
-        <fa-icon [icon]="fasPlay"></fa-icon>
+        <fa-icon [icon]="fasPlay" />
         Run
       </button>
       <button nz-button class="restart" (click)="restart(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
-        <fa-icon [icon]="fasRedo"></fa-icon>
+        <fa-icon [icon]="fasRedo" />
         Restart
       </button>
       <button nz-button nzDanger (click)="stop(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
-        <fa-icon [icon]="fasStop"></fa-icon>
+        <fa-icon [icon]="fasStop" />
         Stop
       </button>
     </div>
     <div>
       <button nz-button (click)="clearChannel(channel)">
-        <fa-icon [icon]="fasEraser"></fa-icon>
+        <fa-icon [icon]="fasEraser" />
         Clear
       </button>
       <button nz-button (click)="channelEditModal.show(channel)">
-        <fa-icon [icon]="fasEdit"></fa-icon>
+        <fa-icon [icon]="fasEdit" />
         Edit
       </button>
       <button
@@ -32,15 +32,15 @@
         (nzOnConfirm)="deleteChannel(channel)"
       >
         <ng-template #iconTpl>
-          <fa-icon [icon]="farQuestionCircle" style="color: red; position: absolute; top: 4px;"></fa-icon>
+          <fa-icon [icon]="farQuestionCircle" style="color: red; position: absolute; top: 4px;" />
         </ng-template>
-        <fa-icon [icon]="fasTrash"></fa-icon>
+        <fa-icon [icon]="fasTrash" />
         Delete
       </button>
     </div>
   </div>
 
-  <dc-log-viewer></dc-log-viewer>
+  <dc-log-viewer />
 }
 
-<dc-channel-edit-modal #channelEditModal (dcResult)="updateChannel($event)"></dc-channel-edit-modal>
+<dc-channel-edit-modal #channelEditModal (dcResult)="updateChannel($event)" />

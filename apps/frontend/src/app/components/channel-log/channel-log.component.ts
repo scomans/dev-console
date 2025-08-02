@@ -11,9 +11,9 @@ import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'es-toolkit';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -28,12 +28,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
     ChannelEditModalComponent,
     FaIconComponent,
     LogViewerComponent,
-    NzButtonModule,
-    NzPopconfirmModule,
+    NzButtonComponent,
+    NzPopconfirmDirective,
   ],
 })
 export class ChannelLogComponent {
-
   protected readonly farQuestionCircle = faQuestionCircle;
   protected readonly fasTrash = faTrash;
   protected readonly fasPlay = faPlay;

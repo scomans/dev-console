@@ -8,14 +8,14 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { parse as parseEnv, stringify as stringifyEnv } from 'envfile';
 import { open } from '@tauri-apps/api/dialog';
 import { isNil } from 'es-toolkit';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalComponent, NzModalContentDirective } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzAutosizeDirective, NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzPopoverModule } from 'ng-zorro-antd/popover';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzPopoverDirective } from 'ng-zorro-antd/popover';
+import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
+import { NzColorPickerComponent } from 'ng-zorro-antd/color-picker';
 import { isFormInvalid } from '../../helpers/form.helper';
 
 @Component({
@@ -25,13 +25,16 @@ import { isFormInvalid } from '../../helpers/form.helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FaIconComponent,
-    NzButtonModule,
-    NzCheckboxModule,
-    NzColorPickerModule,
+    NzAutosizeDirective,
+    NzButtonComponent,
+    NzCheckboxComponent,
+    NzColorPickerComponent,
     NzFormModule,
-    NzInputModule,
-    NzModalModule,
-    NzPopoverModule,
+    NzInputDirective,
+    NzInputGroupComponent,
+    NzModalComponent,
+    NzModalContentDirective,
+    NzPopoverDirective,
     ReactiveFormsModule,
   ],
 })
@@ -60,7 +63,7 @@ export class ChannelEditModalComponent {
   protected readonly angularForm: AngularFormGroup = this.form;
   protected readonly isFormInvalid = isFormInvalid(this.form);
 
-  dcResult = output<Omit<Channel, 'index'>>();
+  public readonly dcResult = output<Omit<Channel, 'index'>>();
 
   done() {
     const data = this.form.getRawValue();

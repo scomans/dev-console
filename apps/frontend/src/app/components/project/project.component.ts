@@ -25,12 +25,10 @@ import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
 import { exit } from '@tauri-apps/api/process';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzContentComponent, NzLayoutComponent, NzSiderComponent } from 'ng-zorro-antd/layout';
 import { AsyncPipe } from '@angular/common';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzMenuDirective, NzMenuItemComponent, NzSubMenuComponent } from 'ng-zorro-antd/menu';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { ChannelLogComponent } from '../channel-log/channel-log.component';
 import { CombinedLogComponent } from '../combined-log/combined-log.component';
 import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order-modal.component';
@@ -59,10 +57,12 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
     CombinedLogComponent,
     ExitModalComponent,
     FaIconComponent,
-    NzButtonModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzTooltipModule,
+    NzContentComponent,
+    NzLayoutComponent,
+    NzMenuDirective,
+    NzMenuItemComponent,
+    NzSiderComponent,
+    NzSubMenuComponent,
   ],
 })
 export class ProjectComponent {
