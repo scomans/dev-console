@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { BehaviorSubject, from, lastValueFrom, merge, Observable, takeWhile } from 'rxjs';
-import { ChannelLogRepository } from '../stores/channel-log.repository';
-import { GlobalLogsRepository } from '../stores/global-log.repository';
+import { LogStore } from '../stores/log.store';
 import { isNil } from 'es-toolkit';
 import { listenAsObservable } from '../helpers/tauri.helper';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -31,8 +30,7 @@ export interface Executable {
 
 @Injectable()
 export class ExecutionService {
-  private readonly channelLogRepository = inject(ChannelLogRepository);
-  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly logStore = inject(LogStore);
   private readonly channelStore = inject(ChannelStore);
   private readonly sanitizer = inject(DomSanitizer);
 
@@ -84,8 +82,7 @@ export class ExecutionService {
       type,
       source: channelId,
     };
-    this.channelLogRepository.addLine(logEntry);
-    this.globalLogsRepository.addLines([logEntry]);
+    this.logStore.addLogEntry(logEntry);
   }
 
   selectStatus(channelId: string): Observable<ExecuteStatus> {

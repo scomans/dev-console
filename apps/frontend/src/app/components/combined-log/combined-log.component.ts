@@ -4,9 +4,8 @@ import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-ic
 import { combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
-import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { LogStore } from '../../stores/log.store';
 import { ChannelStore } from '../../stores/channel.store';
-import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectStore } from '../../stores/project.store';
 import { ActivatedRoute } from '@angular/router';
 import { mapBy, mapObjectValues, sleep } from '@dev-console/helpers';
@@ -30,9 +29,8 @@ import { derivedFrom } from 'ngxtension/derived-from';
 export class CombinedLogComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly executeService = inject(ExecutionService);
-  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly logStore = inject(LogStore);
   private readonly channelStore = inject(ChannelStore);
-  private readonly channelLogRepository = inject(ChannelLogRepository);
   private readonly projectStore = inject(ProjectStore);
   /* ### ICONS ### */
   protected readonly fasPlay = faPlay;
@@ -93,7 +91,6 @@ export class CombinedLogComponent {
   }
 
   clearAll() {
-    this.globalLogsRepository.clearLogs();
-    this.channelLogRepository.clearLogs();
+    this.logStore.clearLogs();
   }
 }

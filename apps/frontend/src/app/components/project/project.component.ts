@@ -13,9 +13,8 @@ import {
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Observable, switchMap } from 'rxjs';
 import { ExecutionService } from '../../services/execution.service';
-import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { LogStore } from '../../stores/log.store';
 import { ChannelStore } from '../../stores/channel.store';
-import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectStore } from '../../stores/project.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
@@ -44,8 +43,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   providers: [
     ExecutionService,
     ChannelStore,
-    ChannelLogRepository,
-    GlobalLogsRepository,
+    LogStore,
   ],
   imports: [
     AsyncPipe,
@@ -64,12 +62,13 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   ],
 })
 export class ProjectComponent {
-  private readonly projectStore = inject(ProjectStore);
   private readonly modal = inject(NzModalService);
   private readonly executeService = inject(ExecutionService);
   private readonly router = inject(Router);
-  private readonly channelStore = inject(ChannelStore);
   private readonly titleService = inject(Title);
+  private readonly projectStore = inject(ProjectStore);
+  private readonly channelStore = inject(ChannelStore);
+  private readonly logStore = inject(LogStore);
   /* ### ICONS ### */
   protected readonly fasAlignLeft = faAlignLeft;
   protected readonly fasCircle = fasCircle;
@@ -128,6 +127,10 @@ export class ProjectComponent {
       if (project && this.channelStore.loaded()) {
         await this.channelStore.persistChannels(project.file);
       }
+    });
+    effect(() => {
+      const activeId = this.selectedChannelId();
+      this.logStore.setActiveChannel(activeId);
     });
 
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)

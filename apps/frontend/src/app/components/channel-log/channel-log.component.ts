@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { sleep } from '@dev-console/helpers';
-import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
+import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faEraser, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ExecutionService } from '../../services/execution.service';
-import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { LogStore } from '../../stores/log.store';
 import { ChannelStore } from '../../stores/channel.store';
-import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectStore } from '../../stores/project.store';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'es-toolkit';
@@ -37,8 +36,7 @@ export class ChannelLogComponent {
   private readonly projectStore = inject(ProjectStore);
   private readonly executeService = inject(ExecutionService);
   private readonly channelStore = inject(ChannelStore);
-  private readonly channelLogRepository = inject(ChannelLogRepository);
-  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly logStore = inject(LogStore);
   /* ### ICONS ### */
   protected readonly farQuestionCircle = faQuestionCircle;
   protected readonly fasTrash = faTrash;
@@ -52,7 +50,6 @@ export class ChannelLogComponent {
 
   protected readonly status: Signal<ExecuteStatus>;
   protected readonly channel = this.channelStore.activeChannel;
-  protected readonly logs: Signal<LogEntryWithSource[]>;
 
   constructor() {
     this.status = derivedFrom(
@@ -63,16 +60,6 @@ export class ChannelLogComponent {
           : of(ExecuteStatus.STOPPED),
       ),
       { initialValue: ExecuteStatus.STOPPED },
-    );
-    this.logs = derivedFrom(
-      [this.channelStore.activeId],
-      switchMap(([id]) => {
-        if (!id) {
-          return of([]);
-        }
-        return this.channelLogRepository.selectLogsByChannelId(id);
-      }),
-      { initialValue: [] },
     );
   }
 
@@ -106,7 +93,6 @@ export class ChannelLogComponent {
   }
 
   clearChannel(channel: Channel) {
-    void this.channelLogRepository.clearChannelLogs(channel.id);
-    void this.globalLogsRepository.clearChannelLogs(channel.id);
+    void this.logStore.clearChannelLogs(channel.id);
   }
 }

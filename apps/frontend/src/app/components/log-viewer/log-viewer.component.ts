@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal, viewChild } from '@angular/core';
-import { pipe, Subject, take } from 'rxjs';
-import { auditTime, map, switchMap } from 'rxjs/operators';
-import { ChannelLogRepository } from '../../stores/channel-log.repository';
+import { Subject, take } from 'rxjs';
+import { LogStore } from '../../stores/log.store';
 import { ChannelStore } from '../../stores/channel.store';
-import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
 import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
 import {
@@ -17,7 +15,6 @@ import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
-import { derivedFrom } from 'ngxtension/derived-from';
 
 
 @Component({
@@ -39,8 +36,7 @@ import { derivedFrom } from 'ngxtension/derived-from';
 })
 export class LogViewerComponent {
   private readonly channelStore = inject(ChannelStore);
-  private readonly globalLogsRepository = inject(GlobalLogsRepository);
-  private readonly channelLogRepository = inject(ChannelLogRepository);
+  private readonly logStore = inject(LogStore);
   /* ### ICONS ### */
   protected readonly fasDownLong = faDownLong;
 
@@ -60,22 +56,11 @@ export class LogViewerComponent {
         .map(c => ({ id: c.id, color: c.color }))
         .reduce((a, v) => ({ ...a, [v.id]: v.color }), {});
     });
-    this.logEntries = derivedFrom(
-      [this.channelStore.activeId, colors],
-      pipe(
-        switchMap(([id, colors]) => {
-            const entities$ = id
-              ? this.channelLogRepository.selectLogsByChannelId(id)
-              : this.globalLogsRepository.logEntries$;
-            return entities$.pipe(
-              map(entries => entries.map(e => ({ ...e, color: colors[e.source] }))),
-            );
-          },
-        ),
-        auditTime(50),
-      ),
-      { initialValue: [] },
-    );
+    this.logEntries = computed(() => {
+      const c = colors();
+      return this.logStore.activeChannelLogs()
+        .map(e => ({ ...e, color: c[e.source] }));
+    });
   }
 
   updateScrollButtonVisibility(show: boolean) {
