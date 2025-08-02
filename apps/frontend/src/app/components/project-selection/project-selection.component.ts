@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { uuidV4 } from '@dev-console/helpers';
 import { Project } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { switchMap } from 'rxjs';
-import { ProjectRepository } from '../../stores/project.repository';
+import { ProjectStore } from '../../stores/project.store';
 import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { exit } from '@tauri-apps/api/process';
 import { NzContentComponent, NzHeaderComponent, NzLayoutComponent } from 'ng-zorro-antd/layout';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -21,6 +20,7 @@ import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { NgOptimizedImage } from '@angular/common';
 import { AboutModalComponent } from '../about-modal/about-modal.component';
+import { v4 } from 'uuid';
 
 @Component({
   selector: 'dc-project-selection',
@@ -44,19 +44,17 @@ import { AboutModalComponent } from '../about-modal/about-modal.component';
   ],
 })
 export class ProjectSelectionComponent implements OnInit {
-
+  private readonly titleService = inject(Title);
+  private readonly projectStore = inject(ProjectStore);
+  private readonly router = inject(Router);
+  /* ### ICONS ### */
   protected readonly fasEdit = faEdit;
   protected readonly fasTrash = faTrash;
   protected readonly farQuestionCircle = faQuestionCircle;
 
-  projects: Signal<Project[]>;
+  projects = this.projectStore.entities;
 
-  constructor(
-    private readonly titleService: Title,
-    private readonly projectRepository: ProjectRepository,
-    private readonly router: Router,
-  ) {
-    this.projects = toSignal(this.projectRepository.projects$, { initialValue: [] });
+  constructor() {
     windowListenAsObservable(TauriEvent.WINDOW_CLOSE_REQUESTED)
       .pipe(
         switchMap(async () => {
@@ -75,16 +73,17 @@ export class ProjectSelectionComponent implements OnInit {
     await this.router.navigate(['/project'], { queryParams: { projectId: project.id } });
   }
 
-  upsertProject(project: Project) {
+  async upsertProject(project: Project) {
     if (project.id) {
-      this.projectRepository.updateProject(project.id, project);
+      this.projectStore.updateProject(project.id, project);
     } else {
-      this.projectRepository.addProject({ ...project, id: uuidV4() });
+      this.projectStore.addProject({ ...project, id: v4() });
     }
+    await this.projectStore.persistProjects();
   }
 
-  removeProject(project: Project) {
-    this.projectRepository.removeProject(project.id);
+  async removeProject(project: Project) {
+    this.projectStore.removeProject(project.id);
+    await this.projectStore.persistProjects();
   }
-
 }

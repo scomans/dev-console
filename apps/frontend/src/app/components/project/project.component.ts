@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, Signal, viewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Channel, ExecuteStatus, Project } from '@dev-console/types';
 import { faCircle as farCircle, faClock, faDotCircle as farDotCircle } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -11,14 +11,13 @@ import {
   faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { Observable, ReplaySubject, share, switchMap } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, switchMap } from 'rxjs';
 import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
-import { ProjectRepository } from '../../stores/project.repository';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ProjectStore } from '../../stores/project.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { windowListenAsObservable } from '../../helpers/tauri.helper';
 import { TauriEvent } from '@tauri-apps/api/event';
@@ -33,6 +32,7 @@ import { ChannelOrderModalComponent } from '../channel-order-modal/channel-order
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { ExitModalComponent } from '../exit-modal/exit-modal.component';
 import { v4 } from 'uuid';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
 
@@ -64,8 +64,7 @@ type ChannelWithStatus = Channel & { status$: Observable<ExecuteStatus> };
   ],
 })
 export class ProjectComponent {
-  private readonly projectRepository = inject(ProjectRepository);
-  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly projectStore = inject(ProjectStore);
   private readonly modal = inject(NzModalService);
   private readonly executeService = inject(ExecutionService);
   private readonly router = inject(Router);
@@ -94,19 +93,20 @@ export class ProjectComponent {
   protected readonly exitModal = viewChild(ExitModalComponent);
 
   constructor() {
-    this.project = toSignal(
-      this.activatedRoute.queryParams.pipe(
-        switchMap(params => this.projectRepository.selectProject(params['projectId'])),
-        tap(project => {
-          if (!project) {
-            return this.router.navigate(['/']);
-          }
-          this.titleService.setTitle(`${ project.name } - DevConsole`);
-        }),
-        share({ connector: () => new ReplaySubject(1), resetOnRefCountZero: true }),
-      ),
-      { initialValue: undefined },
-    );
+    const projectId = injectQueryParams('projectId');
+    this.project = computed(() => {
+      const pId = projectId();
+      if (!pId) {
+        return undefined;
+      }
+      const project = this.projectStore.entityMap()[pId];
+      if (!project) {
+        void this.router.navigate(['/']);
+        return undefined;
+      }
+      this.titleService.setTitle(`${ project.name } - DevConsole`);
+      return project;
+    });
     this.allLogs = computed(() => !this.selectedChannelId());
     this.channels = computed(() => {
       return this.channelStore

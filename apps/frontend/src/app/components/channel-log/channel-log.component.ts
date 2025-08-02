@@ -7,7 +7,7 @@ import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
-import { ProjectRepository } from '../../stores/project.repository';
+import { ProjectStore } from '../../stores/project.store';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'es-toolkit';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -34,7 +34,7 @@ import { of, switchMap } from 'rxjs';
 })
 export class ChannelLogComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly projectRepository = inject(ProjectRepository);
+  private readonly projectStore = inject(ProjectStore);
   private readonly executeService = inject(ExecutionService);
   private readonly channelStore = inject(ChannelStore);
   private readonly channelLogRepository = inject(ChannelLogRepository);
@@ -87,7 +87,7 @@ export class ChannelLogComponent {
 
   async run(channel: Channel) {
     const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    const projectFile = this.projectRepository.getProject(projectId)?.file;
+    const projectFile = this.projectStore.entityMap()[projectId]?.file;
     if (!isNil(projectFile)) {
       await this.executeService.run(channel, projectFile);
     }

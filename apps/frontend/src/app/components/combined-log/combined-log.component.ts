@@ -7,7 +7,7 @@ import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
 import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
-import { ProjectRepository } from '../../stores/project.repository';
+import { ProjectStore } from '../../stores/project.store';
 import { ActivatedRoute } from '@angular/router';
 import { mapBy, mapObjectValues, sleep } from '@dev-console/helpers';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
@@ -33,7 +33,7 @@ export class CombinedLogComponent {
   private readonly globalLogsRepository = inject(GlobalLogsRepository);
   private readonly channelStore = inject(ChannelStore);
   private readonly channelLogRepository = inject(ChannelLogRepository);
-  private readonly projectRepository = inject(ProjectRepository);
+  private readonly projectStore = inject(ProjectStore);
   /* ### ICONS ### */
   protected readonly fasPlay = faPlay;
   protected readonly fasRedo = faRedo;
@@ -69,7 +69,7 @@ export class CombinedLogComponent {
   async runAll() {
     const channels = this.channelStore.entities().filter(channel => channel.active);
     const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    const projectFile = this.projectRepository.getProject(projectId)?.file;
+    const projectFile = this.projectStore.entityMap()[projectId]?.file;
 
     await Promise.all(channels
       .filter(channel => this.executeService.getStatus(channel.id) === ExecuteStatus.STOPPED)
