@@ -152,7 +152,7 @@ export class ExecutionService {
     }
     this.addLogLine(
       channel.id,
-      `ℹ️ Starting ${ channel.name } >>> ${ channel.executable } ${ channel.arguments.join(' ') }`,
+      `ℹ️ Starting ${ channel.name } >>> ${ channel.executable } ${ channel.arguments?.join(' ') }`,
       'info',
     );
 
@@ -179,7 +179,7 @@ export class ExecutionService {
 
     const pid = await spawnProcess(channel.id,
       channel.executable,
-      channel.arguments,
+      channel.arguments ?? [],
       cwd,
       env,
     );
