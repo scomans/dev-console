@@ -2,26 +2,50 @@
   <div class="actions-bar">
     @if (channel(); as channel) {
       <div>
-        <button nz-button class="start" (click)="run(channel)" [disabled]="status() !== ExecuteStatus.STOPPED">
-          <fa-icon [icon]="fasPlay" class="pr-1" />
+        <button
+          nz-button
+          class="start"
+          (click)="run(channel)"
+          [disabled]="status() !== ExecuteStatus.STOPPED || runActionRunning() || restartActionRunning() || stopActionRunning()"
+          [nzLoading]="runActionRunning()"
+        >
+          @if (!runActionRunning()) {
+            <fa-icon [icon]="fasPlay" class="px-1" />
+          }
           Run
         </button>
-        <button nz-button class="restart" (click)="restart(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
-          <fa-icon [icon]="fasRedo" class="pr-1" />
+        <button
+          nz-button
+          class="restart"
+          (click)="restart(channel)"
+          [disabled]="status() === ExecuteStatus.STOPPED || runActionRunning() || restartActionRunning() || stopActionRunning()"
+          [nzLoading]="restartActionRunning()"
+        >
+          @if (!restartActionRunning()) {
+            <fa-icon [icon]="fasRedo" class="px-1" />
+          }
           Restart
         </button>
-        <button nz-button nzDanger (click)="stop(channel)" [disabled]="status() === ExecuteStatus.STOPPED">
-          <fa-icon [icon]="fasStop" class="pr-1" />
+        <button
+          nz-button
+          nzDanger
+          (click)="stop(channel)"
+          [disabled]="status() === ExecuteStatus.STOPPED"
+          [nzLoading]="stopActionRunning()"
+        >
+          @if (!stopActionRunning()) {
+            <fa-icon [icon]="fasStop" class="px-1" />
+          }
           Stop
         </button>
       </div>
       <div>
         <button nz-button (click)="clearLogs(channel)">
-          <fa-icon [icon]="fasEraser" />
+          <fa-icon [icon]="fasEraser" class="pr-1" />
           Clear
         </button>
         <button nz-button (click)="channelEditModal.show(channel)">
-          <fa-icon [icon]="fasEdit" />
+          <fa-icon [icon]="fasEdit" class="pr-1" />
           Edit
         </button>
         <button
@@ -35,7 +59,7 @@
           <ng-template #iconTpl>
             <fa-icon [icon]="farQuestionCircle" style="color: red; position: absolute; top: 4px;" />
           </ng-template>
-          <fa-icon [icon]="fasTrash" />
+          <fa-icon [icon]="fasTrash" class="pr-1" />
           Delete
         </button>
       </div>
@@ -44,18 +68,31 @@
         <button
           nz-button
           class="start"
-          [disabled]="!anythingNotExecuting()"
+          [disabled]="!anythingNotExecuting() || runActionRunning() || restartActionRunning() || stopActionRunning()"
+          [nzLoading]="runActionRunning()"
           (click)="run()"
         >
-          <fa-icon [icon]="fasPlay" class="pr-1" />
+          @if (!runActionRunning()) {
+            <fa-icon [icon]="fasPlay" class="px-1" />
+          }
           Run All
         </button>
-        <button nz-button class="restart" (click)="restart()" [disabled]="!anythingExecuting()">
-          <fa-icon [icon]="fasRedo" class="pr-1" />
+        <button
+          nz-button
+          class="restart"
+          (click)="restart()"
+          [disabled]="!anythingExecuting() || runActionRunning() || restartActionRunning() || stopActionRunning()"
+          [nzLoading]="restartActionRunning()"
+        >
+          @if (!restartActionRunning()) {
+            <fa-icon [icon]="fasRedo" class="px-1" />
+          }
           Restart All
         </button>
-        <button nz-button nzDanger (click)="stop()" [disabled]="!anythingExecuting()">
-          <fa-icon [icon]="fasStop" class="pr-1" />
+        <button nz-button nzDanger (click)="stop()" [disabled]="!anythingExecuting()" [nzLoading]="stopActionRunning()">
+          @if (!stopActionRunning()) {
+            <fa-icon [icon]="fasStop" class="px-1" />
+          }
           Stop All
         </button>
       </div>

@@ -61,6 +61,9 @@ export class LogViewerComponent {
   protected readonly logEntriesDebounce: Signal<LogEntryWithSourceAndColor[]>;
   protected readonly channel = this.channelStore.activeChannel;
   protected readonly channelColors: Signal<Record<string, string>>;
+  protected readonly runActionRunning = signal(false);
+  protected readonly restartActionRunning = signal(false);
+  protected readonly stopActionRunning = signal(false);
 
   protected readonly status: Signal<ExecuteStatus>;
   protected readonly activeChannels: Signal<Channel[]>;
@@ -132,6 +135,7 @@ export class LogViewerComponent {
   }
 
   async run(channel?: Channel) {
+    this.runActionRunning.set(true);
     if (channel) {
       const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
       const projectFile = this.projectStore.entityMap()[projectId]?.file;
@@ -148,25 +152,27 @@ export class LogViewerComponent {
         .map(channel => this.executeService.run(channel, projectFile)),
       );
     }
+    this.runActionRunning.set(false);
   }
 
   async restart(channel?: Channel) {
+    this.restartActionRunning.set(true);
     if (channel) {
-      const killed = await this.stop(channel);
-      if (killed) {
-        await sleep(1000);
-        await this.run(channel);
-      }
+      await this.stop(channel);
+      await sleep(1000);
+      await this.run(channel);
     } else {
       await this.stop();
       await sleep(1000);
       await this.run();
     }
+    this.restartActionRunning.set(false);
   }
 
   async stop(channel?: Channel) {
+    this.stopActionRunning.set(true);
     if (channel) {
-      return this.executeService.kill(channel);
+      await this.executeService.kill(channel);
     } else {
       const channels = this.channelStore.entities().filter(channel => channel.active);
 
@@ -175,6 +181,7 @@ export class LogViewerComponent {
         .map(channel => this.executeService.kill(channel)),
       );
     }
+    this.stopActionRunning.set(false);
   }
 
   clearLogs(channel?: Channel) {
