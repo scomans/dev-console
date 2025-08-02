@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
-import { filterNil, sleep } from '@dev-console/helpers';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { sleep } from '@dev-console/helpers';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faEdit, faEraser, faPlay, faRedo, faStop, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
-import { ChannelRepository } from '../../stores/channel.repository';
+import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +15,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NzPopconfirmDirective } from 'ng-zorro-antd/popconfirm';
 import { ChannelEditModalComponent } from '../channel-edit-modal/channel-edit-modal.component';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { derivedFrom } from 'ngxtension/derived-from';
+import { of, switchMap } from 'rxjs';
 
 
 @Component({
@@ -33,6 +33,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 export class ChannelLogComponent {
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly projectRepository = inject(ProjectRepository);
+  private readonly executeService = inject(ExecutionService);
+  private readonly channelStore = inject(ChannelStore);
+  private readonly channelLogRepository = inject(ChannelLogRepository);
+  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  /* ### ICONS ### */
   protected readonly farQuestionCircle = faQuestionCircle;
   protected readonly fasTrash = faTrash;
   protected readonly fasPlay = faPlay;
@@ -44,42 +51,38 @@ export class ChannelLogComponent {
   protected readonly ExecuteStatus = ExecuteStatus;
 
   protected readonly status: Signal<ExecuteStatus>;
-  protected readonly channel: Signal<Channel | undefined>;
+  protected readonly channel = this.channelStore.activeChannel;
   protected readonly logs: Signal<LogEntryWithSource[]>;
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly projectRepository: ProjectRepository,
-    private readonly executeService: ExecutionService,
-    private readonly channelRepository: ChannelRepository,
-    private readonly channelLogRepository: ChannelLogRepository,
-    private readonly globalLogsRepository: GlobalLogsRepository,
-  ) {
-    this.channel = toSignal(this.channelRepository.activeChannel$, { initialValue: undefined });
-    this.status = toSignal(
-      this.channelRepository.activeChannelId$
-        .pipe(
-          filterNil(),
-          switchMap(id => this.executeService.selectStatus(id)),
-        ),
+  constructor() {
+    this.status = derivedFrom(
+      [this.channelStore.activeChannel],
+      switchMap(([channel]) =>
+        channel
+          ? this.executeService.selectStatus(channel.id)
+          : of(ExecuteStatus.STOPPED),
+      ),
       { initialValue: ExecuteStatus.STOPPED },
     );
-    this.logs = toSignal(
-      this.channelRepository.activeChannelId$
-        .pipe(
-          switchMap(id => this.channelLogRepository.selectLogsByChannelId(id)),
-        ),
+    this.logs = derivedFrom(
+      [this.channelStore.activeId],
+      switchMap(([id]) => {
+        if (!id) {
+          return of([]);
+        }
+        return this.channelLogRepository.selectLogsByChannelId(id);
+      }),
       { initialValue: [] },
     );
   }
 
   deleteChannel(channel: Channel) {
-    this.channelRepository.removeChannel(channel.id);
-    this.channelRepository.setChannelActive(null);
+    this.channelStore.removeChannel(channel.id);
+    this.channelStore.setChannelActive(null);
   }
 
   updateChannel(channel?: Omit<Channel, 'index'>) {
-    this.channelRepository.updateChannel(channel.id, channel);
+    this.channelStore.updateChannel(channel.id, channel);
   }
 
   async run(channel: Channel) {
@@ -106,5 +109,4 @@ export class ChannelLogComponent {
     void this.channelLogRepository.clearChannelLogs(channel.id);
     void this.globalLogsRepository.clearChannelLogs(channel.id);
   }
-
 }

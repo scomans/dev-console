@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
 import { Channel, ExecuteStatus } from '@dev-console/types';
 import { faEraser, faPlay, faRedo, faStop } from '@fortawesome/free-solid-svg-icons';
-import { combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ExecutionService } from '../../services/execution.service';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
-import { ChannelRepository } from '../../stores/channel.repository';
+import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { ProjectRepository } from '../../stores/project.repository';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ import { mapBy, mapObjectValues, sleep } from '@dev-console/helpers';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { LogViewerComponent } from '../log-viewer/log-viewer.component';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { derivedFrom } from 'ngxtension/derived-from';
 
 
 @Component({
@@ -28,50 +28,46 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 export class CombinedLogComponent {
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly executeService = inject(ExecutionService);
+  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly channelStore = inject(ChannelStore);
+  private readonly channelLogRepository = inject(ChannelLogRepository);
+  private readonly projectRepository = inject(ProjectRepository);
+  /* ### ICONS ### */
   protected readonly fasPlay = faPlay;
   protected readonly fasRedo = faRedo;
   protected readonly fasStop = faStop;
   protected readonly fasEraser = faEraser;
 
-  protected readonly channels$: Observable<Channel[]>;
-  protected readonly channelColors$: Observable<Record<string, string>>;
-  protected readonly executingStatuses$: Observable<ExecuteStatus[]>;
+  protected readonly activeChannels: Signal<Channel[]>;
+  protected readonly channelColors: Signal<Record<string, string>>;
+  protected readonly executingStatuses: Signal<ExecuteStatus[]>;
   protected readonly anythingExecuting: Signal<boolean>;
   protected readonly anythingNotExecuting: Signal<boolean>;
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly executeService: ExecutionService,
-    private readonly globalLogsRepository: GlobalLogsRepository,
-    private readonly channelRepository: ChannelRepository,
-    private readonly channelLogRepository: ChannelLogRepository,
-    private readonly projectRepository: ProjectRepository,
-  ) {
-    this.channels$ = this.channelRepository.channels$.pipe(
-      map(channels => channels.filter(channel => channel.active)),
-    );
-    this.channelColors$ = this.channels$.pipe(
-      map(channels => mapObjectValues(mapBy(channels, 'id'), 'color')),
-    );
-    this.executingStatuses$ = this.channels$.pipe(
-      switchMap(channels => combineLatest(channels.map(channel => this.executeService.selectStatus(channel.id)))),
-    );
-    this.anythingExecuting = toSignal(
-      this.executingStatuses$.pipe(
-        map(statuses => !!statuses.find(status => status === ExecuteStatus.RUNNING || status === ExecuteStatus.WAITING)),
+  constructor() {
+    this.activeChannels = computed(() => this.channelStore.entities().filter(c => c.active));
+    this.channelColors = computed(() => mapObjectValues(mapBy(this.activeChannels(), 'id'), 'color'));
+    this.executingStatuses = derivedFrom(
+      [this.activeChannels],
+      switchMap(([activeChannels]) =>
+        combineLatest(activeChannels.map(c => this.executeService.selectStatus(c.id))),
       ),
-      { initialValue: false },
+      { initialValue: [] },
     );
-    this.anythingNotExecuting = toSignal(
-      this.executingStatuses$.pipe(
-        map(statuses => statuses.includes(ExecuteStatus.STOPPED)),
-      ),
-      { initialValue: false },
-    );
+    this.anythingExecuting = computed(() => {
+      const statuses = this.executingStatuses();
+      return statuses.some(status => status === ExecuteStatus.RUNNING || status === ExecuteStatus.WAITING);
+    });
+    this.anythingNotExecuting = computed(() => {
+      const statuses = this.executingStatuses();
+      return statuses.includes(ExecuteStatus.STOPPED);
+    });
   }
 
   async runAll() {
-    const channels = this.channelRepository.getChannels().filter(channel => channel.active);
+    const channels = this.channelStore.entities().filter(channel => channel.active);
     const projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     const projectFile = this.projectRepository.getProject(projectId)?.file;
 
@@ -88,7 +84,7 @@ export class CombinedLogComponent {
   }
 
   async stopAll() {
-    const channels = this.channelRepository.getChannels().filter(channel => channel.active);
+    const channels = this.channelStore.entities().filter(channel => channel.active);
 
     await Promise.all(channels
       .filter(channel => this.executeService.getStatus(channel.id) !== ExecuteStatus.STOPPED)

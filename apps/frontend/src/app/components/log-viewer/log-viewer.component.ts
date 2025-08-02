@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Signal, signal, viewChild } from '@angular/core';
-import { combineLatestWith, Observable, Subject, take } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal, viewChild } from '@angular/core';
+import { pipe, Subject, take } from 'rxjs';
 import { auditTime, map, switchMap } from 'rxjs/operators';
 import { ChannelLogRepository } from '../../stores/channel-log.repository';
-import { ChannelRepository } from '../../stores/channel.repository';
+import { ChannelStore } from '../../stores/channel.store';
 import { GlobalLogsRepository } from '../../stores/global-log.repository';
 import { LogEntryComponent, LogEntryWithSourceAndColor } from '../log-entry/log-entry.component';
 import { AutoScrollDirective } from '../../directives/auto-scroll.directive';
@@ -15,8 +15,9 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faDownLong } from '@fortawesome/free-solid-svg-icons';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzEmptyComponent } from 'ng-zorro-antd/empty';
+import { derivedFrom } from 'ngxtension/derived-from';
 
 
 @Component({
@@ -37,6 +38,9 @@ import { NzEmptyComponent } from 'ng-zorro-antd/empty';
   ],
 })
 export class LogViewerComponent {
+  private readonly channelStore = inject(ChannelStore);
+  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly channelLogRepository = inject(ChannelLogRepository);
   /* ### ICONS ### */
   protected readonly fasDownLong = faDownLong;
 
@@ -46,28 +50,30 @@ export class LogViewerComponent {
 
   protected readonly autoScroll = viewChild(AutoScrollDirective);
 
-  constructor(
-    private readonly channelRepository: ChannelRepository,
-    private readonly globalLogsRepository: GlobalLogsRepository,
-    private readonly channelLogRepository: ChannelLogRepository,
-  ) {
+  constructor() {
     this.itemsRendered
       .pipe(takeUntilDestroyed(), take(1))
       .subscribe(() => this.scrollDown());
-    const colors$: Observable<Record<string, string>> = this.channelRepository.channels$.pipe(
-      map(channels => channels
+    const colors: Signal<Record<string, string>> = computed(() => {
+      return this.channelStore
+        .entities()
         .map(c => ({ id: c.id, color: c.color }))
-        .reduce((a, v) => ({ ...a, [v.id]: v.color }), {}),
-      ),
-    );
-    this.logEntries = toSignal(
-      this.channelRepository.activeChannelId$
-        .pipe(
-          switchMap(id => id ? this.channelLogRepository.selectLogsByChannelId(id) : this.globalLogsRepository.logEntries$),
-          combineLatestWith(colors$),
-          map(([entries, colors]) => entries.map(e => ({ ...e, color: colors[e.source] }))),
-          auditTime(50),
+        .reduce((a, v) => ({ ...a, [v.id]: v.color }), {});
+    });
+    this.logEntries = derivedFrom(
+      [this.channelStore.activeId, colors],
+      pipe(
+        switchMap(([id, colors]) => {
+            const entities$ = id
+              ? this.channelLogRepository.selectLogsByChannelId(id)
+              : this.globalLogsRepository.logEntries$;
+            return entities$.pipe(
+              map(entries => entries.map(e => ({ ...e, color: colors[e.source] }))),
+            );
+          },
         ),
+        auditTime(50),
+      ),
       { initialValue: [] },
     );
   }

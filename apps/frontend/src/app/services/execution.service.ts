@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Channel, ExecuteStatus, LogEntryWithSource } from '@dev-console/types';
 import { BehaviorSubject, from, lastValueFrom, merge, Observable, takeWhile } from 'rxjs';
 import { ChannelLogRepository } from '../stores/channel-log.repository';
@@ -7,7 +7,7 @@ import { isNil } from 'es-toolkit';
 import { listenAsObservable } from '../helpers/tauri.helper';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { dirname, isAbsolute, join } from '@tauri-apps/api/path';
-import { ChannelRepository } from '../stores/channel.repository';
+import { ChannelStore } from '../stores/channel.store';
 import { waitFor } from '../helpers/wait-for.helper';
 import { CancelToken } from '../helpers/cancel.helper';
 import { map } from 'rxjs/operators';
@@ -31,14 +31,14 @@ export interface Executable {
 
 @Injectable()
 export class ExecutionService {
+  private readonly channelLogRepository = inject(ChannelLogRepository);
+  private readonly globalLogsRepository = inject(GlobalLogsRepository);
+  private readonly channelStore = inject(ChannelStore);
+  private readonly sanitizer = inject(DomSanitizer);
+
   private readonly executables = new Map<string, Executable>();
 
-  constructor(
-    private readonly channelLogRepository: ChannelLogRepository,
-    private readonly globalLogsRepository: GlobalLogsRepository,
-    private readonly channelRepository: ChannelRepository,
-    private readonly sanitizer: DomSanitizer,
-  ) {
+  constructor() {
     listenAsObservable('process-stdout')
       .pipe(takeUntilDestroyed())
       .subscribe(({ channel_id: channelId, line }: { channel_id: string, line: string }) => {
@@ -52,7 +52,7 @@ export class ExecutionService {
     listenAsObservable('process-exit')
       .pipe(takeUntilDestroyed())
       .subscribe(({ channel_id: channelId, code }: { channel_id: string, code: number }) => {
-        const channel = this.channelRepository.getChannel(channelId);
+        const channel = this.channelStore.entityMap()[channelId];
         this.addLogLine(
           channelId,
           `ℹ️ ${ channel.name } exited with exit code: ${ Number(code) }`,
