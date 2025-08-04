@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, Signal, signal, viewChild } from '@angular/core';
 import { combineLatest, of, pipe } from 'rxjs';
 import { LogStore } from '../../stores/log.store';
 import { ChannelStore } from '../../stores/channel.store';
@@ -100,6 +100,24 @@ export class LogViewerComponent {
     this.anythingNotExecuting = computed(() => {
       const statuses = this.executingStatuses();
       return statuses.includes(ExecuteStatus.STOPPED);
+    });
+    effect(() => {
+      if (this.channel()) {
+        switch (this.status()) {
+          case ExecuteStatus.STOPPED:
+            this.runActionRunning.set(false);
+            break;
+          case ExecuteStatus.WAITING:
+            this.runActionRunning.set(true);
+            break;
+        }
+      } else {
+        if (this.anythingNotExecuting()) {
+          this.runActionRunning.set(false);
+        } else if (this.executingStatuses().some(s => s === ExecuteStatus.WAITING)) {
+          this.runActionRunning.set(true);
+        }
+      }
     });
 
     this.logEntries = computed(() => {
