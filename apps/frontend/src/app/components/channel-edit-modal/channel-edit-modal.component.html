@@ -145,7 +145,13 @@
           </nz-form-control>
         </nz-form-item>
       </ng-container>
-      <nz-form-item nz-row class="register-area">
+      <nz-form-item>
+        <nz-form-label [nzSm]="8" [nzXs]="24">Log limit count</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <nz-input-number formControlName="limit" [nzMin]="0" [nzPrecision]="0" class="w-full" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-row>
         <nz-form-control [nzSpan]="12" [nzOffset]="8">
           <label nz-checkbox formControlName="active">Active</label>
         </nz-form-control>

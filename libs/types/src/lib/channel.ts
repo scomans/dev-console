@@ -1,6 +1,7 @@
 export interface Channel {
   id: string;
   index: number;
+  limit: number;
   name: string;
   color: string;
   arguments?: string[];

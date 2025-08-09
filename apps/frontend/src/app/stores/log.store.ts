@@ -26,8 +26,19 @@ export const LogStore = signalStore(
     ),
   })),
   withMethods((store) => ({
-    addLogEntry(log: LogEntryWithSource): void {
-      patchState(store, addEntity(log));
+    addLogEntry(log: LogEntryWithSource, limit?: number): void {
+      let idsToDelete: number[] = [];
+      if (limit) {
+        const logEntries = store.entities().filter(entry => entry.source === log.source);
+        if ((logEntries.length + 1) > limit) {
+          idsToDelete = logEntries.slice(0, (logEntries.length + 1) - limit).map(entry => entry.id);
+        }
+      }
+      patchState(
+        store,
+        addEntity(log),
+        removeEntities(idsToDelete),
+      );
     },
     setActiveChannel(activeId: string | null): void {
       patchState(store, () => ({ activeId }));

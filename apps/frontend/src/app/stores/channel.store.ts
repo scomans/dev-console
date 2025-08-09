@@ -74,6 +74,10 @@ export const ChannelStore = signalStore(
       } else {
         channels = projectContent['channels'];
       }
+      channels = channels.map((channel, i) => ({
+        limit: 0, // default limit
+        ...channel,
+      }));
       patchState(store, setAllEntities(channels));
       patchState(store, { loaded: true });
     },

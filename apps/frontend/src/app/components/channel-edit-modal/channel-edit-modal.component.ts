@@ -17,6 +17,7 @@ import { NzPopoverDirective } from 'ng-zorro-antd/popover';
 import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 import { NzColorPickerComponent } from 'ng-zorro-antd/color-picker';
 import { isFormInvalid } from '../../helpers/form.helper';
+import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 
 @Component({
   selector: 'dc-channel-edit-modal',
@@ -32,6 +33,7 @@ import { isFormInvalid } from '../../helpers/form.helper';
     NzFormModule,
     NzInputDirective,
     NzInputGroupComponent,
+    NzInputNumberComponent,
     NzModalComponent,
     NzModalContentDirective,
     NzPopoverDirective,
@@ -58,6 +60,7 @@ export class ChannelEditModalComponent {
       search: new FormControl<string>(),
       replace: new FormControl<string>(),
     }),
+    limit: new FormControl<number>(0),
     waitOn: new FormControl<string>(),
   });
   protected readonly angularForm: AngularFormGroup = this.form;

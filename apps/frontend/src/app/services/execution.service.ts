@@ -82,7 +82,8 @@ export class ExecutionService {
       type,
       source: channelId,
     };
-    this.logStore.addLogEntry(logEntry);
+    const channel = this.channelStore.entityMap()[channelId];
+    this.logStore.addLogEntry(logEntry, channel.limit);
   }
 
   selectStatus(channelId: string): Observable<ExecuteStatus> {
