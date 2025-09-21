@@ -2,11 +2,11 @@ import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChange
 import { provideRouter, withHashLocation } from '@angular/router';
 import { APP_ROUTES } from './app.routing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ProjectStore } from './stores/project.store';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 export const appConfig: ApplicationConfig = {
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES, withHashLocation()),
     provideHttpClient(),
-    provideAnimations(),
+    provideAnimationsAsync(),
     { provide: NZ_I18N, useValue: en_US },
     provideAppInitializer(async () => {
       const projectStore = inject(ProjectStore);
