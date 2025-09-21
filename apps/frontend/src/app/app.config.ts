@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router';
 import { APP_ROUTES } from './app.routing';
 import { provideHttpClient } from '@angular/common/http';
@@ -13,6 +13,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     NzModalService,
     NzNotificationService,
+    provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES, withHashLocation()),
     provideHttpClient(),
     provideAnimations(),
